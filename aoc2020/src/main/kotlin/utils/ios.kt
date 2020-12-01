@@ -1,5 +1,9 @@
 package utils
 
+fun getInts(callerObject: Any, filename: String): List<Int> {
+    return getLines(callerObject, filename).map { it.toInt() }
+}
+
 fun getLines(callerObject: Any, filename: String): List<String> {
     return getRawContent(callerObject, filename)?.lines().orEmpty()
 }
