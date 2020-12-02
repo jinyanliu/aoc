@@ -1,5 +1,7 @@
+import utils.IoHelper
+
 class Day01 {
-    private fun getInputs() = utils.getInts(this, "d01.in")
+    private fun getInputs() = IoHelper.getInts("d01.in")
 
     fun getSolution1(): Int {
         val inputs = getInputs()
