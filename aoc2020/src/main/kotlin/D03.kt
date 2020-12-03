@@ -1,4 +1,5 @@
 import utils.IoHelper
+import kotlin.math.ceil
 
 class Day03 {
     private fun getInputs() = IoHelper.getLines("d03.in")
@@ -10,23 +11,14 @@ class Day03 {
         val singleMaxX = inputsList[0].length
         val repetition = maxX / singleMaxX + 1
 
-        var counter = 0
-        inputsList.forEachIndexed { index, s ->
-            val toVerify = s.repeat(repetition)[index * 3].toString()
-            if (toVerify == "#") {
-                counter += 1
-            }
-        }
-        return counter
+        return inputsList
+            .mapIndexed { index, s -> s.repeat(repetition)[index * 3].toString() }
+            .count { it == "#" }
     }
 
     fun getSolution2(): Long {
-        val slope11 = getSlopeBy(1, 1)
-        val slope31 = getSlopeBy(3, 1)
-        val slope51 = getSlopeBy(5, 1)
-        val slope71 = getSlopeBy(7, 1)
-        val slope12 = getSlopeBy(1, 2)
-        return slope11 * slope31 * slope51 * slope71 * slope12
+        val slopes = listOf(1 to 1, 3 to 1, 5 to 1, 7 to 1, 1 to 2)
+        return slopes.map { getSlopeBy(it.first, it.second) }.reduce { acc, t -> acc * t }
     }
 
     private fun getSlopeBy(right: Int, down: Int): Long {
@@ -35,20 +27,17 @@ class Day03 {
         val lines = inputsList.size
         val maxX = lines * ratio
         val singleMaxX = inputsList[0].length
-        val repetition = maxX.toInt() / singleMaxX + 1
+        val repetition = ceil(maxX / singleMaxX).toInt()
 
-        var counter: Long = 0
-        inputsList.forEachIndexed { index, s ->
-            if (index % down == 0) {
-                val countedIndex = (index.toDouble() * ratio).toInt()
-                val toVerify = s.repeat(repetition)[countedIndex].toString()
-                if (toVerify == "#") {
-                    counter += 1
-                }
+        return inputsList
+            .mapIndexed { index, s ->
+                if (index % down == 0) {
+                    val countedIndex = (index.toDouble() * ratio).toInt()
+                    s.repeat(repetition)[countedIndex].toString()
+                } else "?"
             }
-
-        }
-        return counter
+            .count { it == "#" }
+            .toLong()
     }
 }
 
