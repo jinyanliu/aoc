@@ -1,22 +1,20 @@
 import utils.IoHelper
 
 class Day04 {
-    private fun getInputs() = IoHelper.getRawContent("d04.in")
+    private fun getInputs() = IoHelper.getSections("d04.in")
 
-    fun getSolution1(): Int {
-        val batches = getInputs()?.split("\n\n") ?: emptyList()
-        return batches.count { isValidSolution1(it) }
-    }
+    fun getSolution1() = getInputs().count { isValidSolution1(it) }
+
+    fun getSolution2() = getInputs().count { isValidSolution2(it) }
 
     private fun isValidSolution1(toVerify: String): Boolean {
-        return toVerify.contains("byr:") && toVerify.contains("iyr:") && toVerify.contains("eyr:") && toVerify.contains(
-            "hgt:"
-        ) && toVerify.contains("hcl:") && toVerify.contains("ecl:") && toVerify.contains("pid:")
-    }
-
-    fun getSolution2(): Int {
-        val batches = getInputs()?.split("\n\n") ?: emptyList()
-        return batches.count { isValidSolution2(it) }
+        return toVerify.contains("byr:")
+                && toVerify.contains("iyr:")
+                && toVerify.contains("eyr:")
+                && toVerify.contains("hgt:")
+                && toVerify.contains("hcl:")
+                && toVerify.contains("ecl:")
+                && toVerify.contains("pid:")
     }
 
     private fun isValidSolution2(toVerify: String): Boolean {
@@ -30,7 +28,6 @@ class Day04 {
         var isEclValid = false
         var isPidValid = false
 
-
         val fields = toVerify.split("\n").flatMap { it.split(" ") }
         for (field in fields) {
 
@@ -38,16 +35,13 @@ class Day04 {
                 isByrValid = (field.drop(4).length == 4) && (field.drop(4).toInt() in 1920..2002)
             }
 
-
             if (field.contains("iyr:")) {
                 isIyrValid = (field.drop(4).length == 4) && (field.drop(4).toInt() in 2010..2020)
             }
 
-
             if (field.contains("eyr:")) {
                 isEyrValid = (field.drop(4).length == 4) && (field.drop(4).toInt() in 2020..2030)
             }
-
 
             if (field.contains("hgt:")) {
                 isHgtValid = when {
@@ -63,8 +57,6 @@ class Day04 {
                 }
             }
 
-
-
             if (field.contains("hcl:")) {
                 val listOfValidNumber =
                     listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f")
@@ -75,8 +67,6 @@ class Day04 {
                 isHclValid = (field.drop(4).contains("#")) && (field.drop(5).length == 6) && isCharValid
             }
 
-
-
             if (field.contains("ecl:")) {
                 isEclValid =
                     field.drop(4) == "amb" || field.drop(4) == "blu" || field.drop(4) == "brn" || field.drop(4) == "gry" || field.drop(
@@ -84,14 +74,12 @@ class Day04 {
                     ) == "grn" || field.drop(4) == "hzl" || field.drop(4) == "oth"
             }
 
-
             if (field.contains("pid:")) {
                 isPidValid = field.drop(4).length == 9 && field.filter { it.isDigit() }.length == 9
             }
         }
 
         return isByrValid && isIyrValid && isEyrValid && isHgtValid && isHclValid && isEclValid && isPidValid
-
     }
 }
 

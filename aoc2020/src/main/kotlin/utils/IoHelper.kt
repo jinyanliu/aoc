@@ -10,6 +10,10 @@ class IoHelper {
             return getRawContent(filename)?.lines().orEmpty()
         }
 
+        fun getSections(filename: String): List<String> {
+            return getRawContent(filename)?.split("\n\n").orEmpty()
+        }
+
         fun getRawContent(filename: String): String? {
             return IoHelper.javaClass.classLoader.getResource(filename)?.readText()?.trim()
         }
