@@ -7,15 +7,15 @@ class IoHelper {
         }
 
         fun getLines(filename: String): List<String> {
-            return getRawContent(filename)?.lines().orEmpty()
+            return getRawContent(filename).lines()
         }
 
         fun getSections(filename: String): List<String> {
-            return getRawContent(filename)?.split("\n\n").orEmpty()
+            return getRawContent(filename).split("\n\n")
         }
 
-        fun getRawContent(filename: String): String? {
-            return IoHelper.javaClass.classLoader.getResource(filename)?.readText()?.trim()
+        fun getRawContent(filename: String): String {
+            return IoHelper.javaClass.classLoader.getResource(filename)?.readText()?.trim().orEmpty()
         }
     }
 }
