@@ -24,12 +24,12 @@ class Day05 {
         else -> updateRangeToSmallerHalf(range)
     }
 
-    private fun updateRangeToSmallerHalf(position: Range) {
-        position.end = position.start + (position.end - position.start) / 2
+    private fun updateRangeToSmallerHalf(range: Range) {
+        range.end = range.start + (range.end - range.start) / 2
     }
 
-    private fun updateRangeToBiggerHalf(position: Range) {
-        position.start = position.start + ceil((position.end - position.start).toDouble() / 2).toInt()
+    private fun updateRangeToBiggerHalf(range: Range) {
+        range.start = range.start + ceil((range.end - range.start).toDouble() / 2).toInt()
     }
 }
 
