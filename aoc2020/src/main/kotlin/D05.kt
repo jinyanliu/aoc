@@ -11,43 +11,29 @@ class Day05 {
         return (0..883).filter { !ids.contains(it) && ids.contains(it + 1) && ids.contains(it - 1) }[0]
     }
 
-    private fun getSeatId(targetString: String): Int {
-        val row = SeatPosition(0, 127)
-        val column = SeatPosition(0, 7)
-
-        for (char in targetString.dropLast(4)) {
-            calculateSeatPosition(char, row)
-        }
-        val rowNumber = getFinalSeatNumber(targetString[6], row)
-
-        for (char in targetString.drop(7).dropLast(1)) {
-            calculateSeatPosition(char, column)
-        }
-        val columnNumber = getFinalSeatNumber(targetString[9], column)
-
-        return rowNumber * 8 + columnNumber
+    private fun getSeatId(instructionString: String): Int {
+        val row = Range(0, 127)
+        val column = Range(0, 7)
+        for (char in instructionString.dropLast(3)) { calculateSeatRange(char, row) }
+        for (char in instructionString.drop(7)) { calculateSeatRange(char, column) }
+        return row.start * 8 + column.start
     }
 
-    private fun getFinalSeatNumber(char: Char, seatPosition: SeatPosition) = when (char.toString()) {
-        "B", "R" -> seatPosition.end
-        else -> seatPosition.start
+    private fun calculateSeatRange(char: Char, range: Range) = when (char.toString()) {
+        "B", "R" -> updateRangeToBiggerHalf(range)
+        else -> updateRangeToSmallerHalf(range)
     }
 
-    private fun calculateSeatPosition(char: Char, seatPosition: SeatPosition) = when (char.toString()) {
-        "B", "R" -> updateRangeToBiggerHalf(seatPosition)
-        else -> updateRangeToSmallerHalf(seatPosition)
-    }
-
-    private fun updateRangeToSmallerHalf(position: SeatPosition) {
+    private fun updateRangeToSmallerHalf(position: Range) {
         position.end = position.start + (position.end - position.start) / 2
     }
 
-    private fun updateRangeToBiggerHalf(position: SeatPosition) {
+    private fun updateRangeToBiggerHalf(position: Range) {
         position.start = position.start + ceil((position.end - position.start).toDouble() / 2).toInt()
     }
 }
 
-data class SeatPosition(var start: Int, var end: Int)
+data class Range(var start: Int, var end: Int)
 
 fun main() {
     println(Day05().getSolution1())
