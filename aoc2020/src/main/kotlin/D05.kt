@@ -12,53 +12,47 @@ class Day05 {
     }
 
     private fun getSeatId(targetString: String): Int {
-        var currentRowRange = 0 to 127
+        val row = SeatPosition(0, 127)
         for (char in targetString.dropLast(4)) {
-            currentRowRange = when (char.toString()) {
-                "B" -> updateRangeToBiggerHalf(currentRowRange)
-                else -> updateRangeToSmallerHalf(currentRowRange)
-            }
-        }
-        val row = when (targetString[6].toString()) {
-            "B" -> currentRowRange.second
-            else -> currentRowRange.first
+            calculateSeatPosition(char, row)
         }
 
+        val rowNumber = when (targetString[6].toString()) {
+            "B" -> row.end
+            else -> row.start
+        }
 
-        var currentColumnRange = 0 to 7
+        val column = SeatPosition(0, 7)
         for (char in targetString.drop(7).dropLast(1)) {
-            currentColumnRange = when (char.toString()) {
-                "R" -> updateRangeToBiggerHalf(currentColumnRange)
-                else -> updateRangeToSmallerHalf(currentColumnRange)
-            }
+            calculateSeatPosition(char, column)
+        }
+        val columnNumber = when (targetString[9].toString()) {
+            "R" -> column.end
+            else -> column.start
         }
 
-        val column = when (targetString[9].toString()) {
-            "R" -> currentColumnRange.second
-            else -> currentColumnRange.first
-        }
-
-        return row * 8 + column
+        return rowNumber * 8 + columnNumber
     }
 
-    private fun updateRangeToSmallerHalf(currentRange: Pair<Int, Int>) =
-        currentRange.first to currentRange.first + (currentRange.second - currentRange.first) / 2
+    private fun calculateSeatPosition(char: Char, seatPosition: SeatPosition) {
+        when (char.toString()) {
+            "B", "R" -> updateRangeToBiggerHalf(seatPosition)
+            else -> updateRangeToSmallerHalf(seatPosition)
+        }
+    }
 
-    private fun updateRangeToBiggerHalf(currentRange: Pair<Int, Int>) =
-        currentRange.first + ceil((currentRange.second - currentRange.first).toDouble() / 2).toInt() to currentRange.second
+    private fun updateRangeToSmallerHalf(position: SeatPosition) {
+        position.end = position.start + (position.end - position.start) / 2
+    }
+
+    private fun updateRangeToBiggerHalf(position: SeatPosition) {
+        position.start = position.start + ceil((position.end - position.start).toDouble() / 2).toInt()
+    }
 }
+
+data class SeatPosition(var start: Int, var end: Int)
 
 fun main() {
     println(Day05().getSolution1())
     println(Day05().getSolution2())
-}
-
-object Column {
-    var start = 0
-    var end = 7
-}
-
-object Row {
-    var start = 0
-    var end = 127
 }
