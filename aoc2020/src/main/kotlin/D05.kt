@@ -13,32 +13,29 @@ class Day05 {
 
     private fun getSeatId(targetString: String): Int {
         val row = SeatPosition(0, 127)
+        val column = SeatPosition(0, 7)
+
         for (char in targetString.dropLast(4)) {
             calculateSeatPosition(char, row)
         }
+        val rowNumber = getFinalSeatNumber(targetString[6], row)
 
-        val rowNumber = when (targetString[6].toString()) {
-            "B" -> row.end
-            else -> row.start
-        }
-
-        val column = SeatPosition(0, 7)
         for (char in targetString.drop(7).dropLast(1)) {
             calculateSeatPosition(char, column)
         }
-        val columnNumber = when (targetString[9].toString()) {
-            "R" -> column.end
-            else -> column.start
-        }
+        val columnNumber = getFinalSeatNumber(targetString[9], column)
 
         return rowNumber * 8 + columnNumber
     }
 
-    private fun calculateSeatPosition(char: Char, seatPosition: SeatPosition) {
-        when (char.toString()) {
-            "B", "R" -> updateRangeToBiggerHalf(seatPosition)
-            else -> updateRangeToSmallerHalf(seatPosition)
-        }
+    private fun getFinalSeatNumber(char: Char, seatPosition: SeatPosition) = when (char.toString()) {
+        "B", "R" -> seatPosition.end
+        else -> seatPosition.start
+    }
+
+    private fun calculateSeatPosition(char: Char, seatPosition: SeatPosition) = when (char.toString()) {
+        "B", "R" -> updateRangeToBiggerHalf(seatPosition)
+        else -> updateRangeToSmallerHalf(seatPosition)
     }
 
     private fun updateRangeToSmallerHalf(position: SeatPosition) {
