@@ -12,24 +12,24 @@ class Day05 {
     }
 
     private fun getSeatId(targetString: String): Int {
-        var currentRange = 0 to 127
-        for (char in targetString.dropLast(3)) {
-            currentRange = when (char.toString()) {
-                "B" -> getBiggerHalfStartingPoint(currentRange) to currentRange.second
-                else -> currentRange.first to currentRange.first + (currentRange.second - currentRange.first) / 2
+        var currentRowRange = 0 to 127
+        for (char in targetString.dropLast(4)) {
+            currentRowRange = when (char.toString()) {
+                "B" -> updateRangeToBiggerHalf(currentRowRange)
+                else -> updateRangeToSmallerHalf(currentRowRange)
             }
         }
-        val row = when (targetString.get(6).toString()) {
-            "B" -> currentRange.second
-            else -> currentRange.first
+        val row = when (targetString[6].toString()) {
+            "B" -> currentRowRange.second
+            else -> currentRowRange.first
         }
 
 
         var currentColumnRange = 0 to 7
-        for (char in targetString.drop(7)) {
+        for (char in targetString.drop(7).dropLast(1)) {
             currentColumnRange = when (char.toString()) {
-                "R" -> getBiggerHalfStartingPoint(currentColumnRange) to currentColumnRange.second
-                else -> currentColumnRange.first to currentColumnRange.first + (currentColumnRange.second - currentColumnRange.first) / 2
+                "R" -> updateRangeToBiggerHalf(currentColumnRange)
+                else -> updateRangeToSmallerHalf(currentColumnRange)
             }
         }
 
@@ -41,11 +41,24 @@ class Day05 {
         return row * 8 + column
     }
 
-    private fun getBiggerHalfStartingPoint(currentRange: Pair<Int, Int>) =
-        currentRange.first + ceil((currentRange.second - currentRange.first).toDouble() / 2).toInt()
+    private fun updateRangeToSmallerHalf(currentRange: Pair<Int, Int>) =
+        currentRange.first to currentRange.first + (currentRange.second - currentRange.first) / 2
+
+    private fun updateRangeToBiggerHalf(currentRange: Pair<Int, Int>) =
+        currentRange.first + ceil((currentRange.second - currentRange.first).toDouble() / 2).toInt() to currentRange.second
 }
 
 fun main() {
     println(Day05().getSolution1())
     println(Day05().getSolution2())
+}
+
+object Column {
+    var start = 0
+    var end = 7
+}
+
+object Row {
+    var start = 0
+    var end = 127
 }
