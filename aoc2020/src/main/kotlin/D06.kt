@@ -10,11 +10,7 @@ class Day06 {
     private fun validCount(input: String): Int {
         val toVerifyList = input.lines()
         val toVerifyShortestItem = toVerifyList.sortedBy { it.length }[0]
-        return toVerifyShortestItem.count { inEveryItem(it,toVerifyList) }
-    }
-
-    private fun inEveryItem(char:Char, toVerifyList:List<String>):Boolean{
-        return toVerifyList.all { it.contains(char) }
+        return toVerifyShortestItem.count { toVerifyList.all { toVerify -> toVerify.contains(it) } }
     }
 }
 
