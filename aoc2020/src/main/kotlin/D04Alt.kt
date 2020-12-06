@@ -1,6 +1,6 @@
 import utils.IoHelper
 
-class D04 {
+class Day04Alt {
     fun getSolution1() = getValidPassportsCount { isValidPassportIgnoringCid(it) }
 
     fun getSolution2() = getValidPassportsCount { isValidPassportIgnoringCid(it) && isMeetingExtraRequirement(it) }
@@ -80,7 +80,7 @@ data class Passport(
 )
 
 fun main() {
-    println(D04().getSolution1())
-    println(D04().getSolution2())
+    println(Day04Alt().getSolution1())
+    println(Day04Alt().getSolution2())
 }
 

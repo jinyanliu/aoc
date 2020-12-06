@@ -14,8 +14,12 @@ class Day05 {
     private fun getSeatId(instructionString: String): Int {
         val row = Range(0, 127)
         val column = Range(0, 7)
-        for (char in instructionString.dropLast(3)) { calculateSeatRange(char, row) }
-        for (char in instructionString.drop(7)) { calculateSeatRange(char, column) }
+        for (char in instructionString.dropLast(3)) {
+            calculateSeatRange(char, row)
+        }
+        for (char in instructionString.drop(7)) {
+            calculateSeatRange(char, column)
+        }
         return row.start * 8 + column.start
     }
 
