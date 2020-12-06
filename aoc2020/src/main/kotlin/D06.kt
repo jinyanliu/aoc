@@ -5,8 +5,7 @@ class Day06 {
 
     fun getSolution1() = getInputs().map { it.replace("\n", "").toList().distinct().size }.sum()
 
-    fun getSolution2() = getInputs()
-        .map { it.lines().sortedBy { line -> line.length } }
+    fun getSolution2() = getInputs().map { it.lines().sortedBy { line -> line.length } }
         .map { it[0].count { char -> it.all { toVerify -> toVerify.contains(char) } } }
         .sum()
 }
