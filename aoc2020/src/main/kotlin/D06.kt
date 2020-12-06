@@ -8,22 +8,18 @@ class Day06 {
     fun getSolution2() = getInputs().map { validCount(it) }.sum()
 
     private fun validCount(input: String): Int {
-        var validCount = 0
         val toVerifyList = input.lines()
-        val repeatationTimes = toVerifyList.size
-        val toVerifyFirstKey = toVerifyList.get(0)
-        for (char in toVerifyFirstKey) {
-            var valid = true
-            for (i in 0..repeatationTimes - 1) {
-                if (!toVerifyList.get(i).contains(char)) {
-                    valid = false
-                }
-            }
-            if (valid) {
-                validCount = validCount + 1
+        val toVerifyShortestItem = toVerifyList.sortedBy { it.length }[0]
+        return toVerifyShortestItem.count { inEveryItem(it,toVerifyList) }
+    }
+
+    private fun inEveryItem(char:Char, toVerifyList:List<String>):Boolean{
+        for (toVerifyItem in toVerifyList) {
+            if (!toVerifyItem.contains(char)) {
+               return false
             }
         }
-        return validCount
+        return true
     }
 }
 
