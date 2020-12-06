@@ -14,12 +14,7 @@ class Day06 {
     }
 
     private fun inEveryItem(char:Char, toVerifyList:List<String>):Boolean{
-        for (toVerifyItem in toVerifyList) {
-            if (!toVerifyItem.contains(char)) {
-               return false
-            }
-        }
-        return true
+        return toVerifyList.all { it.contains(char) }
     }
 }
 
