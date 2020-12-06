@@ -5,12 +5,10 @@ class Day06 {
 
     fun getSolution1() = getInputs().map { it.replace("\n", "").toList().distinct().size }.sum()
 
-    fun getSolution2() = getInputs().map { it.lines() }.map { charInEveryItemCount(it) }.sum()
-
-    private fun charInEveryItemCount(toVerifyList: List<String>): Int {
-        val toVerifyShortestItem = toVerifyList.sortedBy { it.length }[0]
-        return toVerifyShortestItem.count { toVerifyList.all { toVerify -> toVerify.contains(it) } }
-    }
+    fun getSolution2() = getInputs()
+        .map { it.lines().sortedBy { line -> line.length } }
+        .map { it[0].count { char -> it.all { toVerify -> toVerify.contains(char) } } }
+        .sum()
 }
 
 fun main() {
