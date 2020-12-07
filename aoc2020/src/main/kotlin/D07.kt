@@ -3,14 +3,15 @@ import utils.IoHelper
 class Day07 {
     private fun getInputs() = IoHelper.getLines("d07.in")
 
+    private val mapOfBags = getInputs().map { generateBagSpecification(it) }.toMap()
+
     fun getSolution1(): Int {
-        val listOfBags = getInputs().map { generateBagSpecification(it) }.toMap()
         val resultBags = arrayListOf<String>()
         var keys = arrayListOf("shinygold")
         while (keys.size > 0) {
             val newKeys = arrayListOf<String>()
             for (key in keys) {
-                for (bag in listOfBags) {
+                for (bag in mapOfBags) {
                     if (bag.value.any { it.second == key }) {
                         resultBags.add(bag.key)
                         newKeys.add(bag.key)
@@ -23,25 +24,19 @@ class Day07 {
     }
 
     fun getSolution2(): Int {
-        val listOfBags = getInputs().map { generateBagSpecification(it) }.toMap()
-        val resultBags = arrayListOf(1 to "shinygold")
+        val resultBags = arrayListOf<Pair<Int, String>>()
         var keys = arrayListOf(1 to "shinygold")
         while (keys.size > 0) {
             val newKeys = arrayListOf<Pair<Int, String>>()
             for (key in keys) {
-                for (bag in listOfBags) {
-                    if (bag.key == key.second) {
-                        repeat(key.first) {
-                            resultBags.addAll(bag.value)
-                            newKeys.addAll(bag.value)
-                        }
-
-                    }
+                repeat(key.first) {
+                    resultBags.addAll(mapOfBags[key.second].orEmpty())
+                    newKeys.addAll(mapOfBags[key.second].orEmpty())
                 }
             }
             keys = newKeys
         }
-        return resultBags.sumBy { it.first } - 1
+        return resultBags.sumBy { it.first }
     }
 
     private fun generateBagSpecification(line: String): Pair<String, List<Pair<Int, String>>> {
