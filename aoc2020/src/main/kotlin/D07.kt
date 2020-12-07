@@ -4,16 +4,16 @@ class Day07 {
     private fun getInputs() = IoHelper.getLines("d07.in")
 
     fun getSolution1(): Int {
-        val listOfBags = getInputs().map { generateBagSpecification(it) }
+        val listOfBags = getInputs().map { generateBagSpecification(it) }.toMap()
         val resultBags = arrayListOf<String>()
         var keys = arrayListOf("shinygold")
         while (keys.size > 0) {
             val newKeys = arrayListOf<String>()
             for (key in keys) {
                 for (bag in listOfBags) {
-                    if (bag.contains.any { it.second == key }) {
-                        resultBags.add(bag.bag)
-                        newKeys.add(bag.bag)
+                    if (bag.value.any { it.second == key }) {
+                        resultBags.add(bag.key)
+                        newKeys.add(bag.key)
                     }
                 }
             }
@@ -23,17 +23,17 @@ class Day07 {
     }
 
     fun getSolution2(): Int {
-        val listOfBags = getInputs().map { generateBagSpecification(it) }
+        val listOfBags = getInputs().map { generateBagSpecification(it) }.toMap()
         val resultBags = arrayListOf(1 to "shinygold")
         var keys = arrayListOf(1 to "shinygold")
         while (keys.size > 0) {
             val newKeys = arrayListOf<Pair<Int, String>>()
             for (key in keys) {
                 for (bag in listOfBags) {
-                    if (bag.bag == key.second) {
+                    if (bag.key == key.second) {
                         repeat(key.first) {
-                            resultBags.addAll(bag.contains)
-                            newKeys.addAll(bag.contains)
+                            resultBags.addAll(bag.value)
+                            newKeys.addAll(bag.value)
                         }
 
                     }
@@ -44,18 +44,16 @@ class Day07 {
         return resultBags.sumBy { it.first } - 1
     }
 
-    private fun generateBagSpecification(line: String): BagSpecification {
+    private fun generateBagSpecification(line: String): Pair<String, List<Pair<Int, String>>> {
         val bag = line.split(" ")[0] + line.split(" ")[1]
         val listOfBags =
             line.split("contain")[1].trim().split(",")
                 .map { it.getBagNumber() to it.trim().split(" ")[1] + it.trim().split(" ")[2] }
-        return BagSpecification(bag, listOfBags)
+        return bag to listOfBags
     }
 
     private fun String.getBagNumber() = this.trim().split(" ")[0].toIntOrNull() ?: 0
 }
-
-data class BagSpecification(val bag: String, val contains: List<Pair<Int, String>>)
 
 fun main() {
     println(Day07().getSolution1())
