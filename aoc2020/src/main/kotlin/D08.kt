@@ -13,28 +13,27 @@ class Day08 {
         for (line in mapLines) {
             when (line.value.first) {
                 "nop" -> {
-                    val newInstructions = mutableMapOf<Int, Pair<String, Int?>>()
-                    newInstructions.putAll(mapLines.toMap())
-                    newInstructions[line.key] = "jmp" to line.value.second
-                    val result = getValue(newInstructions)
+                    val result = swapTo(line, "jmp")
                     when (result.first) {
                         true -> return result.second
                     }
                 }
                 "jmp" -> {
-                    val newInstructions = mutableMapOf<Int, Pair<String, Int?>>()
-                    newInstructions.putAll(mapLines.toMap())
-                    newInstructions[line.key] = "nop" to line.value.second
-                    val result = getValue(newInstructions)
+                    val result = swapTo(line, "nop")
                     when (result.first) {
                         true -> return result.second
                     }
                 }
-                "acc" -> {
-                }
             }
         }
         return 0
+    }
+
+    private fun swapTo(line: MutableMap.MutableEntry<Int, Pair<String, Int?>>, keyString: String): Pair<Boolean, Int> {
+        val newInstructions = mutableMapOf<Int, Pair<String, Int?>>()
+        newInstructions.putAll(mapLines.toMap())
+        newInstructions[line.key] = keyString to line.value.second
+        return getValue(newInstructions)
     }
 
     // return Boolean: true = finite loop, false= infinite loop
@@ -43,24 +42,15 @@ class Day08 {
         var currentValue = 0
         while (mapLines[i]?.first != "visited") {
             val currentMapI = mapLines[i]
+            mapLines[i] = "visited" to 0
             when (currentMapI?.first) {
-                "nop" -> {
-                    mapLines[i] = "visited" to 0
-                    i += 1
-                }
+                "nop" -> i += 1
                 "acc" -> {
-                    mapLines[i] = "visited" to 0
                     currentValue += currentMapI.second ?: 0
                     i += 1
                 }
-                "jmp" -> {
-                    mapLines[i] = "visited" to 0
-                    i += currentMapI.second ?: 0
-                }
-                null -> {
-                    mapLines[i] = "visited" to 0
-                    return true to currentValue
-                }
+                "jmp" -> i += currentMapI.second ?: 0
+                null -> return true to currentValue
             }
         }
         return false to currentValue
