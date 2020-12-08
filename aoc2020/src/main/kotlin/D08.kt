@@ -3,38 +3,42 @@ import utils.IoHelper
 class Day08 {
     private fun getInputs() = IoHelper.getLines("d08.in")
 
-    val mapLines = getInputs()
+    private val mapLines = getInputs()
         .mapIndexed { index, s -> index to (s.split(" ")[0] to s.split(" ")[1].toIntOrNull()) }
-        .toMap()
-        .toMutableMap()
+        .toMap().toMutableMap()
 
-    fun getSolution1():Int {
-        return getCurrentValue(mapLines)
-    }
+    fun getSolution1(): Int = getValue(mapLines).second
 
-    fun getSolution2() {
+    fun getSolution2(): Int {
         for (line in mapLines) {
             when (line.value.first) {
                 "nop" -> {
                     val newInstructions = mutableMapOf<Int, Pair<String, Int?>>()
                     newInstructions.putAll(mapLines.toMap())
                     newInstructions[line.key] = "jmp" to line.value.second
-                    getCurrentValue(newInstructions)
+                    val result = getValue(newInstructions)
+                    when (result.first) {
+                        true -> return result.second
+                    }
                 }
                 "jmp" -> {
                     val newInstructions = mutableMapOf<Int, Pair<String, Int?>>()
                     newInstructions.putAll(mapLines.toMap())
                     newInstructions[line.key] = "nop" to line.value.second
-                    getCurrentValue(newInstructions)
+                    val result = getValue(newInstructions)
+                    when (result.first) {
+                        true -> return result.second
+                    }
                 }
                 "acc" -> {
                 }
             }
         }
-
+        return 0
     }
 
-    private fun getCurrentValue(mapLines: MutableMap<Int, Pair<String, Int?>>): Int {
+    // return Boolean: true = finite loop, false= infinite loop
+    private fun getValue(mapLines: MutableMap<Int, Pair<String, Int?>>): Pair<Boolean, Int> {
         var i = 0
         var currentValue = 0
         while (mapLines[i]?.first != "visited") {
@@ -55,11 +59,11 @@ class Day08 {
                 }
                 null -> {
                     mapLines[i] = "visited" to 0
-                    println("null$currentValue")
+                    return true to currentValue
                 }
             }
         }
-        return currentValue
+        return false to currentValue
     }
 }
 
