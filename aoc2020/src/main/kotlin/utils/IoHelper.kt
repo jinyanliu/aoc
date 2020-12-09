@@ -6,6 +6,10 @@ class IoHelper {
             return getLines(filename).map { it.toInt() }
         }
 
+        fun getLongs(filename: String): List<Long> {
+            return getLines(filename).map { it.toLong() }
+        }
+
         fun getLines(filename: String): List<String> {
             return getRawContent(filename).lines()
         }
