@@ -8,22 +8,41 @@ class Day09 {
     fun getSolution1(): Long {
         for (mapLong in mapLongList) {
             if (mapLong.key >= 25) {
-                val resultList = arrayListOf<Long>()
                 val indexRange = (mapLong.key - 25 until mapLong.key)
                 val targetList = indexRange.map { mapLongList[it] ?: error("error 1") }
-                targetList.forEach { i ->
-                    targetList.forEach { j ->
-                        if ((i + j) != (i + i)) {
-                            resultList.add(i + j)
-                        }
-                    }
-                }
+                val resultList = getResultListAlt(targetList)
                 if (!resultList.contains(mapLong.value)) {
                     return (mapLong.value)
                 }
             }
         }
         return 0
+    }
+
+    private fun getResultList(
+        targetList: List<Long>
+    ): ArrayList<Long> {
+        val resultList = arrayListOf<Long>()
+        targetList.forEach { i ->
+            targetList.forEach { j ->
+                if ((i + j) != (i + i)) {
+                    resultList.add(i + j)
+                }
+            }
+        }
+        return resultList
+    }
+
+    private fun getResultListAlt(
+        targetList: List<Long>
+    ): ArrayList<Long> {
+        val resultList = arrayListOf<Long>()
+        for (i in targetList.indices) {
+            for (j in i + 1 until targetList.size) {
+                resultList.add(targetList.get(i) + targetList.get(j))
+            }
+        }
+        return resultList
     }
 
     fun getSolution2(): Long {
