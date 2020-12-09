@@ -31,7 +31,7 @@ class Day09 {
         return 0
     }
 
-    fun getSolution2() {
+    fun getSolution2():Long {
         val mapIntegerList = getInputs().mapIndexed { index, integer -> index to integer }.toMap()
         for(integ in mapIntegerList){
             val currentIntegKey = integ.key
@@ -39,24 +39,17 @@ class Day09 {
             var currentStep= 1
             while(currentResult<177777905L){
                 val currentEndKey = currentIntegKey+currentStep
-                if(mapIntegerList.get(currentEndKey)!=null){
-                    currentResult = currentResult+ mapIntegerList.get(currentEndKey)!!
+
+                    currentResult += mapIntegerList[currentEndKey]!!
                     currentStep +=1
                     if(currentResult == 177777905L){
-                        println(currentIntegKey.toString() +" "+ currentEndKey.toString())
-
                         val a = (currentIntegKey..currentEndKey).map { mapIntegerList.get(it)!! }.max()!!
                         val b = (currentIntegKey..currentEndKey).map { mapIntegerList.get(it)!! }.min()!!
-                       println((currentIntegKey..currentEndKey).map { mapIntegerList.get(it)!! }.max())
-                        println((currentIntegKey..currentEndKey).map { mapIntegerList.get(it)!! }.min())
-                        println((a+b).toString())
-
-                    }
+                        return a+b
                 }
-
-
             }
         }
+        return 0
     }
 }
 
