@@ -59,6 +59,20 @@ class Day10 {
         return multiplyList.reduce { accumulator, element -> accumulator * element }
     }
 
+    fun getSolution2Alt(): Long {
+        val newList = inputs.toMutableList()
+        newList.add(0)
+        newList.add(deviceRate)
+        newList.sort()
+
+        val cacheMap = mutableMapOf<Int, Long>()
+        cacheMap[0] = 1
+        newList.drop(1).forEach {
+            cacheMap[it] = (cacheMap[it - 1] ?: 0) + (cacheMap[it - 2] ?: 0) + (cacheMap[it - 3] ?: 0)
+        }
+        return cacheMap[newList.toList().last()] ?: 0
+    }
+
     fun getTestSolution2(): Int {
         val newList = IoHelper.getInts("d10Test2.in").toMutableList()
         val deviceRate = (newList.max() ?: error("error 2")) + 3
@@ -93,5 +107,6 @@ class Day10 {
 fun main() {
     println(Day10().getSolution1())
     println(Day10().getSolution2())
+    println(Day10().getSolution2Alt())
     println(Day10().getTestSolution2())
 }
