@@ -1,7 +1,7 @@
 import utils.IoHelper
 
 class Day00 {
-    private val inputs = IoHelper.getInts("d10.in")
+    private val inputs = IoHelper.getLines("d00.in")
 
     fun getSolution1() {
     }
