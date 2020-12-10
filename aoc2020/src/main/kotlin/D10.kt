@@ -2,7 +2,6 @@ import utils.IoHelper
 
 class Day10 {
     private val inputs = IoHelper.getInts("d10.in")
-
     private val deviceRate = (inputs.max() ?: error("error 1")) + 3
 
     fun getSolution1(): Int {
@@ -22,46 +21,50 @@ class Day10 {
                 threeJoltDifferenceCounter += 1
             }
         }
-
         return oneJoltDifferenceCounter * threeJoltDifferenceCounter
     }
 
-    fun getSolution2():Long {
+    fun getSolution2(): Long {
         val newList = inputs.toMutableList()
         newList.add(0)
         newList.add(deviceRate)
         newList.sort()
-
-        println("newList=" + newList.toString())
-
+        println(newList.toString())
 
         val multiplyList = arrayListOf<Long>()
         var toVerifyList = newList.toList()
         while (toVerifyList.isNotEmpty()) {
-            if (toVerifyList[toVerifyList.size - 1] - toVerifyList[toVerifyList.size - 1 - 4] == 4) {
-                toVerifyList = toVerifyList.dropLast(5)
-                multiplyList.add(7L)
-            } else if (toVerifyList[toVerifyList.size - 1] - toVerifyList[toVerifyList.size - 1 - 3] == 3) {
-                toVerifyList=toVerifyList.dropLast(4)
-                multiplyList.add(4L)
-            } else if (toVerifyList[toVerifyList.size - 1] - toVerifyList[toVerifyList.size - 1 - 2] == 2) {
-                toVerifyList=toVerifyList.dropLast(3)
-                multiplyList.add(2L)
-            } else {
-                toVerifyList=toVerifyList.dropLast(1)
+            when {
+                //5 continuous numbers
+                toVerifyList[toVerifyList.size - 1] - toVerifyList[toVerifyList.size - 1 - 4] == 4 -> {
+                    toVerifyList = toVerifyList.dropLast(5)
+                    multiplyList.add(7L)
+                }
+                //4 continuous numbers
+                toVerifyList[toVerifyList.size - 1] - toVerifyList[toVerifyList.size - 1 - 3] == 3 -> {
+                    toVerifyList = toVerifyList.dropLast(4)
+                    multiplyList.add(4L)
+                }
+                //3 continuous numbers
+                toVerifyList[toVerifyList.size - 1] - toVerifyList[toVerifyList.size - 1 - 2] == 2 -> {
+                    toVerifyList = toVerifyList.dropLast(3)
+                    multiplyList.add(2L)
+                }
+                else -> {
+                    toVerifyList = toVerifyList.dropLast(1)
+                }
             }
         }
         println(multiplyList.toString())
-        return multiplyList.reduce{ accumulator, element -> accumulator * element }
+        return multiplyList.reduce { accumulator, element -> accumulator * element }
     }
 
-    fun getTestSolution2():Int{
+    fun getTestSolution2(): Int {
         val newList = IoHelper.getInts("d10Test2.in").toMutableList()
-        val deviceRate = (newList.max() ?: error("error 1")) + 3
+        val deviceRate = (newList.max() ?: error("error 2")) + 3
         newList.add(0)
         newList.add(deviceRate)
         newList.sort()
-        println(newList.toString())
 
         var keys = arrayListOf(0)
         while (!keys.all { it == newList.last() }) {
@@ -80,7 +83,6 @@ class Day10 {
                         newKeys.add(key + 3)
                     }
                 }
-
             }
             keys = newKeys
         }
