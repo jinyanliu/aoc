@@ -1,6 +1,15 @@
 import utils.IoHelper
 
 class Day11 {
+
+    enum class XDirection {
+        RIGHT, LEFT
+    }
+
+    enum class YDirection {
+        UP, DOWN
+    }
+
     private val inputs = IoHelper.getLines("d11.in")
 
     fun getSolution1(): Int {
@@ -71,7 +80,7 @@ class Day11 {
         if (hasOccupiedSeatRight(seatX, seatY, mapOfLocation)) return false
 
 
-        if (hasOccupiedSeatLeftDown(seatX, seatY, mapOfLocation)) return false
+        if (hasOccupiedSeatLeftDown(location, XDirection.LEFT, YDirection.DOWN, mapOfLocation)) return false
         if (hasOccupiedSeatDown(seatX, seatY, mapOfLocation)) return false
         if (hasOccupiedSeatRightDown(seatX, seatY, mapOfLocation)) return false
 
@@ -79,22 +88,30 @@ class Day11 {
     }
 
     private fun hasOccupiedSeatLeftDown(
-        seatX: Int,
-        seatY: Int,
+        seatLocation: Pair<Int, Int>,
+        moveX: XDirection,
+        moveY: YDirection,
         mapOfLocation: Map<Pair<Int, Int>, String>
     ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
+        var currentSeatLocation = seatLocation
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX - 1 to currentY + 1] == "L") {
+
+
+        while (mapOfLocation[currentSeatLocation] != null) {
+            currentSeatLocation = when (moveX) {
+                XDirection.LEFT -> (currentSeatLocation.first - 1) to currentSeatLocation.second
+                XDirection.RIGHT -> (currentSeatLocation.first + 1) to currentSeatLocation.second
+            }
+            currentSeatLocation = when (moveY) {
+                YDirection.UP -> (currentSeatLocation.first) to currentSeatLocation.second - 1
+                YDirection.DOWN -> (currentSeatLocation.first) to currentSeatLocation.second + 1
+            }
+            if (mapOfLocation[currentSeatLocation] == "L") {
                 return false
             }
-            if (mapOfLocation[currentX - 1 to currentY + 1] == "#") {
+            if (mapOfLocation[currentSeatLocation] == "#") {
                 return true
             }
-            currentX -= 1
-            currentY += 1
         }
         return false
     }
@@ -282,7 +299,8 @@ class Day11 {
         if (hasOccupiedSeatRight(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
 
 
-        if (hasOccupiedSeatLeftDown(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeatLeftDown(location, XDirection.LEFT, YDirection.DOWN, mapOfLocation)) seatOccupiedCount += 1
+
         if (hasOccupiedSeatDown(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
         if (hasOccupiedSeatRightDown(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
 
