@@ -92,46 +92,41 @@ class Day11 {
         return false
     }
 
-    fun getSolution(
-        calOne: (location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>) -> Boolean,
-        calTwo: (location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>) -> Boolean
+    private fun getSolution(
+        requirementOne: (location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>) -> Boolean,
+        requirementTwo: (location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>) -> Boolean
     ): Int {
-
         var seatChanged = true
         var currentResultMap = mapOfLocation()
+
         while (seatChanged) {
             seatChanged = false
             val resultMap = currentResultMap.toMutableMap()
             for (location in currentResultMap) {
-                if (location.value == "L" && calOne(location.key, currentResultMap)) {
+                if (location.value == "L" && requirementOne(location.key, currentResultMap)) {
                     resultMap[location.key] = "#"
+                    seatChanged = true
+                }
+                if (location.value == "#" && requirementTwo(location.key, currentResultMap)) {
+                    resultMap[location.key] = "L"
                     seatChanged = true
                 }
             }
             currentResultMap = resultMap
-            val resultMap2 = currentResultMap.toMutableMap()
-            for (location in currentResultMap) {
-                if (location.value == "#" && calTwo(location.key, currentResultMap)) {
-                    resultMap2[location.key] = "L"
-                    seatChanged = true
-                }
-            }
-            currentResultMap = resultMap2
         }
         return currentResultMap.count { it.value == "#" }
-
     }
 
-    fun getSolution1() = getSolution(calOne = { location, map -> eightAdjacentSeatsAllNotOccupied(location, map) },
-        calTwo = { location, map -> fourOrMoreAdjacentSeatsOccupied(location, map) })
+    fun getSolution1() =
+        getSolution(requirementOne = { location, map -> eightAdjacentSeatsAllNotOccupied(location, map) },
+            requirementTwo = { location, map -> fourOrMoreAdjacentSeatsOccupied(location, map) })
 
-    fun getSolution2() = getSolution(calOne = { location, map -> adjacentDirectionSeatsAllNotOccupied(location, map) },
-        calTwo = { location, map -> fiveOrMoreAdjacentDirectionSeatsOccupied(location, map) })
+    fun getSolution2() =
+        getSolution(requirementOne = { location, map -> adjacentDirectionSeatsAllNotOccupied(location, map) },
+            requirementTwo = { location, map -> fiveOrMoreAdjacentDirectionSeatsOccupied(location, map) })
 }
 
 fun main() {
-    //2152
     println(Day11().getSolution1())
-    //1937
     println(Day11().getSolution2())
 }
