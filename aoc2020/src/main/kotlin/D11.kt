@@ -69,28 +69,48 @@ class Day11 {
         location: Pair<Int, Int>,
         mapOfLocation: Map<Pair<Int, Int>, String>
     ): Boolean {
-        val seatX = location.first
-        val seatY = location.second
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.LEFT,
+                moveY = YDirection.UP,
+                mapOfLocation = mapOfLocation
+            )
+        ) return false
+        if (hasOccupiedSeat(location, moveY = YDirection.UP, mapOfLocation = mapOfLocation)) return false
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.RIGHT,
+                moveY = YDirection.UP,
+                mapOfLocation = mapOfLocation
+            )
+        ) return false
 
-        if (hasOccupiedSeatLeftUpp(seatX, seatY, mapOfLocation)) return false
-        if (hasOccupiedSeatUpp(seatX, seatY, mapOfLocation)) return false
-        if (hasOccupiedSeatRightUpp(seatX, seatY, mapOfLocation)) return false
+        if (hasOccupiedSeat(location, moveX = XDirection.LEFT, mapOfLocation = mapOfLocation)) return false
+        if (hasOccupiedSeat(location, moveX = XDirection.RIGHT, mapOfLocation = mapOfLocation)) return false
 
-        if (hasOccupiedSeatLeft(seatX, seatY, mapOfLocation)) return false
-        if (hasOccupiedSeatRight(seatX, seatY, mapOfLocation)) return false
-
-
-        if (hasOccupiedSeatLeftDown(location, XDirection.LEFT, YDirection.DOWN, mapOfLocation)) return false
-        if (hasOccupiedSeatDown(seatX, seatY, mapOfLocation)) return false
-        if (hasOccupiedSeatRightDown(seatX, seatY, mapOfLocation)) return false
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.LEFT,
+                moveY = YDirection.DOWN,
+                mapOfLocation = mapOfLocation
+            )
+        ) return false
+        if (hasOccupiedSeat(location, moveY = YDirection.DOWN, mapOfLocation = mapOfLocation)) return false
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.RIGHT,
+                moveY = YDirection.DOWN,
+                mapOfLocation = mapOfLocation
+            )
+        ) return false
 
         return true
     }
 
-    private fun hasOccupiedSeatLeftDown(
+    private fun hasOccupiedSeat(
         seatLocation: Pair<Int, Int>,
-        moveX: XDirection,
-        moveY: YDirection,
+        moveX: XDirection? = null,
+        moveY: YDirection? = null,
         mapOfLocation: Map<Pair<Int, Int>, String>
     ): Boolean {
         var currentSeatLocation = seatLocation
@@ -98,14 +118,20 @@ class Day11 {
 
 
         while (mapOfLocation[currentSeatLocation] != null) {
-            currentSeatLocation = when (moveX) {
-                XDirection.LEFT -> (currentSeatLocation.first - 1) to currentSeatLocation.second
-                XDirection.RIGHT -> (currentSeatLocation.first + 1) to currentSeatLocation.second
+            moveX?.let {
+                currentSeatLocation = when (moveX) {
+                    XDirection.LEFT -> (currentSeatLocation.first - 1) to currentSeatLocation.second
+                    XDirection.RIGHT -> (currentSeatLocation.first + 1) to currentSeatLocation.second
+                }
             }
-            currentSeatLocation = when (moveY) {
-                YDirection.UP -> (currentSeatLocation.first) to currentSeatLocation.second - 1
-                YDirection.DOWN -> (currentSeatLocation.first) to currentSeatLocation.second + 1
+            moveY?.let {
+                currentSeatLocation = when (moveY) {
+                    YDirection.UP -> (currentSeatLocation.first) to currentSeatLocation.second - 1
+                    YDirection.DOWN -> (currentSeatLocation.first) to currentSeatLocation.second + 1
+                }
             }
+
+
             if (mapOfLocation[currentSeatLocation] == "L") {
                 return false
             }
@@ -116,150 +142,19 @@ class Day11 {
         return false
     }
 
-    private fun hasOccupiedSeatDown(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX to currentY + 1] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX to currentY + 1] == "#") {
-                return true
-            }
 
-            currentY += 1
-        }
-        return false
-    }
 
-    private fun hasOccupiedSeatRightDown(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX + 1 to currentY + 1] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX + 1 to currentY + 1] == "#") {
-                return true
-            }
-            currentX += 1
-            currentY += 1
-        }
-        return false
-    }
 
-    private fun hasOccupiedSeatLeftUpp(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX - 1 to currentY - 1] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX - 1 to currentY - 1] == "#") {
-                return true
-            }
-            currentX -= 1
-            currentY -= 1
-        }
-        return false
-    }
 
-    private fun hasOccupiedSeatUpp(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX to currentY - 1] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX to currentY - 1] == "#") {
-                return true
-            }
 
-            currentY -= 1
-        }
-        return false
-    }
 
-    private fun hasOccupiedSeatRightUpp(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX + 1 to currentY - 1] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX + 1 to currentY - 1] == "#") {
-                return true
-            }
-            currentX += 1
-            currentY -= 1
-        }
-        return false
-    }
 
-    private fun hasOccupiedSeatLeft(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
 
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX - 1 to currentY] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX - 1 to currentY] == "#") {
-                return true
-            }
-            currentX -= 1
-        }
-        return false
-    }
-
-    private fun hasOccupiedSeatRight(
-        seatX: Int,
-        seatY: Int,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentX = seatX
-        var currentY = seatY
-
-        while (mapOfLocation[currentX to currentY] != null) {
-            if (mapOfLocation[currentX + 1 to currentY] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentX + 1 to currentY] == "#") {
-                return true
-            }
-            currentX += 1
-        }
-        return false
-    }
 
     private fun fourOrMoreAdjacentSeatsOccupied(
         location: Pair<Int, Int>,
@@ -291,18 +186,40 @@ class Day11 {
         val seatY = location.second
         var seatOccupiedCount = 0
 
-        if (hasOccupiedSeatLeftUpp(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeatUpp(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeatRightUpp(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.LEFT,
+                moveY = YDirection.UP,
+                mapOfLocation = mapOfLocation
+            )
+        ) seatOccupiedCount += 1
+        if (hasOccupiedSeat(location, moveY = YDirection.UP, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.RIGHT,
+                moveY = YDirection.UP,
+                mapOfLocation = mapOfLocation
+            )
+        ) seatOccupiedCount += 1
 
-        if (hasOccupiedSeatLeft(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeatRight(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeat(location, moveX = XDirection.LEFT, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeat(location, moveX = XDirection.RIGHT, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
 
-
-        if (hasOccupiedSeatLeftDown(location, XDirection.LEFT, YDirection.DOWN, mapOfLocation)) seatOccupiedCount += 1
-
-        if (hasOccupiedSeatDown(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeatRightDown(seatX, seatY, mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.LEFT,
+                moveY = YDirection.DOWN,
+                mapOfLocation = mapOfLocation
+            )
+        ) seatOccupiedCount += 1
+        if (hasOccupiedSeat(location, moveY = YDirection.DOWN, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
+        if (hasOccupiedSeat(
+                location,
+                moveX = XDirection.RIGHT,
+                moveY = YDirection.DOWN,
+                mapOfLocation = mapOfLocation
+            )
+        ) seatOccupiedCount += 1
 
         return seatOccupiedCount >= 5
     }
