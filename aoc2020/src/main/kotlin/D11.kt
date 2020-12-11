@@ -1,27 +1,35 @@
 import utils.IoHelper
 
 class Day11 {
-
-    enum class XDirection {
-        RIGHT, LEFT
-    }
-
-    enum class YDirection {
-        UP, DOWN
-    }
+    enum class XDirection { RIGHT, LEFT }
+    enum class YDirection { UP, DOWN }
 
     private val inputs = IoHelper.getLines("d11.in")
 
-    private fun eightAdjacentSeats(location: Pair<Int, Int>) = arrayListOf(
-        updateCurrentLocation(location, moveX = XDirection.LEFT, moveY = YDirection.UP),
-        updateCurrentLocation(location, moveY = YDirection.UP),
-        updateCurrentLocation(location, moveX = XDirection.RIGHT, moveY = YDirection.UP),
-        updateCurrentLocation(location, moveX = XDirection.LEFT),
-        updateCurrentLocation(location, moveX = XDirection.RIGHT),
-        updateCurrentLocation(location, moveX = XDirection.LEFT, moveY = YDirection.DOWN),
-        updateCurrentLocation(location, moveY = YDirection.DOWN),
-        updateCurrentLocation(location, moveX = XDirection.RIGHT, moveY = YDirection.DOWN)
+    private fun mapOfLocation(): Map<Pair<Int, Int>, String> {
+        val mapOfLocation = mutableMapOf<Pair<Int, Int>, String>()
+        inputs.withIndex().forEach { lineWithIndex ->
+            lineWithIndex.value.withIndex()
+                .map { charWithIndex ->
+                    mapOfLocation[(charWithIndex.index to lineWithIndex.index)] = charWithIndex.value.toString()
+                }
+        }
+        return mapOfLocation
+    }
+
+    private val eightAdjacentDirection = arrayListOf(
+        XDirection.LEFT to YDirection.UP,
+        null to YDirection.UP,
+        XDirection.RIGHT to YDirection.UP,
+        XDirection.LEFT to null,
+        XDirection.RIGHT to null,
+        XDirection.LEFT to YDirection.DOWN,
+        null to YDirection.DOWN,
+        XDirection.RIGHT to YDirection.DOWN
     )
+
+    private fun eightAdjacentSeats(location: Pair<Int, Int>) =
+        eightAdjacentDirection.map { updateCurrentLocation(location, moveX = it.first, moveY = it.second) }
 
     private fun eightAdjacentSeatsAllNotOccupied(
         location: Pair<Int, Int>,
@@ -33,22 +41,61 @@ class Day11 {
         mapOfLocation: Map<Pair<Int, Int>, String>
     ) = eightAdjacentSeats(location).count { mapOfLocation[it] == "#" } >= 4
 
+    private fun adjacentDirectionSeatsAllNotOccupied(
+        location: Pair<Int, Int>,
+        mapOfLocation: Map<Pair<Int, Int>, String>
+    ) = eightAdjacentDirection.map { hasOccupiedSeatInDirection(location, it.first, it.second, mapOfLocation) }
+        .all { !it }
 
+    private fun fiveOrMoreAdjacentDirectionSeatsOccupied(
+        location: Pair<Int, Int>,
+        mapOfLocation: Map<Pair<Int, Int>, String>
+    ) = eightAdjacentDirection.count { hasOccupiedSeatInDirection(location, it.first, it.second, mapOfLocation) } >= 5
 
+    private fun updateCurrentLocation(
+        location: Pair<Int, Int>,
+        moveX: XDirection? = null,
+        moveY: YDirection? = null
+    ): Pair<Int, Int> {
+        var currentSeatLocation = location
+        moveX?.let {
+            currentSeatLocation = when (moveX) {
+                XDirection.LEFT -> (currentSeatLocation.first - 1) to currentSeatLocation.second
+                XDirection.RIGHT -> (currentSeatLocation.first + 1) to currentSeatLocation.second
+            }
+        }
+        moveY?.let {
+            currentSeatLocation = when (moveY) {
+                YDirection.UP -> (currentSeatLocation.first) to currentSeatLocation.second - 1
+                YDirection.DOWN -> (currentSeatLocation.first) to currentSeatLocation.second + 1
+            }
+        }
+        return currentSeatLocation
+    }
 
+    private fun hasOccupiedSeatInDirection(
+        seatLocation: Pair<Int, Int>,
+        moveX: XDirection? = null,
+        moveY: YDirection? = null,
+        mapOfLocation: Map<Pair<Int, Int>, String>
+    ): Boolean {
+        var currentSeatLocation = seatLocation
+        while (mapOfLocation[currentSeatLocation] != null) {
+            currentSeatLocation = updateCurrentLocation(currentSeatLocation, moveX, moveY)
+            if (mapOfLocation[currentSeatLocation] == "L") {
+                return false
+            }
+            if (mapOfLocation[currentSeatLocation] == "#") {
+                return true
+            }
+        }
+        return false
+    }
 
 
     fun getSolution1(): Int {
-        val mapOfLocation = mutableMapOf<Pair<Int, Int>, String>()
-        inputs.withIndex().forEach { lineWithIndex ->
-            lineWithIndex.value.withIndex()
-                .map { charWithIndex ->
-                    mapOfLocation[(charWithIndex.index to lineWithIndex.index)] = charWithIndex.value.toString()
-                }
-        }
-
         var seatChanged = true
-        var currentResultMap = mapOfLocation.toMutableMap()
+        var currentResultMap = mapOfLocation().toMutableMap()
         while (seatChanged) {
             seatChanged = false
             val resultMap = currentResultMap.toMutableMap()
@@ -72,146 +119,9 @@ class Day11 {
     }
 
 
-    private fun adjacentDirectionSeatsAllNotOccupied(
-        location: Pair<Int, Int>,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.LEFT,
-                moveY = YDirection.UP,
-                mapOfLocation = mapOfLocation
-            )
-        ) return false
-        if (hasOccupiedSeat(location, moveY = YDirection.UP, mapOfLocation = mapOfLocation)) return false
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.RIGHT,
-                moveY = YDirection.UP,
-                mapOfLocation = mapOfLocation
-            )
-        ) return false
-
-        if (hasOccupiedSeat(location, moveX = XDirection.LEFT, mapOfLocation = mapOfLocation)) return false
-        if (hasOccupiedSeat(location, moveX = XDirection.RIGHT, mapOfLocation = mapOfLocation)) return false
-
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.LEFT,
-                moveY = YDirection.DOWN,
-                mapOfLocation = mapOfLocation
-            )
-        ) return false
-        if (hasOccupiedSeat(location, moveY = YDirection.DOWN, mapOfLocation = mapOfLocation)) return false
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.RIGHT,
-                moveY = YDirection.DOWN,
-                mapOfLocation = mapOfLocation
-            )
-        ) return false
-
-        return true
-    }
-
-    private fun hasOccupiedSeat(
-        seatLocation: Pair<Int, Int>,
-        moveX: XDirection? = null,
-        moveY: YDirection? = null,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var currentSeatLocation = seatLocation
-
-        while (mapOfLocation[currentSeatLocation] != null) {
-            currentSeatLocation = updateCurrentLocation(currentSeatLocation, moveX, moveY)
-
-            if (mapOfLocation[currentSeatLocation] == "L") {
-                return false
-            }
-            if (mapOfLocation[currentSeatLocation] == "#") {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun updateCurrentLocation(
-        currentSeatLocation: Pair<Int, Int>,
-        moveX: XDirection? = null,
-        moveY: YDirection? = null
-    ): Pair<Int, Int> {
-        var currentSeatLocation1 = currentSeatLocation
-        moveX?.let {
-            currentSeatLocation1 = when (moveX) {
-                XDirection.LEFT -> (currentSeatLocation1.first - 1) to currentSeatLocation1.second
-                XDirection.RIGHT -> (currentSeatLocation1.first + 1) to currentSeatLocation1.second
-            }
-        }
-        moveY?.let {
-            currentSeatLocation1 = when (moveY) {
-                YDirection.UP -> (currentSeatLocation1.first) to currentSeatLocation1.second - 1
-                YDirection.DOWN -> (currentSeatLocation1.first) to currentSeatLocation1.second + 1
-            }
-        }
-        return currentSeatLocation1
-    }
-
-
-    private fun fiveOrMoreAdjacentDirectionSeatsOccupied(
-        location: Pair<Int, Int>,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        var seatOccupiedCount = 0
-
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.LEFT,
-                moveY = YDirection.UP,
-                mapOfLocation = mapOfLocation
-            )
-        ) seatOccupiedCount += 1
-        if (hasOccupiedSeat(location, moveY = YDirection.UP, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.RIGHT,
-                moveY = YDirection.UP,
-                mapOfLocation = mapOfLocation
-            )
-        ) seatOccupiedCount += 1
-
-        if (hasOccupiedSeat(location, moveX = XDirection.LEFT, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeat(location, moveX = XDirection.RIGHT, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
-
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.LEFT,
-                moveY = YDirection.DOWN,
-                mapOfLocation = mapOfLocation
-            )
-        ) seatOccupiedCount += 1
-        if (hasOccupiedSeat(location, moveY = YDirection.DOWN, mapOfLocation = mapOfLocation)) seatOccupiedCount += 1
-        if (hasOccupiedSeat(
-                location,
-                moveX = XDirection.RIGHT,
-                moveY = YDirection.DOWN,
-                mapOfLocation = mapOfLocation
-            )
-        ) seatOccupiedCount += 1
-
-        return seatOccupiedCount >= 5
-    }
-
     fun getSolution2(): Int {
-        val mapOfLocation = mutableMapOf<Pair<Int, Int>, String>()
-        inputs.withIndex().forEach { lineWithIndex ->
-            lineWithIndex.value.withIndex()
-                .map { charWithIndex ->
-                    mapOfLocation[(charWithIndex.index to lineWithIndex.index)] = charWithIndex.value.toString()
-                }
-        }
-
         var seatChanged = true
-        var currentResultMap = mapOfLocation.toMutableMap()
+        var currentResultMap = mapOfLocation().toMutableMap()
         while (seatChanged) {
             seatChanged = false
 
