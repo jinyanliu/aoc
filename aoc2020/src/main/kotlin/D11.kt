@@ -12,6 +12,32 @@ class Day11 {
 
     private val inputs = IoHelper.getLines("d11.in")
 
+    private fun eightAdjacentSeats(location: Pair<Int, Int>) = arrayListOf(
+        updateCurrentLocation(location, moveX = XDirection.LEFT, moveY = YDirection.UP),
+        updateCurrentLocation(location, moveY = YDirection.UP),
+        updateCurrentLocation(location, moveX = XDirection.RIGHT, moveY = YDirection.UP),
+        updateCurrentLocation(location, moveX = XDirection.LEFT),
+        updateCurrentLocation(location, moveX = XDirection.RIGHT),
+        updateCurrentLocation(location, moveX = XDirection.LEFT, moveY = YDirection.DOWN),
+        updateCurrentLocation(location, moveY = YDirection.DOWN),
+        updateCurrentLocation(location, moveX = XDirection.RIGHT, moveY = YDirection.DOWN)
+    )
+
+    private fun eightAdjacentSeatsAllNotOccupied(
+        location: Pair<Int, Int>,
+        mapOfLocation: Map<Pair<Int, Int>, String>
+    ) = eightAdjacentSeats(location).all { mapOfLocation[it] != "#" }
+
+    private fun fourOrMoreAdjacentSeatsOccupied(
+        location: Pair<Int, Int>,
+        mapOfLocation: Map<Pair<Int, Int>, String>
+    ) = eightAdjacentSeats(location).count { mapOfLocation[it] == "#" } >= 4
+
+
+
+
+
+
     fun getSolution1(): Int {
         val mapOfLocation = mutableMapOf<Pair<Int, Int>, String>()
         inputs.withIndex().forEach { lineWithIndex ->
@@ -27,7 +53,7 @@ class Day11 {
             seatChanged = false
             val resultMap = currentResultMap.toMutableMap()
             for (location in currentResultMap) {
-                if (location.value == "L" && adjacentSeatsAllNotOccupied(location.key, currentResultMap)) {
+                if (location.value == "L" && eightAdjacentSeatsAllNotOccupied(location.key, currentResultMap)) {
                     resultMap[location.key] = "#"
                     seatChanged = true
                 }
@@ -45,45 +71,6 @@ class Day11 {
         return currentResultMap.count { it.value == "#" }
     }
 
-    private fun adjacentSeatsAllNotOccupied(
-        location: Pair<Int, Int>,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        val seatX = location.first
-        val seatY = location.second
-        if (mapOfLocation[updateCurrentLocation(
-                location,
-                moveX = XDirection.LEFT,
-                moveY = YDirection.UP
-            )] == "#"
-        ) return false
-        if (mapOfLocation[updateCurrentLocation(location, moveY = YDirection.UP)] == "#") return false
-        if (mapOfLocation[updateCurrentLocation(
-                location,
-                moveX = XDirection.RIGHT,
-                moveY = YDirection.UP
-            )] == "#"
-        ) return false
-
-        if (mapOfLocation[updateCurrentLocation(location, moveX = XDirection.LEFT)] == "#") return false
-        if (mapOfLocation[updateCurrentLocation(location, moveX = XDirection.RIGHT)] == "#") return false
-
-        if (mapOfLocation[updateCurrentLocation(
-                location,
-                moveX = XDirection.LEFT,
-                moveY = YDirection.DOWN
-            )] == "#"
-        ) return false
-        if (mapOfLocation[updateCurrentLocation(location, moveY = YDirection.DOWN)] == "#") return false
-        if (mapOfLocation[updateCurrentLocation(
-                location,
-                moveX = XDirection.RIGHT,
-                moveY = YDirection.DOWN
-            )] == "#"
-        ) return false
-
-        return true
-    }
 
     private fun adjacentDirectionSeatsAllNotOccupied(
         location: Pair<Int, Int>,
@@ -169,28 +156,6 @@ class Day11 {
         return currentSeatLocation1
     }
 
-
-    private fun fourOrMoreAdjacentSeatsOccupied(
-        location: Pair<Int, Int>,
-        mapOfLocation: Map<Pair<Int, Int>, String>
-    ): Boolean {
-        val seatX = location.first
-        val seatY = location.second
-        var seatOccupiedCount = 0
-
-        if (mapOfLocation[seatX - 1 to seatY - 1] == "#") seatOccupiedCount += 1
-        if (mapOfLocation[seatX to seatY - 1] == "#") seatOccupiedCount += 1
-        if (mapOfLocation[seatX + 1 to seatY - 1] == "#") seatOccupiedCount += 1
-
-        if (mapOfLocation[seatX - 1 to seatY] == "#") seatOccupiedCount += 1
-        if (mapOfLocation[seatX + 1 to seatY] == "#") seatOccupiedCount += 1
-
-        if (mapOfLocation[seatX - 1 to seatY + 1] == "#") seatOccupiedCount += 1
-        if (mapOfLocation[seatX to seatY + 1] == "#") seatOccupiedCount += 1
-        if (mapOfLocation[seatX + 1 to seatY + 1] == "#") seatOccupiedCount += 1
-
-        return seatOccupiedCount >= 4
-    }
 
     private fun fiveOrMoreAdjacentDirectionSeatsOccupied(
         location: Pair<Int, Int>,
