@@ -92,15 +92,18 @@ class Day11 {
         return false
     }
 
+    fun getSolution(
+        calOne: (location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>) -> Boolean,
+        calTwo: (location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>) -> Boolean
+    ): Int {
 
-    fun getSolution1(): Int {
         var seatChanged = true
-        var currentResultMap = mapOfLocation().toMutableMap()
+        var currentResultMap = mapOfLocation()
         while (seatChanged) {
             seatChanged = false
             val resultMap = currentResultMap.toMutableMap()
             for (location in currentResultMap) {
-                if (location.value == "L" && eightAdjacentSeatsAllNotOccupied(location.key, currentResultMap)) {
+                if (location.value == "L" && calOne(location.key, currentResultMap)) {
                     resultMap[location.key] = "#"
                     seatChanged = true
                 }
@@ -108,7 +111,7 @@ class Day11 {
             currentResultMap = resultMap
             val resultMap2 = currentResultMap.toMutableMap()
             for (location in currentResultMap) {
-                if (location.value == "#" && fourOrMoreAdjacentSeatsOccupied(location.key, currentResultMap)) {
+                if (location.value == "#" && calTwo(location.key, currentResultMap)) {
                     resultMap2[location.key] = "L"
                     seatChanged = true
                 }
@@ -116,35 +119,14 @@ class Day11 {
             currentResultMap = resultMap2
         }
         return currentResultMap.count { it.value == "#" }
+
     }
 
+    fun getSolution1() = getSolution(calOne = { location, map -> eightAdjacentSeatsAllNotOccupied(location, map) },
+        calTwo = { location, map -> fourOrMoreAdjacentSeatsOccupied(location, map) })
 
-    fun getSolution2(): Int {
-        var seatChanged = true
-        var currentResultMap = mapOfLocation().toMutableMap()
-        while (seatChanged) {
-            seatChanged = false
-
-            val resultMap = currentResultMap.toMutableMap()
-            for (location in currentResultMap) {
-                if (location.value == "L" && adjacentDirectionSeatsAllNotOccupied(location.key, currentResultMap)) {
-                    resultMap[location.key] = "#"
-                    seatChanged = true
-                }
-            }
-            currentResultMap = resultMap
-
-            val resultMap2 = currentResultMap.toMutableMap()
-            for (location in currentResultMap) {
-                if (location.value == "#" && fiveOrMoreAdjacentDirectionSeatsOccupied(location.key, currentResultMap)) {
-                    resultMap2[location.key] = "L"
-                    seatChanged = true
-                }
-            }
-            currentResultMap = resultMap2
-        }
-        return currentResultMap.count { it.value == "#" }
-    }
+    fun getSolution2() = getSolution(calOne = { location, map -> adjacentDirectionSeatsAllNotOccupied(location, map) },
+        calTwo = { location, map -> fiveOrMoreAdjacentDirectionSeatsOccupied(location, map) })
 }
 
 fun main() {
