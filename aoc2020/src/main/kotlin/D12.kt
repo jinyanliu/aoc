@@ -34,7 +34,7 @@ class Day12 {
                 Direction.WEST.key -> boat.xCount = boat.xCount - toVerify.second
             }
             if (toVerify.first == "R") {
-                boat.facing = boat.facing.turnRightTo(toVerify.second)
+                boat.facing = boat.turnRightTo(toVerify.second)
             }
             if (toVerify.first == "L") {
                 boat.facing = boat.facing.turnLeftTo(toVerify.second)
@@ -55,9 +55,9 @@ class Day12 {
                 boat.yCount = boat.yCount + it.second * wayPoint.yCount
             }
             if (it.first == "R" || it.first == "L") {
-                val (a, b) = wayPoint.turnTo(it.second, it.first)
-                wayPoint.xCount = a
-                wayPoint.yCount = b
+                val (xCount, yCount) = wayPoint.turnTo(it.second, it.first)
+                wayPoint.xCount = xCount
+                wayPoint.yCount = yCount
             }
             when (it.first) {
                 Direction.NORTH.key -> wayPoint.yCount = wayPoint.yCount + it.second
@@ -72,41 +72,12 @@ class Day12 {
     }
 }
 
-fun Direction.turnRightTo(degree: Int): Direction {
-    when (this) {
-        Direction.EAST -> {
-            return when (degree) {
-                90 -> Direction.SOUTH
-                180 -> Direction.WEST
-                270 -> Direction.NORTH
-                else -> error("")
-            }
-        }
-        Direction.SOUTH -> {
-            return when (degree) {
-                90 -> Direction.WEST
-                180 -> Direction.NORTH
-                270 -> Direction.EAST
-                else -> error("")
-            }
-        }
-        Direction.WEST -> {
-            return when (degree) {
-                90 -> Direction.NORTH
-                180 -> Direction.EAST
-                270 -> Direction.SOUTH
-                else -> error("")
-            }
-        }
-        Direction.NORTH -> {
-            return when (degree) {
-                90 -> Direction.EAST
-                180 -> Direction.SOUTH
-                270 -> Direction.WEST
-                else -> error("")
-            }
-        }
-    }
+fun Boat.turnRightTo(degree: Int): Direction = when {
+    (this.facing == Direction.EAST) && (degree == 90) || (this.facing == Direction.WEST) && (degree == 270) || (this.facing == Direction.NORTH) && (degree == 180) -> Direction.SOUTH
+    (this.facing == Direction.EAST) && (degree == 180) || (this.facing == Direction.SOUTH) && (degree == 90) || (this.facing == Direction.NORTH) && (degree == 270) -> Direction.WEST
+    (this.facing == Direction.EAST) && (degree == 270) || (this.facing == Direction.SOUTH) && (degree == 180) || (this.facing == Direction.WEST) && (degree == 90) -> Direction.NORTH
+    (this.facing == Direction.SOUTH) && (degree == 270) || (this.facing == Direction.WEST) && (degree == 180) || (this.facing == Direction.NORTH) && (degree == 90) -> Direction.EAST
+    else -> error("direction turn right to")
 }
 
 fun Direction.turnLeftTo(degree: Int): Direction {
@@ -146,13 +117,11 @@ fun Direction.turnLeftTo(degree: Int): Direction {
     }
 }
 
-fun WayPoint.turnTo(degree: Int, rightLeftKey: String): Pair<Int, Int> {
-    return when {
-        (degree == 90 && rightLeftKey == "R") || (degree == 270 && rightLeftKey == "L") -> this.yCount to this.xCount * -1
-        degree == 180 -> this.xCount * -1 to this.yCount * -1
-        (degree == 270 && rightLeftKey == "R") || (degree == 90 && rightLeftKey == "L") -> this.yCount * -1 to this.xCount
-        else -> error("ture right to")
-    }
+fun WayPoint.turnTo(degree: Int, rightLeftKey: String): Pair<Int, Int> = when {
+    (degree == 90 && rightLeftKey == "R") || (degree == 270 && rightLeftKey == "L") -> this.yCount to this.xCount * -1
+    degree == 180 -> this.xCount * -1 to this.yCount * -1
+    (degree == 270 && rightLeftKey == "R") || (degree == 90 && rightLeftKey == "L") -> this.yCount * -1 to this.xCount
+    else -> error("way point ture right to")
 }
 
 fun main() {
