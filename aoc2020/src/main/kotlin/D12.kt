@@ -35,7 +35,36 @@ class Day12 {
         return boat.xCount.absoluteValue + boat.yCount.absoluteValue
     }
 
-    fun getSolution2() {
+    fun getSolution2(): Int {
+        val boat = Boat()
+        val wayPoint = WayPoint()
+
+        parsedInputs.forEach {
+            var toVerify = it
+            if (toVerify.first == "F") {
+                boat.xCount = boat.xCount + toVerify.second * wayPoint.xCount
+                boat.yCount = boat.yCount + toVerify.second * wayPoint.yCount
+            }
+            when (toVerify.first) {
+                Direction.NORTH.key -> wayPoint.yCount = wayPoint.yCount + toVerify.second
+                Direction.SOUTH.key -> wayPoint.yCount = wayPoint.yCount - toVerify.second
+                Direction.EAST.key -> wayPoint.xCount = wayPoint.xCount + toVerify.second
+                Direction.WEST.key -> wayPoint.xCount = wayPoint.xCount - toVerify.second
+            }
+            if (toVerify.first == "R") {
+                val (a, b) = wayPoint.turnRightTo(toVerify.second)
+                wayPoint.xCount = a
+                wayPoint.yCount = b
+            }
+            if (toVerify.first == "L") {
+                val (a, b) = wayPoint.turnLeftTo(toVerify.second)
+                wayPoint.xCount = a
+                wayPoint.yCount = b
+            }
+        }
+
+        println("xCount=" + boat.xCount + "yCount=" + boat.yCount)
+        return boat.xCount.absoluteValue + boat.yCount.absoluteValue
     }
 }
 
@@ -45,6 +74,13 @@ data class Boat(
     var xCount: Int = 0,
     var yDirection: YDirection = YDirection.NORTH,
     var yCount: Int = 0
+)
+
+data class WayPoint(
+    var xDirection: XDirection = XDirection.EAST,
+    var xCount: Int = 10,
+    var yDirection: YDirection = YDirection.NORTH,
+    var yCount: Int = 1
 )
 
 fun Direction.turnRightTo(degree: Int): Direction {
@@ -121,8 +157,27 @@ fun Direction.turnLeftTo(degree: Int): Direction {
     }
 }
 
+fun WayPoint.turnRightTo(degree: Int): Pair<Int, Int> {
+    return when (degree) {
+        90 -> this.yCount to this.xCount * -1
+        180 -> this.xCount * -1 to this.yCount * -1
+        270 -> this.yCount * -1 to this.xCount
+        else -> error("")
+    }
+}
+
+fun WayPoint.turnLeftTo(degree: Int): Pair<Int, Int> {
+    return when (degree) {
+        90 -> this.yCount * -1 to this.xCount
+        180 -> this.xCount * -1 to this.yCount * -1
+        270 -> this.yCount to this.xCount * -1
+        else -> error("")
+    }
+}
+
 fun main() {
     //362
     println(Day12().getSolution1())
+    //29895
     println(Day12().getSolution2())
 }
