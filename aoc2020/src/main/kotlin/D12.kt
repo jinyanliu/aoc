@@ -33,15 +33,10 @@ class Day12 {
                 Direction.EAST.key -> boat.xCount = boat.xCount + toVerify.second
                 Direction.WEST.key -> boat.xCount = boat.xCount - toVerify.second
             }
-            if (toVerify.first == "R") {
-                boat.facing = boat.turnRightTo(toVerify.second)
-            }
-            if (toVerify.first == "L") {
-                boat.facing = boat.facing.turnLeftTo(toVerify.second)
+            if (toVerify.first == "R" || toVerify.first == "L") {
+                boat.facing = boat.turnTo(toVerify.second, toVerify.first)
             }
         }
-
-        println("xCount=" + boat.xCount + "yCount=" + boat.yCount)
         return boat.xCount.absoluteValue + boat.yCount.absoluteValue
     }
 
@@ -66,55 +61,21 @@ class Day12 {
                 Direction.WEST.key -> wayPoint.xCount = wayPoint.xCount - it.second
             }
         }
-
-        println("xCount=" + boat.xCount + "yCount=" + boat.yCount)
         return boat.xCount.absoluteValue + boat.yCount.absoluteValue
     }
 }
 
-fun Boat.turnRightTo(degree: Int): Direction = when {
-    (this.facing == Direction.EAST) && (degree == 90) || (this.facing == Direction.WEST) && (degree == 270) || (this.facing == Direction.NORTH) && (degree == 180) -> Direction.SOUTH
-    (this.facing == Direction.EAST) && (degree == 180) || (this.facing == Direction.SOUTH) && (degree == 90) || (this.facing == Direction.NORTH) && (degree == 270) -> Direction.WEST
-    (this.facing == Direction.EAST) && (degree == 270) || (this.facing == Direction.SOUTH) && (degree == 180) || (this.facing == Direction.WEST) && (degree == 90) -> Direction.NORTH
-    (this.facing == Direction.SOUTH) && (degree == 270) || (this.facing == Direction.WEST) && (degree == 180) || (this.facing == Direction.NORTH) && (degree == 90) -> Direction.EAST
-    else -> error("direction turn right to")
-}
+fun Boat.turnTo(degree: Int, rightLeftKey: String): Direction = when {
+    (this.facing == Direction.NORTH) && (degree == 180) -> Direction.SOUTH
+    (this.facing == Direction.EAST) && (degree == 180) -> Direction.WEST
+    (this.facing == Direction.SOUTH) && (degree == 180) -> Direction.NORTH
+    (this.facing == Direction.WEST) && (degree == 180) -> Direction.EAST
 
-fun Direction.turnLeftTo(degree: Int): Direction {
-    when (this) {
-        Direction.EAST -> {
-            return when (degree) {
-                90 -> Direction.NORTH
-                180 -> Direction.WEST
-                270 -> Direction.SOUTH
-                else -> error("")
-            }
-        }
-        Direction.SOUTH -> {
-            return when (degree) {
-                90 -> Direction.EAST
-                180 -> Direction.NORTH
-                270 -> Direction.WEST
-                else -> error("")
-            }
-        }
-        Direction.WEST -> {
-            return when (degree) {
-                90 -> Direction.SOUTH
-                180 -> Direction.EAST
-                270 -> Direction.NORTH
-                else -> error("")
-            }
-        }
-        Direction.NORTH -> {
-            return when (degree) {
-                90 -> Direction.WEST
-                180 -> Direction.SOUTH
-                270 -> Direction.EAST
-                else -> error("")
-            }
-        }
-    }
+    (this.facing == Direction.EAST) && (degree == 90) || (this.facing == Direction.WEST) && (degree == 270) -> if (rightLeftKey == "R") Direction.SOUTH else Direction.NORTH
+    (this.facing == Direction.SOUTH) && (degree == 90) || (this.facing == Direction.NORTH) && (degree == 270) -> if (rightLeftKey == "R") Direction.WEST else Direction.EAST
+    (this.facing == Direction.EAST) && (degree == 270) || (this.facing == Direction.WEST) && (degree == 90) -> if (rightLeftKey == "R") Direction.NORTH else Direction.SOUTH
+    (this.facing == Direction.SOUTH) && (degree == 270) || (this.facing == Direction.NORTH) && (degree == 90) -> if (rightLeftKey == "R") Direction.EAST else Direction.WEST
+    else -> error("direction turn right to")
 }
 
 fun WayPoint.turnTo(degree: Int, rightLeftKey: String): Pair<Int, Int> = when {
