@@ -16,6 +16,11 @@ data class WayPoint(
     var yCount: Int = 1
 )
 
+interface Moveable {
+    var xCount: Int
+    var yCount: Int
+}
+
 class Day12 {
     private val inputs = IoHelper.getLines("d12.in")
     private val parsedInputs = inputs.map { it[0].toString() to it.drop(1).toInt() }
@@ -24,20 +29,33 @@ class Day12 {
         val boat = Boat()
         parsedInputs.forEach {
             var toVerify = it
+            if (toVerify.first == "R" || toVerify.first == "L") {
+                boat.facing = boat.turnTo(toVerify)
+            }
             if (toVerify.first == "F") {
                 toVerify = boat.facing.key to toVerify.second
             }
-            when (toVerify.first) {
-                Direction.NORTH.key -> boat.yCount = boat.yCount + toVerify.second
-                Direction.SOUTH.key -> boat.yCount = boat.yCount - toVerify.second
-                Direction.EAST.key -> boat.xCount = boat.xCount + toVerify.second
-                Direction.WEST.key -> boat.xCount = boat.xCount - toVerify.second
-            }
-            if (toVerify.first == "R" || toVerify.first == "L") {
-                boat.facing = boat.turnTo(toVerify.second, toVerify.first)
-            }
+            boat.move(toVerify)
         }
         return boat.xCount.absoluteValue + boat.yCount.absoluteValue
+    }
+
+    private fun Boat.move(instruction: Pair<String, Int>) {
+        when (instruction.first) {
+            Direction.NORTH.key -> this.yCount = this.yCount + instruction.second
+            Direction.SOUTH.key -> this.yCount = this.yCount - instruction.second
+            Direction.EAST.key -> this.xCount = this.xCount + instruction.second
+            Direction.WEST.key -> this.xCount = this.xCount - instruction.second
+        }
+    }
+
+    private fun WayPoint.move(instruction: Pair<String, Int>) {
+        when (instruction.first) {
+            Direction.NORTH.key -> this.yCount = this.yCount + instruction.second
+            Direction.SOUTH.key -> this.yCount = this.yCount - instruction.second
+            Direction.EAST.key -> this.xCount = this.xCount + instruction.second
+            Direction.WEST.key -> this.xCount = this.xCount - instruction.second
+        }
     }
 
     fun getSolution2(): Int {
@@ -50,7 +68,7 @@ class Day12 {
                 boat.yCount = boat.yCount + it.second * wayPoint.yCount
             }
             if (it.first == "R" || it.first == "L") {
-                val (xCount, yCount) = wayPoint.turnTo(it.second, it.first)
+                val (xCount, yCount) = wayPoint.turnTo(it)
                 wayPoint.xCount = xCount
                 wayPoint.yCount = yCount
             }
@@ -65,23 +83,23 @@ class Day12 {
     }
 }
 
-fun Boat.turnTo(degree: Int, rightLeftKey: String): Direction = when {
-    (this.facing == Direction.NORTH) && (degree == 180) -> Direction.SOUTH
-    (this.facing == Direction.EAST) && (degree == 180) -> Direction.WEST
-    (this.facing == Direction.SOUTH) && (degree == 180) -> Direction.NORTH
-    (this.facing == Direction.WEST) && (degree == 180) -> Direction.EAST
+fun Boat.turnTo(instruction: Pair<String, Int>): Direction = when {
+    (this.facing == Direction.NORTH) && (instruction.second == 180) -> Direction.SOUTH
+    (this.facing == Direction.EAST) && (instruction.second == 180) -> Direction.WEST
+    (this.facing == Direction.SOUTH) && (instruction.second == 180) -> Direction.NORTH
+    (this.facing == Direction.WEST) && (instruction.second == 180) -> Direction.EAST
 
-    (this.facing == Direction.EAST) && (degree == 90) || (this.facing == Direction.WEST) && (degree == 270) -> if (rightLeftKey == "R") Direction.SOUTH else Direction.NORTH
-    (this.facing == Direction.SOUTH) && (degree == 90) || (this.facing == Direction.NORTH) && (degree == 270) -> if (rightLeftKey == "R") Direction.WEST else Direction.EAST
-    (this.facing == Direction.EAST) && (degree == 270) || (this.facing == Direction.WEST) && (degree == 90) -> if (rightLeftKey == "R") Direction.NORTH else Direction.SOUTH
-    (this.facing == Direction.SOUTH) && (degree == 270) || (this.facing == Direction.NORTH) && (degree == 90) -> if (rightLeftKey == "R") Direction.EAST else Direction.WEST
+    (this.facing == Direction.EAST) && (instruction.second == 90) || (this.facing == Direction.WEST) && (instruction.second == 270) -> if (instruction.first == "R") Direction.SOUTH else Direction.NORTH
+    (this.facing == Direction.SOUTH) && (instruction.second == 90) || (this.facing == Direction.NORTH) && (instruction.second == 270) -> if (instruction.first == "R") Direction.WEST else Direction.EAST
+    (this.facing == Direction.EAST) && (instruction.second == 270) || (this.facing == Direction.WEST) && (instruction.second == 90) -> if (instruction.first == "R") Direction.NORTH else Direction.SOUTH
+    (this.facing == Direction.SOUTH) && (instruction.second == 270) || (this.facing == Direction.NORTH) && (instruction.second == 90) -> if (instruction.first == "R") Direction.EAST else Direction.WEST
     else -> error("direction turn right to")
 }
 
-fun WayPoint.turnTo(degree: Int, rightLeftKey: String): Pair<Int, Int> = when {
-    (degree == 90 && rightLeftKey == "R") || (degree == 270 && rightLeftKey == "L") -> this.yCount to this.xCount * -1
-    degree == 180 -> this.xCount * -1 to this.yCount * -1
-    (degree == 270 && rightLeftKey == "R") || (degree == 90 && rightLeftKey == "L") -> this.yCount * -1 to this.xCount
+fun WayPoint.turnTo(instruction: Pair<String, Int>): Pair<Int, Int> = when {
+    (instruction.second == 90 && instruction.first == "R") || (instruction.second == 270 && instruction.first == "L") -> this.yCount to this.xCount * -1
+    instruction.second == 180 -> this.xCount * -1 to this.yCount * -1
+    (instruction.second == 270 && instruction.first == "R") || (instruction.second == 90 && instruction.first == "L") -> this.yCount * -1 to this.xCount
     else -> error("way point ture right to")
 }
 
