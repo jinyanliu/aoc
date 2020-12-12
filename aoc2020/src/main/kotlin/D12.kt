@@ -2,16 +2,26 @@ import utils.IoHelper
 import kotlin.math.absoluteValue
 
 enum class Direction(val key: String) { WEST("W"), EAST("E"), NORTH("N"), SOUTH("S") }
-enum class XDirection(val key: String) { WEST("W"), EAST("E") }
-enum class YDirection(val key: String) { NORTH("N"), SOUTH("S") }
+
+// NORTH xCount >0, SOUTH xCount <0, EAST yCount >0, WEST yCount <0
+data class Boat(
+    var facing: Direction = Direction.EAST,
+    var xCount: Int = 0,
+    var yCount: Int = 0
+)
+
+// NORTH xCount >0, SOUTH xCount <0, EAST yCount >0, WEST yCount <0
+data class WayPoint(
+    var xCount: Int = 10,
+    var yCount: Int = 1
+)
 
 class Day12 {
     private val inputs = IoHelper.getLines("d12.in")
-    private val parsedInputs = inputs.map { it.get(0).toString() to it.drop(1).toInt() }
+    private val parsedInputs = inputs.map { it[0].toString() to it.drop(1).toInt() }
 
     fun getSolution1(): Int {
         val boat = Boat()
-        println(parsedInputs)
         parsedInputs.forEach {
             var toVerify = it
             if (toVerify.first == "F") {
@@ -40,26 +50,20 @@ class Day12 {
         val wayPoint = WayPoint()
 
         parsedInputs.forEach {
-            var toVerify = it
-            if (toVerify.first == "F") {
-                boat.xCount = boat.xCount + toVerify.second * wayPoint.xCount
-                boat.yCount = boat.yCount + toVerify.second * wayPoint.yCount
+            if (it.first == "F") {
+                boat.xCount = boat.xCount + it.second * wayPoint.xCount
+                boat.yCount = boat.yCount + it.second * wayPoint.yCount
             }
-            when (toVerify.first) {
-                Direction.NORTH.key -> wayPoint.yCount = wayPoint.yCount + toVerify.second
-                Direction.SOUTH.key -> wayPoint.yCount = wayPoint.yCount - toVerify.second
-                Direction.EAST.key -> wayPoint.xCount = wayPoint.xCount + toVerify.second
-                Direction.WEST.key -> wayPoint.xCount = wayPoint.xCount - toVerify.second
-            }
-            if (toVerify.first == "R") {
-                val (a, b) = wayPoint.turnRightTo(toVerify.second)
+            if (it.first == "R" || it.first == "L") {
+                val (a, b) = wayPoint.turnTo(it.second, it.first)
                 wayPoint.xCount = a
                 wayPoint.yCount = b
             }
-            if (toVerify.first == "L") {
-                val (a, b) = wayPoint.turnLeftTo(toVerify.second)
-                wayPoint.xCount = a
-                wayPoint.yCount = b
+            when (it.first) {
+                Direction.NORTH.key -> wayPoint.yCount = wayPoint.yCount + it.second
+                Direction.SOUTH.key -> wayPoint.yCount = wayPoint.yCount - it.second
+                Direction.EAST.key -> wayPoint.xCount = wayPoint.xCount + it.second
+                Direction.WEST.key -> wayPoint.xCount = wayPoint.xCount - it.second
             }
         }
 
@@ -67,21 +71,6 @@ class Day12 {
         return boat.xCount.absoluteValue + boat.yCount.absoluteValue
     }
 }
-
-data class Boat(
-    var facing: Direction = Direction.EAST,
-    var xDirection: XDirection = XDirection.EAST,
-    var xCount: Int = 0,
-    var yDirection: YDirection = YDirection.NORTH,
-    var yCount: Int = 0
-)
-
-data class WayPoint(
-    var xDirection: XDirection = XDirection.EAST,
-    var xCount: Int = 10,
-    var yDirection: YDirection = YDirection.NORTH,
-    var yCount: Int = 1
-)
 
 fun Direction.turnRightTo(degree: Int): Direction {
     when (this) {
@@ -157,21 +146,12 @@ fun Direction.turnLeftTo(degree: Int): Direction {
     }
 }
 
-fun WayPoint.turnRightTo(degree: Int): Pair<Int, Int> {
-    return when (degree) {
-        90 -> this.yCount to this.xCount * -1
-        180 -> this.xCount * -1 to this.yCount * -1
-        270 -> this.yCount * -1 to this.xCount
-        else -> error("")
-    }
-}
-
-fun WayPoint.turnLeftTo(degree: Int): Pair<Int, Int> {
-    return when (degree) {
-        90 -> this.yCount * -1 to this.xCount
-        180 -> this.xCount * -1 to this.yCount * -1
-        270 -> this.yCount to this.xCount * -1
-        else -> error("")
+fun WayPoint.turnTo(degree: Int, rightLeftKey: String): Pair<Int, Int> {
+    return when {
+        (degree == 90 && rightLeftKey == "R") || (degree == 270 && rightLeftKey == "L") -> this.yCount to this.xCount * -1
+        degree == 180 -> this.xCount * -1 to this.yCount * -1
+        (degree == 270 && rightLeftKey == "R") || (degree == 90 && rightLeftKey == "L") -> this.yCount * -1 to this.xCount
+        else -> error("ture right to")
     }
 }
 
