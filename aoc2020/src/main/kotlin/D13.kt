@@ -68,19 +68,10 @@ class Day13 {
             }
 
             currentToVerify += 41L*659L*13L*19L*29L
-            println("wroking")
+            println(currentToVerify)
 
         }
 
-
-/*        var x=1
-        while (true) {
-            if(((41*659)*x -41 +41)%659 ==0){
-                println("x="+x)
-                return 0
-            }
-            x+=1
-        }*/
 
 
 
@@ -92,5 +83,6 @@ class Day13 {
 fun main() {
     //115
     println(Day13().getSolution1())
+    //756261495958122
     println(Day13().getSolution2Alt())
 }
