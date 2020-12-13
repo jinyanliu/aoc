@@ -2,10 +2,10 @@ import utils.IoHelper
 
 class Day13 {
     private val inputs = IoHelper.getLines("d13.in")
-    private val departTime = inputs.get(0).toLong()
 
     fun getSolution1(): Long {
-        val busIds = inputs.get(1).split(",").filter { it.toIntOrNull() != null }.map { it.toLong() }
+        val departTime = inputs[0].toLong()
+        val busIds = inputs[1].split(",").filter { it.toIntOrNull() != null }.map { it.toLong() }
         var currentToVerify = departTime
         while (true) {
             for (id in busIds) {
@@ -20,10 +20,10 @@ class Day13 {
         }
     }
 
-    fun getSolution2():Long{
-        println(7*13*59*31*19)
-        val inputsWithIndex = inputs.get(1).split(",").withIndex().map { indexedValue -> indexedValue.index to indexedValue.value }
-            .filter { it.second.toIntOrNull()!= null}.map { it.first.toLong() to it.second.toLong() }
+    fun getSolution2Test(): Long {
+        val inputsWithIndex = IoHelper.getLines("d13Test.in")[1].split(",").withIndex()
+            .map { indexedValue -> indexedValue.index to indexedValue.value }
+            .filter { it.second.toIntOrNull() != null }.map { it.first.toLong() to it.second.toLong() }
 
         println(inputsWithIndex)
 
@@ -31,12 +31,12 @@ class Day13 {
         while (true) {
             var validated = true
             for (inputWithIndex in inputsWithIndex) {
-                if((currentToVerify + inputWithIndex.first)%inputWithIndex.second != 0L){
+                if ((currentToVerify + inputWithIndex.first) % inputWithIndex.second != 0L) {
                     validated = false
                 }
             }
 
-            if(validated){
+            if (validated) {
                 println(currentToVerify)
                 return currentToVerify
             }
@@ -46,43 +46,63 @@ class Day13 {
         }
     }
 
-    fun getSolution2Alt():Long{
+    fun getSolution2(): Long {
+        val inputsWithIndex =
+            inputs[1].split(",").withIndex().map { indexedValue -> indexedValue.index to indexedValue.value }
+                .filter { it.second.toIntOrNull() != null }.map { it.first.toLong() to it.second.toLong() }
 
-        val inputsWithIndex = inputs.get(1).split(",").withIndex().map { indexedValue -> indexedValue.index to indexedValue.value }
-            .filter { it.second.toIntOrNull()!= null}.map { it.first.toLong() to it.second.toLong() }
 
-        println(inputsWithIndex)
+        val resultMap = inputsWithIndex.map { it.first to arrayListOf(it.second) }.toMap().toMutableMap()
+        val indexMax = inputsWithIndex.last().first
+        for (i in 0..indexMax) {
+            for (input in inputsWithIndex) {
+                if (input.second > indexMax) continue
+                if(input.first == i)continue
 
-        var currentToVerify = 41L*659L*13L*19L*29L
+                var offset = 0L
+                if (input.first > input.second) {
+                    if (input.second != 0L) {
+                        offset = input.first % input.second
+                    } else {
+                        offset = input.first
+                    }
+                }
+
+                if (((i - offset) % input.second == 0L || (i == offset))) {
+                    resultMap[i]?.add(input.second) ?: let { resultMap[i] = arrayListOf(input.second) }
+                }
+
+            }
+        }
+
+        println(resultMap.toSortedMap())
+
+/*        var currentToVerify = 41L * 659L * 13L * 19L * 29L
         while (true) {
             var validated = true
             for (inputWithIndex in inputsWithIndex) {
-                if((currentToVerify-41 + inputWithIndex.first)%inputWithIndex.second != 0L){
+                if ((currentToVerify - 41 + inputWithIndex.first) % inputWithIndex.second != 0L) {
                     validated = false
                 }
             }
 
-            if(validated){
-                println(currentToVerify-41)
-                return currentToVerify-41
+            if (validated) {
+                println(currentToVerify - 41)
+                return currentToVerify - 41
             }
 
-            currentToVerify += 41L*659L*13L*19L*29L
-            println(currentToVerify)
+            currentToVerify += 41L * 659L * 13L * 19L * 29L
+        }*/
 
-        }
-
-
-
-
-
-
+        return 0L
     }
 }
 
 fun main() {
     //115
     println(Day13().getSolution1())
+    //1068781
+    println(Day13().getSolution2Test())
     //756261495958122
-    println(Day13().getSolution2Alt())
+    println(Day13().getSolution2())
 }
