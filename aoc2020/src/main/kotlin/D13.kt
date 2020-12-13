@@ -10,9 +10,6 @@ class Day13 {
         while (true) {
             for (id in busIds) {
                 if (currentToVerify % id == 0L) {
-                    println(id)
-                    println(currentToVerify)
-                    println(departTime)
                     return (currentToVerify - departTime) * id
                 }
             }
@@ -25,8 +22,6 @@ class Day13 {
             .map { indexedValue -> indexedValue.index to indexedValue.value }
             .filter { it.second.toIntOrNull() != null }.map { it.first.toLong() to it.second.toLong() }
 
-        println(inputsWithIndex)
-
         var currentToVerify = 944L
         while (true) {
             var validated = true
@@ -37,7 +32,6 @@ class Day13 {
             }
 
             if (validated) {
-                println(currentToVerify)
                 return currentToVerify
             }
 
@@ -52,35 +46,21 @@ class Day13 {
                 .filter { it.second.toIntOrNull() != null }.map { it.first.toLong() to it.second.toLong() }
         val indexMax = inputsWithIndex.last().first
 
-        val resultMap = mutableMapOf<Long, ArrayList<Long>>()
+        val repetitionMap = mutableMapOf<Long, ArrayList<Long>>()
         val arrangedList = arrayListOf<Pair<Long, Long>>()
 
-        for(item in inputsWithIndex){
-            if(item.second>item.first && item.second < indexMax){
-                arrangedList.add((item.first+item.second) to item.second)
-            }else if(item.second>indexMax){
-                resultMap[item.first] = arrayListOf(item.second)
-            }else {
+        for (item in inputsWithIndex) {
+            if (item.second > item.first && item.second < indexMax) {
+                arrangedList.add((item.first + item.second) to item.second)
+            } else if (item.second > indexMax) {
+                repetitionMap[item.first] = arrayListOf(item.second)
+            } else {
                 arrangedList.add(item.first to item.second)
             }
         }
 
-        println(arrangedList)
-        println(resultMap)
-
-
-
-
-
-
-
-
-
-
         for (i in 0..indexMax) {
             for (input in arrangedList) {
-
-
 
                 var offset = 0L
                 if (input.first > input.second) {
@@ -92,32 +72,33 @@ class Day13 {
                 }
 
                 if (((i - offset) % input.second == 0L || (i == offset))) {
-                    resultMap[i]?.add(input.second) ?: let { resultMap[i] = arrayListOf(input.second) }
+                    repetitionMap[i]?.add(input.second) ?: let { repetitionMap[i] = arrayListOf(input.second) }
                 }
 
             }
         }
 
-        println(resultMap.toSortedMap())
+        val listOfResult = mutableListOf<Pair<Long, Long>>()
+        for (item in repetitionMap.toSortedMap()) {
+            listOfResult.add(item.key to item.value.reduce { a, b -> a * b })
 
-/*        var currentToVerify = 41L * 659L * 13L * 19L * 29L
+        }
+        listOfResult.sortBy { it.second }
+        val biggestTimes = listOfResult.last()
+
+        var currentToVerify = biggestTimes.second
         while (true) {
             var validated = true
             for (inputWithIndex in inputsWithIndex) {
-                if ((currentToVerify - 41 + inputWithIndex.first) % inputWithIndex.second != 0L) {
+                if ((currentToVerify - biggestTimes.first + inputWithIndex.first) % inputWithIndex.second != 0L) {
                     validated = false
                 }
             }
-
             if (validated) {
-                println(currentToVerify - 41)
-                return currentToVerify - 41
+                return currentToVerify - biggestTimes.first
             }
-
-            currentToVerify += 41L * 659L * 13L * 19L * 29L
-        }*/
-
-        return 0L
+            currentToVerify += biggestTimes.second
+        }
     }
 }
 
