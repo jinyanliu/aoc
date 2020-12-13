@@ -88,6 +88,38 @@ class Day13 {
             currentToVerify += biggestTimes.second
         }
     }
+
+    fun getSolution2Alt(): Long {
+        val inputsWithIndex = inputs[1].split(",").withIndex()
+            .map { indexedValue -> indexedValue.index to indexedValue.value }
+            .filter { it.second.toIntOrNull() != null }.map { it.first.toLong() to it.second.toLong() }
+
+        val numberReminderMap = inputsWithIndex
+            .map { it.second to it.second - (it.first % it.second) }.toMap()
+        println(numberReminderMap)
+
+        val numberMMap = inputsWithIndex
+            .map { it.second to inputsWithIndex.toMap().values.reduce { acc, l -> acc * l } / it.second }.toMap()
+        println(numberMMap)
+
+        val numberTMap = inputsWithIndex
+            .map { it.second to getT(it.second, numberMMap) }.toMap()
+        println(numberTMap)
+
+        val sum = inputsWithIndex.map { it.second }
+            .map { numberReminderMap[it]!! * numberMMap[it]!! * numberTMap[it]!! }.sum()
+        val divider = inputsWithIndex.map { it.second }.reduce { acc, l -> acc * l }
+        return sum % divider
+    }
+}
+
+private fun getT(number: Long, numberMMap: Map<Long, Long>): Long {
+    for (i in 1..number) {
+        if (i * numberMMap[number]!! % number == 1L) {
+            return i
+        }
+    }
+    return 0L
 }
 
 fun main() {
@@ -97,4 +129,5 @@ fun main() {
     println(Day13().getSolution2Test())
     //756261495958122
     println(Day13().getSolution2())
+    println(Day13().getSolution2Alt())
 }
