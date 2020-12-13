@@ -50,12 +50,27 @@ class Day13 {
         val inputsWithIndex =
             inputs[1].split(",").withIndex().map { indexedValue -> indexedValue.index to indexedValue.value }
                 .filter { it.second.toIntOrNull() != null }.map { it.first.toLong() to it.second.toLong() }
-
-
-        val resultMap = inputsWithIndex.map { it.first to arrayListOf(it.second) }.toMap().toMutableMap()
         val indexMax = inputsWithIndex.last().first
+
+        val arrangedList = arrayListOf<Pair<Long, Long>>()
+        for(item in inputsWithIndex){
+            if(item.second>item.first && item.second < indexMax){
+                arrangedList.add((item.first+item.second) to item.second)
+            }else {
+                arrangedList.add(item.first to item.second)
+            }
+        }
+
+        val resultMap = arrangedList.map { it.first to arrayListOf(it.second) }.toMap().toMutableMap()
+        println(resultMap)
+
+
+
+
+
+
         for (i in 0..indexMax) {
-            for (input in inputsWithIndex) {
+            for (input in arrangedList) {
                 if (input.second > indexMax) continue
                 if(input.first == i)continue
 
