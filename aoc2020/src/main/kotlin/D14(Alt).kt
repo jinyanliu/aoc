@@ -5,10 +5,16 @@ class Day14 {
     private val inputs = IoHelper.getLines("d14.in")
 
     private fun getMaskFromString(it: String) = it.split(" = ")[1]
-    private fun getInputValue(input: String) = input.split(" = ")[1].toLong()
-    private fun getInputAddress(input: String) = input.split("[")[1].split("]")[0].toLong()
 
-    private fun getRelevantMaskForSolution2(input: String, relevantChar: Pair<Char, Char>): MutableMap<Int, Char> {
+    private fun getInputValue(input: String) = input.split(" = ")[1].toLong()
+    private fun getCharArrayFromInputValue(input: String) =
+        getInputValue(input).toString(2).padStart(36, '0').toCharArray()
+
+    private fun getInputAddress(input: String) = input.split("[")[1].split("]")[0].toLong()
+    private fun getCharArrayFromInputAddress(input: String) =
+        getInputAddress(input).toString(2).padStart(36, '0').toCharArray()
+
+    private fun getRelevantMaskIndexMap(input: String, relevantChar: Pair<Char, Char>): MutableMap<Int, Char> {
         val map = mutableMapOf<Int, Char>()
         getMaskFromString(input).withIndex().forEach {
             if (it.value == relevantChar.first || it.value == relevantChar.second) {
@@ -23,9 +29,9 @@ class Day14 {
         val mapOfStorage = mutableMapOf<Long, Long>()
         inputs.forEach { input ->
             if (input.contains("mask")) {
-                mapOfCurrentMask = getRelevantMaskForSolution2(input, '0' to '1')
+                mapOfCurrentMask = getRelevantMaskIndexMap(input, '0' to '1')
             } else {
-                val chars = getInputValue(input).toString(2).padStart(36, '0').toCharArray()
+                val chars = getCharArrayFromInputValue(input)
                 mapOfCurrentMask.forEach {
                     chars[it.key] = it.value
                 }
@@ -40,35 +46,32 @@ class Day14 {
         val mapOfStorage = mutableMapOf<Long, Long>()
         inputs.forEach { input ->
             if (input.contains("mask")) {
-                mapOfCurrentMask = getRelevantMaskForSolution2(input, 'X' to '1')
+                mapOfCurrentMask = getRelevantMaskIndexMap(input, 'X' to '1')
             } else {
-                val storeValue = getInputValue(input)
-                val address = getInputAddress(input)
-                var bitNumber = address.toString(2)
-                while (bitNumber.length != 36) {
-                    bitNumber = "0$bitNumber"
-                }
-                val chars = bitNumber.toCharArray()
+                val chars = getCharArrayFromInputAddress(input)
                 mapOfCurrentMask.forEach {
                     chars[it.key] = it.value
                 }
+
                 val charsCount = chars.count { it.toString() == "X" }
+                val variationCount = 2.0.pow(charsCount).toInt()
+
                 var resultList = mutableListOf<String>()
-                val variationCount = 2.0.pow(charsCount)
-                repeat(2.0.pow(charsCount).toInt()) {
+                repeat(variationCount) {
                     resultList.add(String(chars))
                 }
-                var currentStep = 2.0.pow(charsCount)
-                while (currentStep % 2 == 0.0) {
+
+                var currentStep = variationCount
+                while (currentStep % 2 == 0) {
                     val currentList = arrayListOf<String>()
                     currentStep /= 2
                     val subListToZero = arrayListOf<String>()
                     val subListToOne = arrayListOf<String>()
-                    repeat((variationCount / currentStep / 2).toInt()) {
-                        subListToZero.addAll(resultList.subList(0, currentStep.toInt()))
-                        subListToOne.addAll(resultList.subList(currentStep.toInt(), 2 * currentStep.toInt()))
+                    repeat((variationCount / currentStep / 2)) {
+                        subListToZero.addAll(resultList.subList(0, currentStep))
+                        subListToOne.addAll(resultList.subList(currentStep, 2 * currentStep))
                         if (resultList.size != 0) {
-                            resultList = resultList.subList(2 * currentStep.toInt(), resultList.size)
+                            resultList = resultList.subList(2 * currentStep, resultList.size)
                         }
                     }
                     for (item in subListToZero) {
@@ -93,9 +96,47 @@ class Day14 {
                     }
                     resultList = currentList
                 }
+
                 resultList.map { it.toLong(2) }.forEach {
-                    mapOfStorage[it] = storeValue
+                    mapOfStorage[it] = getInputValue(input)
                 }
+            }
+        }
+        return mapOfStorage.values.sum()
+    }
+
+    fun getSolution2Alt(): Long {
+        var mapOfCurrentMask = mutableMapOf<Int, Char>()
+        val mapOfStorage = mutableMapOf<Long, Long>()
+        inputs.forEach { input ->
+            if (input.contains("mask")) {
+                mapOfCurrentMask = getRelevantMaskIndexMap(input, 'X' to '1')
+            } else {
+                val chars = getCharArrayFromInputAddress(input)
+                val arrayOfXIndex = arrayListOf<Int>()
+                mapOfCurrentMask.forEach {
+                    chars[it.key] = it.value
+                    if (it.value == 'X') {
+                        arrayOfXIndex.add(it.key)
+                    }
+                }
+
+                val charsCount = chars.count { it.toString() == "X" }
+                val variationCount = 2.0.pow(charsCount).toInt()
+
+                val combinationResultList = arrayListOf<Long>()
+                for (i in 0 until variationCount) {
+                    val charArray = i.toString(2).padStart(charsCount, '0').toCharArray()
+                    charArray.withIndex().forEach {
+                        if (it.value == '1') {
+                            chars[arrayOfXIndex.get(it.index)] = '1'
+                        } else {
+                            chars[arrayOfXIndex.get(it.index)] = '0'
+                        }
+                    }
+                    combinationResultList.add(String(chars).toLong(2))
+                }
+                combinationResultList.forEach { mapOfStorage[it] = getInputValue(input) }
             }
         }
         return mapOfStorage.values.sum()
@@ -107,4 +148,5 @@ fun main() {
     println(Day14().getSolution1())
     //4401465949086
     println(Day14().getSolution2())
+    println(Day14().getSolution2Alt())
 }
