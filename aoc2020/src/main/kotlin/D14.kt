@@ -5,35 +5,31 @@ class Day14 {
     private val inputs = IoHelper.getLines("d14.in")
 
     private fun getMaskFromString(it: String) = it.split(" = ")[1]
-
     private fun getInputValue(input: String) = input.split(" = ")[1].toLong()
-
     private fun getInputAddress(input: String) = input.split("[")[1].split("]")[0].toLong()
+
+    private fun getRelevantMaskForSolution2(input: String, relevantChar: Pair<Char, Char>): MutableMap<Int, Char> {
+        val map = mutableMapOf<Int, Char>()
+        getMaskFromString(input).withIndex().forEach {
+            if (it.value == relevantChar.first || it.value == relevantChar.second) {
+                map[it.index] = it.value
+            }
+        }
+        return map
+    }
 
     fun getSolution1(): Long {
         var mapOfCurrentMask = mutableMapOf<Int, Char>()
         val mapOfStorage = mutableMapOf<Long, Long>()
         inputs.forEach { input ->
             if (input.contains("mask")) {
-                val mapOfNewMask = mutableMapOf<Int, Char>()
-                getMaskFromString(input).withIndex().forEach {
-                    if (it.value.toString() == "0" || it.value.toString() == "1") {
-                        mapOfNewMask[it.index] = it.value
-                    }
-                }
-                mapOfCurrentMask = mapOfNewMask
+                mapOfCurrentMask = getRelevantMaskForSolution2(input, '0' to '1')
             } else {
-                val address = getInputAddress(input)
-                val value = getInputValue(input)
-                var bitNumber = value.toString(2)
-                while (bitNumber.length != 36) {
-                    bitNumber = "0$bitNumber"
-                }
-                val chars = bitNumber.toCharArray()
+                val chars = getInputValue(input).toString(2).padStart(36, '0').toCharArray()
                 mapOfCurrentMask.forEach {
                     chars[it.key] = it.value
                 }
-                mapOfStorage[address] = String(chars).toLong(2)
+                mapOfStorage[getInputAddress(input)] = String(chars).toLong(2)
             }
         }
         return mapOfStorage.values.sum()
@@ -42,18 +38,12 @@ class Day14 {
     fun getSolution2(): Long {
         var mapOfCurrentMask = mutableMapOf<Int, Char>()
         val mapOfStorage = mutableMapOf<Long, Long>()
-        inputs.forEach {
-            if (it.contains("mask")) {
-                val mapOfNewMask = mutableMapOf<Int, Char>()
-                getMaskFromString(it).withIndex().forEach {
-                    if (it.value.toString() == "X" || it.value.toString() == "1") {
-                        mapOfNewMask[it.index] = it.value
-                    }
-                }
-                mapOfCurrentMask = mapOfNewMask
+        inputs.forEach { input ->
+            if (input.contains("mask")) {
+                mapOfCurrentMask = getRelevantMaskForSolution2(input, 'X' to '1')
             } else {
-                val storeValue = getInputValue(it)
-                val address = getInputAddress(it)
+                val storeValue = getInputValue(input)
+                val address = getInputAddress(input)
                 var bitNumber = address.toString(2)
                 while (bitNumber.length != 36) {
                     bitNumber = "0$bitNumber"
