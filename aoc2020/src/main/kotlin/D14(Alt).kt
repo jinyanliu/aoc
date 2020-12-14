@@ -77,7 +77,7 @@ class Day14 {
                     for (item in subListToZero) {
                         val charArray = item.toCharArray()
                         for (char in charArray.withIndex()) {
-                            if (char.value.toString() == "X") {
+                            if (char.value == 'X') {
                                 charArray[char.index] = '0'
                                 break
                             }
@@ -87,7 +87,7 @@ class Day14 {
                     for (item in subListToOne) {
                         val charArray = item.toCharArray()
                         for (char in charArray.withIndex()) {
-                            if (char.value.toString() == "X") {
+                            if (char.value == 'X') {
                                 charArray[char.index] = '1'
                                 break
                             }
@@ -97,8 +97,9 @@ class Day14 {
                     resultList = currentList
                 }
 
+                val inputValue = getInputValue(input)
                 resultList.map { it.toLong(2) }.forEach {
-                    mapOfStorage[it] = getInputValue(input)
+                    mapOfStorage[it] = inputValue
                 }
             }
         }
@@ -121,22 +122,25 @@ class Day14 {
                     }
                 }
 
-                val charsCount = chars.count { it.toString() == "X" }
-                val variationCount = 2.0.pow(charsCount).toInt()
+                val xCount = chars.count { it == 'X' }
+                val variationCount = 2.0.pow(xCount).toInt()
 
                 val combinationResultList = arrayListOf<Long>()
                 for (i in 0 until variationCount) {
-                    val charArray = i.toString(2).padStart(charsCount, '0').toCharArray()
+                    val newChars = chars.copyOf()
+                    val charArray = i.toString(2).padStart(xCount, '0').toCharArray()
                     charArray.withIndex().forEach {
                         if (it.value == '1') {
-                            chars[arrayOfXIndex.get(it.index)] = '1'
+                            newChars[arrayOfXIndex[it.index]] = '1'
                         } else {
-                            chars[arrayOfXIndex.get(it.index)] = '0'
+                            newChars[arrayOfXIndex[it.index]] = '0'
                         }
                     }
-                    combinationResultList.add(String(chars).toLong(2))
+                    combinationResultList.add(String(newChars).toLong(2))
                 }
-                combinationResultList.forEach { mapOfStorage[it] = getInputValue(input) }
+
+                val inputValue = getInputValue(input)
+                combinationResultList.forEach { mapOfStorage[it] = inputValue }
             }
         }
         return mapOfStorage.values.sum()
