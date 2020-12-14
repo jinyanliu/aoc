@@ -130,4 +130,6 @@ fun main() {
     //756261495958122
     println(Day13().getSolution2())
     println(Day13().getSolution2Alt())
+
+    println(18.toString(2))
 }
