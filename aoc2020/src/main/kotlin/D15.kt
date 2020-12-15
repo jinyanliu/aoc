@@ -6,46 +6,34 @@ class Day15 {
     private val map = inputs[0].split(",").withIndex()
         .map { it.value.toLong() to arrayListOf((it.index + 1).toLong()) }.toMap().toMutableMap()
 
-    private var lastNumber = inputs[0].split(',').last().toLong()
+    private var currentLastValue = inputs[0].split(',').last().toLong()
+    private var lastIndexFromInput = inputs[0].split(',').lastIndex.toLong()
 
-    fun getSolution1(): Long {
-        for (i in 8L..2020L) {
-            val lastNumberIndex = map[lastNumber]
+    fun getSolution1() = getSolution(2020L)
+
+    fun getSolution2() = getSolution(30000000L)
+
+    private fun getSolution(endTurn: Long): Long {
+        for (i in lastIndexFromInput + 2..endTurn) {
+            val lastNumberIndex = map[currentLastValue]
             if (lastNumberIndex == null || lastNumberIndex.size < 2) {
                 map[0]?.add(i) ?: let { map[0] = arrayListOf(i) }
-                lastNumber = 0
+                currentLastValue = 0
             } else {
-                val numberList = map[lastNumber] ?: error("")
-                numberList.sortDescending()
-                val numberToSpeak = numberList.get(0) - numberList.get(1)
-                map[numberToSpeak]?.add(i) ?: let { map[numberToSpeak] = arrayListOf(i) }
-                lastNumber = numberToSpeak
-            }
-        }
-        return lastNumber
-    }
-
-    fun getSolution2(): Long {
-        for (i in 8L..30000000L) {
-            val lastNumberIndex = map[lastNumber]
-            if (lastNumberIndex == null || lastNumberIndex.size < 2) {
-                map[0]?.add(i) ?: let { map[0] = arrayListOf(i) }
-                lastNumber = 0
-            } else {
-                val numberList: ArrayList<Long> = map[lastNumber] ?: error("")
+                val numberList: ArrayList<Long> = map[currentLastValue] ?: error("")
                 numberList.sortDescending()
 
                 val newList = arrayListOf<Long>()
                 newList.add(numberList[0])
                 newList.add(numberList[1])
-                map[lastNumber] = newList
+                map[currentLastValue] = newList
 
                 val numberToSpeak = numberList[0] - numberList[1]
                 map[numberToSpeak]?.add(i) ?: let { map[numberToSpeak] = arrayListOf(i) }
-                lastNumber = numberToSpeak
+                currentLastValue = numberToSpeak
             }
         }
-        return lastNumber
+        return currentLastValue
     }
 }
 
