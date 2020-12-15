@@ -23,7 +23,7 @@ class Day15 {
                 lastValueIndexOccurrence.sortDescending()
 
                 val newList = arrayListOf<Long>()
-                newList.addAll(lastValueIndexOccurrence.take(2))
+                newList.addAll(lastValueIndexOccurrence.take(1))
                 map[currentLastValue] = newList
 
                 val numberToSpeak = lastValueIndexOccurrence[0] - lastValueIndexOccurrence[1]
