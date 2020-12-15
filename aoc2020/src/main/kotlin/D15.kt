@@ -3,13 +3,12 @@ import utils.IoHelper
 class Day15 {
     private val inputs = IoHelper.getLines("d15.in")
 
-    private val map =
-        inputs[0].split(",").withIndex().map { it.value.toLong() to arrayListOf((it.index + 1).toLong()) }.toMap()
-            .toMutableMap()
+    private val map = inputs[0].split(",").withIndex()
+        .map { it.value.toLong() to arrayListOf((it.index + 1).toLong()) }.toMap().toMutableMap()
+
+    private var lastNumber = inputs[0].split(',').last().toLong()
 
     fun getSolution1(): Long {
-
-        var lastNumber = 4L
         for (i in 8L..2020L) {
             val lastNumberIndex = map[lastNumber]
             if (lastNumberIndex == null || lastNumberIndex.size < 2) {
@@ -27,9 +26,6 @@ class Day15 {
     }
 
     fun getSolution2(): Long {
-
-
-        var lastNumber = 4L
         for (i in 8L..30000000L) {
             val lastNumberIndex = map[lastNumber]
             if (lastNumberIndex == null || lastNumberIndex.size < 2) {
