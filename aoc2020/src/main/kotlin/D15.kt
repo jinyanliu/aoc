@@ -15,8 +15,8 @@ class Day15 {
 
     private fun getSolution(endTurn: Long): Long {
         for (i in lastIndexFromInput + 2..endTurn) {
-            val lastNumberIndex = map[currentLastValue]
-            if (lastNumberIndex == null || lastNumberIndex.size < 2) {
+            val lastValueIndexOccurrence = map[currentLastValue]
+            if (lastValueIndexOccurrence == null || lastValueIndexOccurrence.size < 2) {
                 map[0]?.add(i) ?: let { map[0] = arrayListOf(i) }
                 currentLastValue = 0
             } else {
