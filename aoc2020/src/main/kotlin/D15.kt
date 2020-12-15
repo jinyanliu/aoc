@@ -20,15 +20,13 @@ class Day15 {
                 map[0]?.add(i) ?: let { map[0] = arrayListOf(i) }
                 currentLastValue = 0
             } else {
-                val numberList: ArrayList<Long> = map[currentLastValue] ?: error("")
-                numberList.sortDescending()
+                lastValueIndexOccurrence.sortDescending()
 
                 val newList = arrayListOf<Long>()
-                newList.add(numberList[0])
-                newList.add(numberList[1])
+                newList.addAll(lastValueIndexOccurrence.take(2))
                 map[currentLastValue] = newList
 
-                val numberToSpeak = numberList[0] - numberList[1]
+                val numberToSpeak = lastValueIndexOccurrence[0] - lastValueIndexOccurrence[1]
                 map[numberToSpeak]?.add(i) ?: let { map[numberToSpeak] = arrayListOf(i) }
                 currentLastValue = numberToSpeak
             }
