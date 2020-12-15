@@ -3,12 +3,14 @@ import utils.IoHelper
 class Day15 {
     private val inputs = IoHelper.getLines("d15.in")
 
-    fun getSolution1(): Int {
-        val map = inputs[0].split(",").withIndex().map { it.value.toInt() to arrayListOf(it.index + 1) }.toMap()
+    private val map =
+        inputs[0].split(",").withIndex().map { it.value.toLong() to arrayListOf((it.index + 1).toLong()) }.toMap()
             .toMutableMap()
 
-        var lastNumber = 4
-        for (i in 8..2020) {
+    fun getSolution1(): Long {
+
+        var lastNumber = 4L
+        for (i in 8L..2020L) {
             val lastNumberIndex = map[lastNumber]
             if (lastNumberIndex == null || lastNumberIndex.size < 2) {
                 map[0]?.add(i) ?: let { map[0] = arrayListOf(i) }
@@ -25,27 +27,25 @@ class Day15 {
     }
 
     fun getSolution2(): Long {
-        val map =
-            inputs[0].split(",").withIndex().map { it.value.toLong() to arrayListOf((it.index + 1).toLong()) }.toMap()
-                .toMutableMap()
+
 
         var lastNumber = 4L
-        for (i in 8..30000000) {
+        for (i in 8L..30000000L) {
             val lastNumberIndex = map[lastNumber]
             if (lastNumberIndex == null || lastNumberIndex.size < 2) {
-                map[0]?.add(i.toLong()) ?: let { map[0] = arrayListOf(i.toLong()) }
+                map[0]?.add(i) ?: let { map[0] = arrayListOf(i) }
                 lastNumber = 0
             } else {
                 val numberList: ArrayList<Long> = map[lastNumber] ?: error("")
                 numberList.sortDescending()
 
                 val newList = arrayListOf<Long>()
-                newList.add(numberList.get(0))
-                newList.add(numberList.get(1))
+                newList.add(numberList[0])
+                newList.add(numberList[1])
                 map[lastNumber] = newList
 
-                val numberToSpeak = numberList.get(0) - numberList.get(1)
-                map[numberToSpeak]?.add(i.toLong()) ?: let { map[numberToSpeak] = arrayListOf(i.toLong()) }
+                val numberToSpeak = numberList[0] - numberList[1]
+                map[numberToSpeak]?.add(i) ?: let { map[numberToSpeak] = arrayListOf(i) }
                 lastNumber = numberToSpeak
             }
         }
