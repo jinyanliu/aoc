@@ -5,7 +5,7 @@ class Day01 {
 
     fun getSolution1(): Int {
         val inputs = getInputs()
-        println(inputs)
+        (inputs)
 
         for (input1 in inputs) {
             for (input2 in inputs) {
