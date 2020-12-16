@@ -2,36 +2,25 @@ import utils.IoHelper
 
 class Day16 {
     private val inputs = IoHelper.getSections("d16.in")
-    private val section1 = inputs[0]
-    private val flatRules = section1.lines().map { it.split(": ")[1] }.flatMap { it.split(" or ") }
+    private val ticketFields = inputs[0]
+    private val myTicket = inputs[1]
+    private val nearbyTickets = inputs[2]
+    private val flatRules = ticketFields.lines().map { it.split(": ")[1] }.flatMap { it.split(" or ") }
         .map { it.split("-")[0].toInt()..it.split("-")[1].toInt() }
-    private val rules = section1.lines().map { it.split(": ")[1] }
+    private val rules = ticketFields.lines().map { it.split(": ")[1] }
         .map { ruleValue -> ruleValue.split(" or ").map { it.split("-")[0].toInt()..it.split("-")[1].toInt() } }
+    private val flatNearbyInts = nearbyTickets.lines().drop(1).flatMap { it.split(",") }.map { it.toInt() }
+    private val inValidInts = flatNearbyInts.filter { !(flatRules.any { singleRule -> it in singleRule }) }
 
-    fun getSolution1(): Int {
-        return getInvalidInts().sum()
-    }
-
-    private fun getInvalidInts(): ArrayList<Int> {
-        val nearbyInts = inputs[2].lines().drop(1).flatMap { it.split(",") }.map { it.toInt() }
-        val invalidIntList = arrayListOf<Int>()
-        nearbyInts.forEach { int ->
-            if (!flatRules.any { singleRule -> int in singleRule }) {
-                invalidIntList.add(int)
-            }
-        }
-        return invalidIntList
-    }
+    fun getSolution1() = inValidInts.sum()
 
     fun getSolution2(): Long {
-        val invalidInts = getInvalidInts()
-        val nearbyTickets = inputs[2]
         val validNearbyTickets = nearbyTickets.lines().drop(1)
             .map { nearbyTicket ->
                 nearbyTicket.split(",")
                     .map { it.toInt() }
             }
-            .filter { it.all { it !in invalidInts } }
+            .filter { it.all { it !in inValidInts } }
         val indexMap = mutableMapOf<Int, ArrayList<Int>>()
         for (i in rules.indices) {
             indexMap[i] = arrayListOf()
@@ -54,7 +43,7 @@ class Day16 {
             }
         }
 
-        val myTicket = inputs.get(1).lines().get(1).split(",").map { it.toInt() }
+        val myTicket = myTicket.lines()[1].split(",").map { it.toInt() }
         return myTicket.withIndex().filter { it.index in arrayListOf(16, 2, 1, 5, 17, 13) }.map { it.value.toLong() }
             .reduce { a, b -> a * b }
     }
