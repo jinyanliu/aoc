@@ -1,7 +1,7 @@
 import utils.IoHelper
 
 class Day16 {
-    private val inputs = IoHelper.getSections("d16Test2.in")
+    private val inputs = IoHelper.getSections("d16.in")
 
     fun getSolution1(): Int {
         return getInvalidInts().sum()
@@ -45,17 +45,25 @@ class Day16 {
         println(indexMap)
 
         val leftOverRules = rules.toMutableList()
-        indexMap.forEach { mapElement->
-            var newRules = leftOverRules
-            mapElement.value.forEach {element->
-                newRules= newRules.filter { element in it[0] || element in it[1] }.toMutableList()
-            }
-            if(newRules.size==1){
-                println("index="+mapElement.key+", rules fit="+ newRules)
-                leftOverRules.remove(newRules[0])
+        while(leftOverRules.size>0){
+
+            indexMap.forEach { mapElement->
+                var newRules = leftOverRules
+                mapElement.value.forEach {element->
+                    newRules= newRules.filter { element in it[0] || element in it[1] }.toMutableList()
+                }
+                if(newRules.size==1){
+                    println("index="+mapElement.key+", rules fit="+ newRules)
+                    leftOverRules.remove(newRules[0])
+                }
             }
         }
 
+        val myTicket = inputs.get(1).lines().get(1).split(",").map { it.toInt() }
+        println(myTicket)
+        println(myTicket.get(16))
+        val result = myTicket.get(16).toLong()*myTicket.get(2).toLong()*myTicket.get(1).toLong()*myTicket.get(5).toLong()*myTicket.get(17).toLong()*myTicket.get(13).toLong()
+        println(result)
     }
 }
 
