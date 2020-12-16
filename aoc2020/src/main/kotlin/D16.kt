@@ -37,6 +37,7 @@ class Day16 {
                 if (newRules.size == 1) {
                     leftOverRules.remove(newRules[0])
                     ruleIndexMap[newRules[0]] = mapElement.key
+                    println(ruleIndexMap)
                 }
             }
         }
