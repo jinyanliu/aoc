@@ -1,147 +1,153 @@
 import utils.IoHelper
 
 class Day17 {
-    private val inputs = IoHelper.getLines("d17Test.in")
+    private val inputs = IoHelper.getLines("d17.in")
 
-    private fun neighboursOfXYZ(x: Int, y: Int, z: Int): ArrayList<Pair<Int, ArrayList<Pair<Int, Int>>>> {
-        val neighboursOnMiddleLayer = arrayListOf(
-            x to y + 1,
-            x to y - 1,
-            x + 1 to y,
-            x - 1 to y,
-            x - 1 to y + 1,
-            x - 1 to y - 1,
-            x + 1 to y + 1,
-            x + 1 to y - 1
-        )
-
-        val neighboursOnUpperLayer = arrayListOf<Pair<Int, Int>>()
-        neighboursOnUpperLayer.addAll(neighboursOnMiddleLayer)
-        neighboursOnUpperLayer.add(x to y)
-
-        val neighboursOnLowerLayer = arrayListOf<Pair<Int, Int>>()
-        neighboursOnLowerLayer.addAll(neighboursOnMiddleLayer)
-        neighboursOnLowerLayer.add(x to y)
-
-        val neighboursOnThreeLayers = arrayListOf(
-            z to neighboursOnMiddleLayer,
-            z + 1 to neighboursOnUpperLayer,
-            z - 1 to neighboursOnLowerLayer
-        )
-        return neighboursOnThreeLayers
-    }
-
-    fun getSolution1() {
-
-        val mapOfActive = mutableMapOf<Int, ArrayList<Pair<Int, Int>>>()
-        mapOfActive[0] = arrayListOf<Pair<Int, Int>>()
-        inputs.forEachIndexed { yIndex, s ->
-            s.forEachIndexed { xIndex, c ->
-                if(c.toString() == "#"){
-                    mapOfActive[0]?.add(xIndex to yIndex)
-                }
-            }
-        }
-
-
-        //mapOfActive[0] = arrayListOf(1 to 0, 2 to 1, 0 to 2, 1 to 2, 2 to 2)
-
-        var currentMapOfActive = mapOfActive.toMap()
-        for (i in 0..5) {
-
-            val minZ = currentMapOfActive.keys.min()!! - 1
-            val maxZ = currentMapOfActive.keys.max()!! + 1
-
-            val listToCheck = arrayListOf<Pair<Int, ArrayList<Pair<Int, Int>>>>()
-            for (z in minZ..maxZ) {
-                listToCheck.add(z to getOneLayerToCheck(currentMapOfActive))
-            }
-
-            println(listToCheck)
-            println(listToCheck.map { it.second.size }.sum())
-
-
-            val newMap = mutableMapOf<Int, ArrayList<Pair<Int, Int>>>()
-
-            currentMapOfActive.forEach {
-                val newArrayList = arrayListOf<Pair<Int, Int>>()
-                newArrayList.addAll(it.value.toList())
-                newMap[it.key] = newArrayList
-            }
-
-            listToCheck.forEach { zLayered ->
-                zLayered.second.forEach {
-                    val itSelfActive = areYouActive(it.first, it.second, zLayered.first, currentMapOfActive)
-                    val neighbours = neighboursOfXYZ(it.first, it.second, zLayered.first)
-                    var neighboursActiveCount = 0
-                    neighbours.forEach { neighboursZLayered ->
-                        neighboursZLayered.second.forEach {
-                            if (areYouActive(
-                                    it.first,
-                                    it.second,
-                                    neighboursZLayered.first,
-                                    currentMapOfActive
-                                )
-                            ) neighboursActiveCount += 1
-                        }
-                    }
-                    if (itSelfActive) {
-                        if (neighboursActiveCount !in 2..3) {
-                            newMap[zLayered.first]?.remove(it.first to it.second)
-                        }
-                    } else {
-                        if (neighboursActiveCount == 3) {
-                            if (newMap[zLayered.first] == null) {
-                                newMap[zLayered.first] = arrayListOf(it.first to it.second)
-                            } else {
-                                newMap[zLayered.first]?.add(it.first to it.second)
-                            }
-
-                        }
-                    }
-
-                }
-            }
-            currentMapOfActive = newMap.toMap()
-        }
-
-        println(currentMapOfActive)
-        println(currentMapOfActive.values.flatten().map { it.second }.sum())
-
-    }
-
-    fun areYouActive(x: Int, y: Int, z: Int, mapOfActive: Map<Int, ArrayList<Pair<Int, Int>>>): Boolean {
-        if (!mapOfActive[z].isNullOrEmpty() && mapOfActive[z]!!.contains(x to y)) {
+    fun areYouActive(x: Int, y: Int, z: Int, w: Int, listOfActive: List<SuperCube>): Boolean {
+        val superCube = SuperCube(x, y, z, w)
+        if (listOfActive.contains(superCube)) {
             return true
         }
         return false
     }
 
-    fun getOneLayerToCheck(mapOfActive: Map<Int, ArrayList<Pair<Int, Int>>>): ArrayList<Pair<Int, Int>> {
-        val minX = mapOfActive.map { it.value.map { it.first }.min()!! }.min()!! - 1
-        val minY = mapOfActive.map { it.value.map { it.second }.min()!! }.min()!! - 1
-        val maxX = mapOfActive.map { it.value.map { it.first }.max()!! }.max()!! + 1
-        val maxY = mapOfActive.map { it.value.map { it.second }.max()!! }.max()!! + 1
+    private fun neighboursOfXYZ(x: Int, y: Int, z: Int, w: Int, fourDimen: Boolean): ArrayList<SuperCube> {
 
-        val oneLayerToCheck = arrayListOf<Pair<Int, Int>>()
-
-        for (x in minX..maxX) {
-            for (y in minY..maxY) {
-                oneLayerToCheck.add(x to y)
-            }
+        val xs = arrayListOf<Int>(x - 1, x, x + 1)
+        val ys = arrayListOf<Int>(y - 1, y, y + 1)
+        val zs = arrayListOf<Int>(z - 1, z, z + 1)
+        var ws = arrayListOf<Int>(0)
+        if(fourDimen){
+            ws = arrayListOf<Int>(w - 1, w, w + 1)
         }
 
-        return oneLayerToCheck
 
 
+        val resultList = arrayListOf<SuperCube>()
+        xs.forEach { xx ->
+            ys.forEach { yy ->
+                zs.forEach { zz ->
+                    ws.forEach { ww ->
+                        if (!(xx == x && yy == y && zz == z && ww == w)) {
+                            resultList.add(SuperCube(xx, yy, zz, ww))
+                        }
+                    }
+                }
+            }
+        }
+        return resultList
     }
 
-    fun getSolution2() {
+    private fun getInitialActiveCubes(): ArrayList<SuperCube> {
+        val activeCubes = arrayListOf<SuperCube>()
+        inputs.forEachIndexed { yIndex, s ->
+            s.forEachIndexed { xIndex, c ->
+                if (c.toString() == "#") {
+                    activeCubes.add(SuperCube(xIndex, yIndex, 0, 0))
+                }
+            }
+        }
+        return activeCubes
     }
+
+    private fun getSolution(fourDimen: Boolean): Int {
+        val initialActiveCubes = getInitialActiveCubes()
+
+        var currentActiveCubes = initialActiveCubes.toList().toMutableList()
+
+        for (i in 0..5) {
+
+            val xs = currentActiveCubes.map { it.x }
+            val minX = xs.min()!! - 1
+            val maxX = xs.max()!! + 1
+
+            val ys = currentActiveCubes.map { it.y }
+            val minY = ys.min()!! - 1
+            val maxY = ys.max()!! + 1
+
+            val zs = currentActiveCubes.map { it.z }
+            val minZ = zs.min()!! - 1
+            val maxZ = zs.max()!! + 1
+
+            var minW = 0
+            var maxW = 0
+
+            if (fourDimen) {
+                val ws = currentActiveCubes.map { it.w }
+                minW = ws.min()!! - 1
+                maxW = ws.max()!! + 1
+            }
+
+            val listToCheck = arrayListOf<SuperCube>()
+            for (xx in minX..maxX) {
+                for (yy in minY..maxY) {
+                    for (zz in minZ..maxZ) {
+                        for (ww in minW..maxW) {
+                            listToCheck.add(SuperCube(xx, yy, zz, ww))
+                        }
+                    }
+                }
+            }
+
+            val newActiveCubes = arrayListOf<SuperCube>()
+            currentActiveCubes.forEach {
+                newActiveCubes.add(it.copy())
+            }
+
+            listToCheck.forEach { cubeToCheck ->
+                val itSelfActive =
+                    areYouActive(
+                        cubeToCheck.x,
+                        cubeToCheck.y,
+                        cubeToCheck.z,
+                        cubeToCheck.w,
+                        currentActiveCubes.toList()
+                    )
+                val neighbours = neighboursOfXYZ(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w,fourDimen)
+                var neighboursActiveCount = 0
+                neighbours.forEach { cubeNeighbour ->
+                    if (areYouActive(
+                            cubeNeighbour.x,
+                            cubeNeighbour.y,
+                            cubeNeighbour.z,
+                            cubeNeighbour.w,
+                            currentActiveCubes.toList()
+                        )
+                    ) neighboursActiveCount += 1
+                }
+                if (itSelfActive) {
+                    if (neighboursActiveCount !in 2..3) {
+                        newActiveCubes.remove(SuperCube(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w))
+                    }
+                } else {
+                    if (neighboursActiveCount == 3) {
+                        newActiveCubes.add(SuperCube(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w))
+                    }
+                }
+            }
+
+
+            currentActiveCubes = newActiveCubes
+        }
+
+        return currentActiveCubes.size
+    }
+
+
+    fun getSolution1() = getSolution(false)
+    fun getSolution2() = getSolution(true)
 }
+
+data class SuperCube(
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val w: Int = 0
+)
 
 fun main() {
     //322
     println(Day17().getSolution1())
+    //2000
     println(Day17().getSolution2())
 }
