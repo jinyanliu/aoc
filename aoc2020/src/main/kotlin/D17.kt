@@ -1,44 +1,16 @@
 import utils.IoHelper
 
+data class SuperCube(
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val w: Int = 0
+)
+
 class Day17 {
     private val inputs = IoHelper.getLines("d17.in")
 
-    fun areYouActive(x: Int, y: Int, z: Int, w: Int, listOfActive: List<SuperCube>): Boolean {
-        val superCube = SuperCube(x, y, z, w)
-        if (listOfActive.contains(superCube)) {
-            return true
-        }
-        return false
-    }
-
-    private fun neighboursOfXYZ(x: Int, y: Int, z: Int, w: Int, fourDimen: Boolean): ArrayList<SuperCube> {
-
-        val xs = arrayListOf<Int>(x - 1, x, x + 1)
-        val ys = arrayListOf<Int>(y - 1, y, y + 1)
-        val zs = arrayListOf<Int>(z - 1, z, z + 1)
-        var ws = arrayListOf<Int>(0)
-        if(fourDimen){
-            ws = arrayListOf<Int>(w - 1, w, w + 1)
-        }
-
-
-
-        val resultList = arrayListOf<SuperCube>()
-        xs.forEach { xx ->
-            ys.forEach { yy ->
-                zs.forEach { zz ->
-                    ws.forEach { ww ->
-                        if (!(xx == x && yy == y && zz == z && ww == w)) {
-                            resultList.add(SuperCube(xx, yy, zz, ww))
-                        }
-                    }
-                }
-            }
-        }
-        return resultList
-    }
-
-    private fun getInitialActiveCubes(): ArrayList<SuperCube> {
+    private fun initialActiveCubes(): ArrayList<SuperCube> {
         val activeCubes = arrayListOf<SuperCube>()
         inputs.forEachIndexed { yIndex, s ->
             s.forEachIndexed { xIndex, c ->
@@ -50,10 +22,34 @@ class Day17 {
         return activeCubes
     }
 
-    private fun getSolution(fourDimen: Boolean): Int {
-        val initialActiveCubes = getInitialActiveCubes()
+    private fun neighbourCubes(x: Int, y: Int, z: Int, w: Int, fourDimen: Boolean): ArrayList<SuperCube> {
+        val xs = arrayListOf(x - 1, x, x + 1)
+        val ys = arrayListOf(y - 1, y, y + 1)
+        val zs = arrayListOf(z - 1, z, z + 1)
+        val ws = if (fourDimen) {
+            arrayListOf(w - 1, w, w + 1)
+        } else arrayListOf(0)
 
-        var currentActiveCubes = initialActiveCubes.toList().toMutableList()
+        val neighbourCubes = arrayListOf<SuperCube>()
+        xs.forEach { xx ->
+            ys.forEach { yy ->
+                zs.forEach { zz ->
+                    ws.forEach { ww ->
+                        if (!(xx == x && yy == y && zz == z && ww == w)) {
+                            neighbourCubes.add(SuperCube(xx, yy, zz, ww))
+                        }
+                    }
+                }
+            }
+        }
+        return neighbourCubes
+    }
+
+    private fun areYouActive(x: Int, y: Int, z: Int, w: Int, activeCubes: List<SuperCube>) =
+        activeCubes.contains(SuperCube(x, y, z, w))
+
+    private fun getSolution(fourDimen: Boolean): Int {
+        var currentActiveCubes = initialActiveCubes()
 
         for (i in 0..5) {
 
@@ -103,7 +99,7 @@ class Day17 {
                         cubeToCheck.w,
                         currentActiveCubes.toList()
                     )
-                val neighbours = neighboursOfXYZ(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w,fourDimen)
+                val neighbours = neighbourCubes(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w, fourDimen)
                 var neighboursActiveCount = 0
                 neighbours.forEach { cubeNeighbour ->
                     if (areYouActive(
@@ -137,13 +133,6 @@ class Day17 {
     fun getSolution1() = getSolution(false)
     fun getSolution2() = getSolution(true)
 }
-
-data class SuperCube(
-    val x: Int,
-    val y: Int,
-    val z: Int,
-    val w: Int = 0
-)
 
 fun main() {
     //322
