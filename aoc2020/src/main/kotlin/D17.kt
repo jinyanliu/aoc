@@ -1,7 +1,7 @@
 import utils.IoHelper
 
 class Day17 {
-    private val inputs = IoHelper.getLines("d17.in")
+    private val inputs = IoHelper.getLines("d17Test.in")
 
     private fun neighboursOfXYZ(x: Int, y: Int, z: Int): ArrayList<Pair<Int, ArrayList<Pair<Int, Int>>>> {
         val neighboursOnMiddleLayer = arrayListOf(
@@ -106,7 +106,7 @@ class Day17 {
         }
 
         println(currentMapOfActive)
-        println(currentMapOfActive.values.map { it.size }.sum())
+        println(currentMapOfActive.values.flatten().map { it.second }.sum())
 
     }
 
@@ -141,6 +141,7 @@ class Day17 {
 }
 
 fun main() {
+    //322
     println(Day17().getSolution1())
     println(Day17().getSolution2())
 }
