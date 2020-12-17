@@ -34,50 +34,55 @@ class Day17 {
     fun getSolution1() {
         val mapOfActive = mutableMapOf<Int, ArrayList<Pair<Int, Int>>>()
         mapOfActive[0] = arrayListOf(1 to 0, 2 to 1, 0 to 2, 1 to 2, 2 to 2)
-        val minX = mapOfActive.map { it.value.map { it.first }.min()!! }.min()!!-1
-        val minY = mapOfActive.map { it.value.map { it.second }.min()!! }.min()!!-1
-        val maxX = mapOfActive.map { it.value.map { it.first }.max()!! }.max()!!+1
-        val maxY = mapOfActive.map { it.value.map { it.second }.max()!! }.max()!!+1
-        val minZ = mapOfActive.keys.min()!!-1
-        val maxZ = mapOfActive.keys.max()!!+1
-
-        val listToCheck = arrayListOf<Pair<Int, ArrayList<Pair<Int, Int>>>>()
-        for (z in minZ..maxZ) {
-            listToCheck.add(z to getOneLayerToCheck(mapOfActive))
-        }
-
-        println(listToCheck)
-        println(listToCheck.map { it.second.size }.sum())
 
         var currentMapOfActive = mapOfActive.toMap()
-/*        for(i in 0..5){*/
+        for (i in 0..5) {
+
+            val minZ = currentMapOfActive.keys.min()!! - 1
+            val maxZ = currentMapOfActive.keys.max()!! + 1
+
+            val listToCheck = arrayListOf<Pair<Int, ArrayList<Pair<Int, Int>>>>()
+            for (z in minZ..maxZ) {
+                listToCheck.add(z to getOneLayerToCheck(currentMapOfActive))
+            }
+
+            println(listToCheck)
+            println(listToCheck.map { it.second.size }.sum())
+
+
             val newMap = mutableMapOf<Int, ArrayList<Pair<Int, Int>>>()
 
-        currentMapOfActive.forEach {
-            val newArrayList = arrayListOf<Pair<Int, Int>>()
-            newArrayList.addAll(it.value.toList())
-            newMap[it.key] = newArrayList
-        }
+            currentMapOfActive.forEach {
+                val newArrayList = arrayListOf<Pair<Int, Int>>()
+                newArrayList.addAll(it.value.toList())
+                newMap[it.key] = newArrayList
+            }
 
             listToCheck.forEach { zLayered ->
                 zLayered.second.forEach {
                     val itSelfActive = areYouActive(it.first, it.second, zLayered.first, currentMapOfActive)
                     val neighbours = neighboursOfXYZ(it.first, it.second, zLayered.first)
                     var neighboursActiveCount = 0
-                    neighbours.forEach { neighboursZLayered->
+                    neighbours.forEach { neighboursZLayered ->
                         neighboursZLayered.second.forEach {
-                            if(areYouActive(it.first, it.second, neighboursZLayered.first, currentMapOfActive)) neighboursActiveCount+=1
+                            if (areYouActive(
+                                    it.first,
+                                    it.second,
+                                    neighboursZLayered.first,
+                                    currentMapOfActive
+                                )
+                            ) neighboursActiveCount += 1
                         }
                     }
-                    if(itSelfActive){
-                        if(neighboursActiveCount !in 2..3){
+                    if (itSelfActive) {
+                        if (neighboursActiveCount !in 2..3) {
                             newMap[zLayered.first]?.remove(it.first to it.second)
                         }
-                    }else {
-                        if(neighboursActiveCount == 3){
-                            if(newMap[zLayered.first] == null){
-                                newMap[zLayered.first]= arrayListOf(it.first to it.second)
-                            }else {
+                    } else {
+                        if (neighboursActiveCount == 3) {
+                            if (newMap[zLayered.first] == null) {
+                                newMap[zLayered.first] = arrayListOf(it.first to it.second)
+                            } else {
                                 newMap[zLayered.first]?.add(it.first to it.second)
                             }
 
@@ -86,10 +91,11 @@ class Day17 {
 
                 }
             }
-            //currentMapOfActive = newMap.toMap()
-        //}
+            currentMapOfActive = newMap.toMap()
+        }
 
-        println(newMap)
+        println(currentMapOfActive)
+        println(currentMapOfActive.values.map { it.size }.sum())
 
     }
 
@@ -101,10 +107,10 @@ class Day17 {
     }
 
     fun getOneLayerToCheck(mapOfActive: Map<Int, ArrayList<Pair<Int, Int>>>): ArrayList<Pair<Int, Int>> {
-        val minX = mapOfActive.map { it.value.map { it.first }.min()!! }.min()!!-1
-        val minY = mapOfActive.map { it.value.map { it.second }.min()!! }.min()!!-1
-        val maxX = mapOfActive.map { it.value.map { it.first }.max()!! }.max()!!+1
-        val maxY = mapOfActive.map { it.value.map { it.second }.max()!! }.max()!!+1
+        val minX = mapOfActive.map { it.value.map { it.first }.min()!! }.min()!! - 1
+        val minY = mapOfActive.map { it.value.map { it.second }.min()!! }.min()!! - 1
+        val maxX = mapOfActive.map { it.value.map { it.first }.max()!! }.max()!! + 1
+        val maxY = mapOfActive.map { it.value.map { it.second }.max()!! }.max()!! + 1
 
         val oneLayerToCheck = arrayListOf<Pair<Int, Int>>()
 
