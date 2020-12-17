@@ -50,47 +50,13 @@ class Day17 {
 
     private fun getSolution(fourDimen: Boolean): Int {
         var currentActiveCubes = initialActiveCubes()
-
-        for (i in 0..5) {
-
-            val xs = currentActiveCubes.map { it.x }
-            val minX = xs.min()!! - 1
-            val maxX = xs.max()!! + 1
-
-            val ys = currentActiveCubes.map { it.y }
-            val minY = ys.min()!! - 1
-            val maxY = ys.max()!! + 1
-
-            val zs = currentActiveCubes.map { it.z }
-            val minZ = zs.min()!! - 1
-            val maxZ = zs.max()!! + 1
-
-            var minW = 0
-            var maxW = 0
-
-            if (fourDimen) {
-                val ws = currentActiveCubes.map { it.w }
-                minW = ws.min()!! - 1
-                maxW = ws.max()!! + 1
-            }
-
-            val listToCheck = arrayListOf<SuperCube>()
-            for (xx in minX..maxX) {
-                for (yy in minY..maxY) {
-                    for (zz in minZ..maxZ) {
-                        for (ww in minW..maxW) {
-                            listToCheck.add(SuperCube(xx, yy, zz, ww))
-                        }
-                    }
-                }
-            }
-
+        repeat(6) {
             val newActiveCubes = arrayListOf<SuperCube>()
             currentActiveCubes.forEach {
                 newActiveCubes.add(it.copy())
             }
 
-            listToCheck.forEach { cubeToCheck ->
+            cubesToCheck(currentActiveCubes, fourDimen).forEach { cubeToCheck ->
                 val itSelfActive =
                     areYouActive(
                         cubeToCheck.x,
@@ -129,6 +95,53 @@ class Day17 {
         return currentActiveCubes.size
     }
 
+    private fun cubesToCheck(
+        currentActiveCubes: ArrayList<SuperCube>,
+        fourDimen: Boolean
+    ): ArrayList<SuperCube> {
+        val listToCheck = arrayListOf<SuperCube>()
+        for (xx in xRangeToCheck(currentActiveCubes)) {
+            for (yy in yRangeToCheck(currentActiveCubes)) {
+                for (zz in zRangeToCheck(currentActiveCubes)) {
+                    for (ww in wRangeToCheck(currentActiveCubes, fourDimen)) {
+                        listToCheck.add(SuperCube(xx, yy, zz, ww))
+                    }
+                }
+            }
+        }
+        return listToCheck
+    }
+
+    private fun wRangeToCheck(
+        currentActiveCubes: ArrayList<SuperCube>,
+        fourDimen: Boolean
+    ): IntRange {
+        val ws = currentActiveCubes.map { it.w }
+        val minW = if (fourDimen) ws.min()!! - 1 else 0
+        val maxW = if (fourDimen) ws.max()!! + 1 else 0
+        return IntRange(minW, maxW)
+    }
+
+    private fun zRangeToCheck(currentActiveCubes: ArrayList<SuperCube>): IntRange {
+        val zs = currentActiveCubes.map { it.z }
+        val minZ = zs.min()!! - 1
+        val maxZ = zs.max()!! + 1
+        return IntRange(minZ, maxZ)
+    }
+
+    private fun yRangeToCheck(currentActiveCubes: ArrayList<SuperCube>): IntRange {
+        val ys = currentActiveCubes.map { it.y }
+        val minY = ys.min()!! - 1
+        val maxY = ys.max()!! + 1
+        return IntRange(minY, maxY)
+    }
+
+    private fun xRangeToCheck(currentActiveCubes: ArrayList<SuperCube>): IntRange {
+        val xs = currentActiveCubes.map { it.x }
+        val minX = xs.min()!! - 1
+        val maxX = xs.max()!! + 1
+        return IntRange(minX, maxX)
+    }
 
     fun getSolution1() = getSolution(false)
     fun getSolution2() = getSolution(true)
