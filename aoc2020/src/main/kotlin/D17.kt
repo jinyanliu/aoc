@@ -52,46 +52,24 @@ class Day17 {
         var currentActiveCubes = initialActiveCubes()
         repeat(6) {
             val newActiveCubes = arrayListOf<SuperCube>()
-            currentActiveCubes.forEach {
-                newActiveCubes.add(it.copy())
-            }
+            newActiveCubes.addAll(currentActiveCubes)
 
             cubesToCheck(currentActiveCubes, fourDimen).forEach { cubeToCheck ->
+                val neighboursActiveCount =
+                    neighbourCubes(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w, fourDimen)
+                        .count { areYouActive(it.x, it.y, it.z, it.w, currentActiveCubes) }
                 val itSelfActive =
-                    areYouActive(
-                        cubeToCheck.x,
-                        cubeToCheck.y,
-                        cubeToCheck.z,
-                        cubeToCheck.w,
-                        currentActiveCubes.toList()
-                    )
-                val neighbours = neighbourCubes(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w, fourDimen)
-                var neighboursActiveCount = 0
-                neighbours.forEach { cubeNeighbour ->
-                    if (areYouActive(
-                            cubeNeighbour.x,
-                            cubeNeighbour.y,
-                            cubeNeighbour.z,
-                            cubeNeighbour.w,
-                            currentActiveCubes.toList()
-                        )
-                    ) neighboursActiveCount += 1
+                    areYouActive(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w, currentActiveCubes)
+                if (itSelfActive && neighboursActiveCount !in 2..3) {
+                    newActiveCubes.remove(SuperCube(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w))
                 }
-                if (itSelfActive) {
-                    if (neighboursActiveCount !in 2..3) {
-                        newActiveCubes.remove(SuperCube(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w))
-                    }
-                } else {
-                    if (neighboursActiveCount == 3) {
-                        newActiveCubes.add(SuperCube(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w))
-                    }
+                if (!itSelfActive && neighboursActiveCount == 3) {
+                    newActiveCubes.add(SuperCube(cubeToCheck.x, cubeToCheck.y, cubeToCheck.z, cubeToCheck.w))
                 }
+
             }
-
-
             currentActiveCubes = newActiveCubes
         }
-
         return currentActiveCubes.size
     }
 
