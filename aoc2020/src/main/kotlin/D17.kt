@@ -32,8 +32,19 @@ class Day17 {
     }
 
     fun getSolution1() {
+
         val mapOfActive = mutableMapOf<Int, ArrayList<Pair<Int, Int>>>()
-        mapOfActive[0] = arrayListOf(1 to 0, 2 to 1, 0 to 2, 1 to 2, 2 to 2)
+        mapOfActive[0] = arrayListOf<Pair<Int, Int>>()
+        inputs.forEachIndexed { yIndex, s ->
+            s.forEachIndexed { xIndex, c ->
+                if(c.toString() == "#"){
+                    mapOfActive[0]?.add(xIndex to yIndex)
+                }
+            }
+        }
+
+
+        //mapOfActive[0] = arrayListOf(1 to 0, 2 to 1, 0 to 2, 1 to 2, 2 to 2)
 
         var currentMapOfActive = mapOfActive.toMap()
         for (i in 0..5) {
