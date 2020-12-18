@@ -3,6 +3,15 @@ import utils.IoHelper
 class Day18 {
     private val inputs = IoHelper.getLines("d18.in")
 
+    private fun toCalculatePart(currentHomework: String) = if (currentHomework.contains("(")) {
+        val firstPairEnd = currentHomework.withIndex().first { it.value.toString() == ")" }.index
+        val firstPairStart =
+            currentHomework.withIndex().last { it.value.toString() == "(" && it.index < firstPairEnd }.index
+        currentHomework.subSequence(firstPairStart..firstPairEnd)
+    } else {
+        "($currentHomework)"
+    }
+
     fun getSolution1() = inputs.map {
         var currentHomework = it.replace(" ", "")
         while (currentHomework.toLongOrNull() == null) {
@@ -12,17 +21,9 @@ class Day18 {
     }.sum()
 
     private fun calculateHomework(currentHomework: String): String {
-        val toCalculate = if (currentHomework.contains("(")) {
-            val firstPairEnd = currentHomework.withIndex().first { it.value.toString() == ")" }.index
-            val firstPairStart =
-                currentHomework.withIndex().last { it.value.toString() == "(" && it.index < firstPairEnd }.index
-            currentHomework.subSequence(firstPairStart..firstPairEnd)
-        } else {
-            "($currentHomework)"
-        }
+        val toCalculate = toCalculatePart(currentHomework)
 
         var calculatedResult: Long = 0
-
         var currentOpe: String = "+"
         var currentNumber: String = ""
         for (i in toCalculate.indices) {
@@ -84,35 +85,13 @@ class Day18 {
         return finalResult
     }
 
-    private fun calculateAdvancedHomework(calculatingHomework: String): String {
-        val indexMap = mutableMapOf<Int, String>()
-        calculatingHomework.forEachIndexed { index, c ->
-            if (c.toString() == "(" || c.toString() == ")") {
-                indexMap[index] = c.toString()
-            }
-        }
+    private fun calculateAdvancedHomework(currentHomework: String): String {
+        val toCalculate = toCalculatePart(currentHomework)
 
-        val endPMap = indexMap.filter { it.value == ")" }
-        val startPMap = indexMap.filter { it.value == "(" }.toMutableMap()
+        val calculatedResult: Long = calculateSmallSequenceAdvanced(toCalculate)
 
-        val listOfStartEndPair = arrayListOf<Pair<Int, Int>>()
-        for (map in endPMap) {
-            val start = startPMap.filter { it.key < map.key }.keys.last()
-            startPMap.remove(start)
-            listOfStartEndPair.add(start to map.key)
-        }
-
-        val smallSequence = if (listOfStartEndPair.isNotEmpty()) {
-            calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
-        } else {
-            "($calculatingHomework)"
-        }
-
-        val calculatedResult: Long = calculateSmallSequenceAdvanced(smallSequence)
-
-
-        return if (listOfStartEndPair.isNotEmpty()) {
-            calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
+        return if (currentHomework.contains("(")) {
+            currentHomework.replace(toCalculate.toString(), calculatedResult.toString())
         } else {
             calculatedResult.toString()
         }
