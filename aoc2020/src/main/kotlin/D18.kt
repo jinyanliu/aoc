@@ -49,14 +49,14 @@ class Day18 {
         }
 
 
-        var calculatedResult = 0
+        var calculatedResult:Long= 0
 
         var currentOpe:String = "+"
         var currentNumber:String= ""
         for (i in 0..smallSequence.length - 1) {
                 when (smallSequence.get(i).toString()) {
                     "+" -> {
-                        val intNumber = currentNumber.toInt()
+                        val intNumber = currentNumber.toLong()
                         if(currentOpe == "+"){
                             calculatedResult+= intNumber
                         }else{
@@ -65,7 +65,7 @@ class Day18 {
                         currentNumber=""
                         currentOpe= "+"}
                     "*" -> {
-                        val intNumber = currentNumber.toInt()
+                        val intNumber = currentNumber.toLong()
                         if(currentOpe == "+"){
                             calculatedResult+= intNumber
                         }else{
@@ -75,7 +75,7 @@ class Day18 {
                         currentOpe="*"}
                     "(" -> {}
                     ")"->{
-                        val intNumber = currentNumber.toInt()
+                        val intNumber = currentNumber.toLong()
                         if(currentOpe == "+"){
                             calculatedResult+= intNumber
                         }else{
