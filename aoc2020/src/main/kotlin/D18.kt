@@ -3,21 +3,13 @@ import utils.IoHelper
 class Day18 {
     private val inputs = IoHelper.getLines("d18.in")
 
-    fun getSolution1(): Long {
-        var finalResult: Long = 0
-        inputs.forEach {
-            val homework = it.replace(" ", "")
-            var calculatingHomework = homework
-
-            while (calculatingHomework.toLongOrNull() == null) {
-                calculatingHomework = calculateHomework(calculatingHomework)
-            }
-
-            finalResult += calculatingHomework.toLong()
+    fun getSolution1() = inputs.map {
+        var currentHomework = it.replace(" ", "")
+        while (currentHomework.toLongOrNull() == null) {
+            currentHomework = calculateHomework(currentHomework)
         }
-
-        return finalResult
-    }
+        currentHomework.toLong()
+    }.sum()
 
     private fun calculateHomework(calculatingHomework: String): String {
         val indexMap = mutableMapOf<Int, String>()
