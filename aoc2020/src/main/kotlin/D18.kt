@@ -3,25 +3,25 @@ import utils.IoHelper
 class Day18 {
     private val inputs = IoHelper.getLines("d18.in")
 
-    fun getSolution1() {
+    fun getSolution1(): Long {
 
-        var finalResult:Long = 0
+        var finalResult: Long = 0
         inputs.forEach {
             val homework = it.replace(" ", "")
             var calculatingHomework = homework
 
             while (calculatingHomework.toLongOrNull() == null) {
-                calculatingHomework = calculateHomeword(calculatingHomework)
+                calculatingHomework = calculateHomework(calculatingHomework)
             }
 
             finalResult += calculatingHomework.toLong()
             println(calculatingHomework)
         }
 
-        println(finalResult)
+        return finalResult
     }
 
-    private fun calculateHomeword(calculatingHomework: String): String {
+    private fun calculateHomework(calculatingHomework: String): String {
         val indexMap = mutableMapOf<Int, String>()
         calculatingHomework.forEachIndexed { index, c ->
             if (c.toString() == "(" || c.toString() == ")") {
@@ -40,58 +40,60 @@ class Day18 {
         }
 
 
-
         var smallSequence: CharSequence
-        if(listOfStartEndPair.isNotEmpty()){
+        if (listOfStartEndPair.isNotEmpty()) {
             smallSequence = calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
-        }else{
-            smallSequence = "("+ calculatingHomework+")"
+        } else {
+            smallSequence = "(" + calculatingHomework + ")"
         }
 
 
-        var calculatedResult:Long= 0
+        var calculatedResult: Long = 0
 
-        var currentOpe:String = "+"
-        var currentNumber:String= ""
+        var currentOpe: String = "+"
+        var currentNumber: String = ""
         for (i in 0..smallSequence.length - 1) {
-                when (smallSequence.get(i).toString()) {
-                    "+" -> {
-                        val intNumber = currentNumber.toLong()
-                        if(currentOpe == "+"){
-                            calculatedResult+= intNumber
-                        }else{
-                            calculatedResult*= intNumber
-                        }
-                        currentNumber=""
-                        currentOpe= "+"}
-                    "*" -> {
-                        val intNumber = currentNumber.toLong()
-                        if(currentOpe == "+"){
-                            calculatedResult+= intNumber
-                        }else{
-                            calculatedResult*= intNumber
-                        }
-                        currentNumber=""
-                        currentOpe="*"}
-                    "(" -> {}
-                    ")"->{
-                        val intNumber = currentNumber.toLong()
-                        if(currentOpe == "+"){
-                            calculatedResult+= intNumber
-                        }else{
-                            calculatedResult*= intNumber
-                        }
+            when (smallSequence.get(i).toString()) {
+                "+" -> {
+                    val intNumber = currentNumber.toLong()
+                    if (currentOpe == "+") {
+                        calculatedResult += intNumber
+                    } else {
+                        calculatedResult *= intNumber
                     }
-                    else-> currentNumber+= smallSequence.get(i).toString()
+                    currentNumber = ""
+                    currentOpe = "+"
                 }
+                "*" -> {
+                    val intNumber = currentNumber.toLong()
+                    if (currentOpe == "+") {
+                        calculatedResult += intNumber
+                    } else {
+                        calculatedResult *= intNumber
+                    }
+                    currentNumber = ""
+                    currentOpe = "*"
+                }
+                "(" -> {
+                }
+                ")" -> {
+                    val intNumber = currentNumber.toLong()
+                    if (currentOpe == "+") {
+                        calculatedResult += intNumber
+                    } else {
+                        calculatedResult *= intNumber
+                    }
+                }
+                else -> currentNumber += smallSequence.get(i).toString()
+            }
 
 
         }
 
 
-        if(listOfStartEndPair.isNotEmpty()){
+        if (listOfStartEndPair.isNotEmpty()) {
             return calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
-        }else {
+        } else {
             return calculatedResult.toString()
         }
 
