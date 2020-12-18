@@ -1,58 +1,100 @@
 import utils.IoHelper
 
 class Day18 {
-    private val inputs = IoHelper.getLines("d18Test.in")
+    private val inputs = IoHelper.getLines("d18.in")
 
     fun getSolution1() {
-        val homework = inputs.get(0).replace(" ", "")
 
+        var finalResult:Long = 0
+        inputs.forEach {
+            val homework = it.replace(" ", "")
+            var calculatingHomework = homework
+
+            while (calculatingHomework.toLongOrNull() == null) {
+                calculatingHomework = calculateHomeword(calculatingHomework)
+            }
+
+            finalResult += calculatingHomework.toLong()
+            println(calculatingHomework)
+        }
+
+        println(finalResult)
+    }
+
+    private fun calculateHomeword(calculatingHomework: String): String {
         val indexMap = mutableMapOf<Int, String>()
-        homework.forEachIndexed { index, c ->
+        calculatingHomework.forEachIndexed { index, c ->
             if (c.toString() == "(" || c.toString() == ")") {
                 indexMap[index] = c.toString()
             }
         }
-        println(indexMap)
 
         val endPMap = indexMap.filter { it.value == ")" }
         val startPMap = indexMap.filter { it.value == "(" }.toMutableMap()
-        println(endPMap)
-        println(startPMap)
 
-        val mapOfStartEndPair = mutableMapOf<Int, Int>()
+        val listOfStartEndPair = arrayListOf<Pair<Int, Int>>()
         for (map in endPMap) {
             val start = startPMap.filter { it.key < map.key }.keys.last()
             startPMap.remove(start)
-            mapOfStartEndPair[start] = map.key
+            listOfStartEndPair.add(start to map.key)
         }
-        println(mapOfStartEndPair)
 
 
-        //((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2
 
-        var calculatingHomework = homework
+        var smallSequence: CharSequence
+        if(listOfStartEndPair.isNotEmpty()){
+            smallSequence = calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
+        }else{
+            smallSequence = "("+ calculatingHomework+")"
+        }
 
-        mapOfStartEndPair.forEach {
-            println(homework.subSequence(it.key..it.value))
-            val smallSequence = homework.subSequence(it.key..it.value)
 
-            var calculatedResult = 0
-            for (i in 0..smallSequence.length - 1 step 2) {
-                if(i+1 <= smallSequence.length - 1){
-                    when (smallSequence.get(i).toString()) {
-                        "+" -> calculatedResult += smallSequence.get(i + 1).toString().toInt()
-                        "*" -> calculatedResult *= smallSequence.get(i + 1).toString().toInt()
-                        else -> calculatedResult += smallSequence.get(i + 1).toString().toInt()
+        var calculatedResult = 0
+
+        var currentOpe:String = "+"
+        var currentNumber:String= ""
+        for (i in 0..smallSequence.length - 1) {
+                when (smallSequence.get(i).toString()) {
+                    "+" -> {
+                        val intNumber = currentNumber.toInt()
+                        if(currentOpe == "+"){
+                            calculatedResult+= intNumber
+                        }else{
+                            calculatedResult*= intNumber
+                        }
+                        currentNumber=""
+                        currentOpe= "+"}
+                    "*" -> {
+                        val intNumber = currentNumber.toInt()
+                        if(currentOpe == "+"){
+                            calculatedResult+= intNumber
+                        }else{
+                            calculatedResult*= intNumber
+                        }
+                        currentNumber=""
+                        currentOpe="*"}
+                    "(" -> {}
+                    ")"->{
+                        val intNumber = currentNumber.toInt()
+                        if(currentOpe == "+"){
+                            calculatedResult+= intNumber
+                        }else{
+                            calculatedResult*= intNumber
+                        }
                     }
+                    else-> currentNumber+= smallSequence.get(i).toString()
                 }
 
-            }
-            println(calculatedResult)
-
-            println(calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString()))
-            calculatingHomework = calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
 
         }
+
+
+        if(listOfStartEndPair.isNotEmpty()){
+            return calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
+        }else {
+            return calculatedResult.toString()
+        }
+
 
     }
 
