@@ -1,7 +1,18 @@
 import utils.IoHelper
 
 class Day18 {
-    private val inputs = IoHelper.getLines("d18.in")
+    private val inputs = IoHelper.getLines("d18.in").map { it.replace(" ", "") }
+
+    fun getSolution1() = getSolution(::calculateHomework)
+    fun getSolution2() = getSolution(::calculateAdvancedHomework)
+
+    private fun getSolution(calculation: (homework: String) -> String) = inputs.map {
+        var currentHomework = it
+        while (currentHomework.toLongOrNull() == null) {
+            currentHomework = calculation(currentHomework)
+        }
+        currentHomework.toLong()
+    }.sum()
 
     private fun toCalculatePart(currentHomework: String) = if (currentHomework.contains("(")) {
         val firstPairEnd = currentHomework.withIndex().first { it.value.toString() == ")" }.index
@@ -11,14 +22,6 @@ class Day18 {
     } else {
         "($currentHomework)"
     }
-
-    fun getSolution1() = inputs.map {
-        var currentHomework = it.replace(" ", "")
-        while (currentHomework.toLongOrNull() == null) {
-            currentHomework = calculateHomework(currentHomework)
-        }
-        currentHomework.toLong()
-    }.sum()
 
     private fun calculateHomework(currentHomework: String): String {
         val toCalculate = toCalculatePart(currentHomework)
@@ -67,22 +70,6 @@ class Day18 {
         } else {
             calculatedResult.toString()
         }
-    }
-
-    fun getSolution2(): Long {
-        var finalResult: Long = 0
-        inputs.forEach {
-            val homework = it.replace(" ", "")
-            var calculatingHomework = homework
-
-            while (calculatingHomework.toLongOrNull() == null) {
-                calculatingHomework = calculateAdvancedHomework(calculatingHomework)
-            }
-
-            finalResult += calculatingHomework.toLong()
-        }
-
-        return finalResult
     }
 
     private fun calculateAdvancedHomework(currentHomework: String): String {
