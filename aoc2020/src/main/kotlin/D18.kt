@@ -4,7 +4,6 @@ class Day18 {
     private val inputs = IoHelper.getLines("d18.in")
 
     fun getSolution1(): Long {
-
         var finalResult: Long = 0
         inputs.forEach {
             val homework = it.replace(" ", "")
@@ -38,12 +37,10 @@ class Day18 {
             listOfStartEndPair.add(start to map.key)
         }
 
-
-        var smallSequence: CharSequence
-        if (listOfStartEndPair.isNotEmpty()) {
-            smallSequence = calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
+        val smallSequence = if (listOfStartEndPair.isNotEmpty()) {
+            calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
         } else {
-            smallSequence = "(" + calculatingHomework + ")"
+            "($calculatingHomework)"
         }
 
 
@@ -51,7 +48,7 @@ class Day18 {
 
         var currentOpe: String = "+"
         var currentNumber: String = ""
-        for (i in 0..smallSequence.length - 1) {
+        for (i in smallSequence.indices) {
             when (smallSequence.get(i).toString()) {
                 "+" -> {
                     val intNumber = currentNumber.toLong()
@@ -85,15 +82,12 @@ class Day18 {
                 }
                 else -> currentNumber += smallSequence.get(i).toString()
             }
-
-
         }
 
-
-        if (listOfStartEndPair.isNotEmpty()) {
-            return calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
+        return if (listOfStartEndPair.isNotEmpty()) {
+            calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
         } else {
-            return calculatedResult.toString()
+            calculatedResult.toString()
         }
     }
 
@@ -131,39 +125,30 @@ class Day18 {
             listOfStartEndPair.add(start to map.key)
         }
 
-
-        var smallSequence: CharSequence
-        if (listOfStartEndPair.isNotEmpty()) {
-            smallSequence = calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
+        val smallSequence = if (listOfStartEndPair.isNotEmpty()) {
+            calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
         } else {
-            smallSequence = "(" + calculatingHomework + ")"
+            "($calculatingHomework)"
         }
 
-        //6+9 * 8+6
-
-        var calculatedResult: Long = calculateSmallSequenceAdvanced(smallSequence)
+        val calculatedResult: Long = calculateSmallSequenceAdvanced(smallSequence)
 
 
-        if (listOfStartEndPair.isNotEmpty()) {
-            return calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
+        return if (listOfStartEndPair.isNotEmpty()) {
+            calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
         } else {
-            return calculatedResult.toString()
+            calculatedResult.toString()
         }
     }
 
     private fun calculateSmallSequenceAdvanced(smallSequence: CharSequence): Long {
-        // 7 * 3 * 3+9 * 3+54
-
-        //(7*3 * 354)
-
-        var result: Long = 0
+        val result: Long
 
         if (smallSequence.toString().contains("+")) {
 
             var currentDoingSequence = smallSequence.toString()
 
             while (currentDoingSequence.contains("+")) {
-                var calculatedResult: Long = 0
                 val sequencesWithPlus =
                     currentDoingSequence.drop(1).dropLast(1).split("*").filter { it.toLongOrNull() == null }
 
@@ -186,8 +171,8 @@ class Day18 {
     private fun calculateHomeworkWithOnlyMulti(smallSequence: CharSequence): Long {
         var calculatedResult: Long = 1
         var currentNumber: String = ""
-        for (i in 0..smallSequence.length - 1) {
-            when (smallSequence.get(i).toString()) {
+        for (i in smallSequence.indices) {
+            when (smallSequence[i].toString()) {
                 "*" -> {
                     val intNumber = currentNumber.toLong()
                     calculatedResult *= intNumber
@@ -200,24 +185,24 @@ class Day18 {
                     calculatedResult *= intNumber
 
                 }
-                else -> currentNumber += smallSequence.get(i).toString()
+                else -> currentNumber += smallSequence[i].toString()
             }
         }
         return calculatedResult
     }
 
     private fun calculateHomeworkWithOnlyPlus(smallSequence: CharSequence): Long {
-        val toDo = smallSequence.toString() + "+"
+        val toDo = "$smallSequence+"
         var calculatedResult: Long = 0
         var currentNumber: String = ""
-        for (i in 0..toDo.length - 1) {
-            when (toDo.get(i).toString()) {
+        for (i in toDo.indices) {
+            when (toDo[i].toString()) {
                 "+" -> {
                     val intNumber = currentNumber.toLong()
                     calculatedResult += intNumber
                     currentNumber = ""
                 }
-                else -> currentNumber += toDo.get(i).toString()
+                else -> currentNumber += toDo[i].toString()
             }
         }
         return calculatedResult
