@@ -15,7 +15,6 @@ class Day18 {
             }
 
             finalResult += calculatingHomework.toLong()
-            println(calculatingHomework)
         }
 
         return finalResult
@@ -96,15 +95,138 @@ class Day18 {
         } else {
             return calculatedResult.toString()
         }
-
-
     }
 
-    fun getSolution2() {
+    fun getSolution2(): Long {
+        var finalResult: Long = 0
+        inputs.forEach {
+            val homework = it.replace(" ", "")
+            var calculatingHomework = homework
+
+            while (calculatingHomework.toLongOrNull() == null) {
+                calculatingHomework = calculateAdvancedHomework(calculatingHomework)
+            }
+
+            finalResult += calculatingHomework.toLong()
+        }
+
+        return finalResult
+    }
+
+    private fun calculateAdvancedHomework(calculatingHomework: String): String {
+        val indexMap = mutableMapOf<Int, String>()
+        calculatingHomework.forEachIndexed { index, c ->
+            if (c.toString() == "(" || c.toString() == ")") {
+                indexMap[index] = c.toString()
+            }
+        }
+
+        val endPMap = indexMap.filter { it.value == ")" }
+        val startPMap = indexMap.filter { it.value == "(" }.toMutableMap()
+
+        val listOfStartEndPair = arrayListOf<Pair<Int, Int>>()
+        for (map in endPMap) {
+            val start = startPMap.filter { it.key < map.key }.keys.last()
+            startPMap.remove(start)
+            listOfStartEndPair.add(start to map.key)
+        }
+
+
+        var smallSequence: CharSequence
+        if (listOfStartEndPair.isNotEmpty()) {
+            smallSequence = calculatingHomework.subSequence(listOfStartEndPair[0].first..listOfStartEndPair[0].second)
+        } else {
+            smallSequence = "(" + calculatingHomework + ")"
+        }
+
+        //6+9 * 8+6
+
+        var calculatedResult: Long = calculateSmallSequenceAdvanced(smallSequence)
+
+
+        if (listOfStartEndPair.isNotEmpty()) {
+            return calculatingHomework.replace(smallSequence.toString(), calculatedResult.toString())
+        } else {
+            return calculatedResult.toString()
+        }
+    }
+
+    private fun calculateSmallSequenceAdvanced(smallSequence: CharSequence): Long {
+        // 7 * 3 * 3+9 * 3+54
+
+        //(7*3 * 354)
+
+        var result: Long = 0
+
+        if (smallSequence.toString().contains("+")) {
+
+            var currentDoingSequence = smallSequence.toString()
+
+            while (currentDoingSequence.contains("+")) {
+                var calculatedResult: Long = 0
+                val sequencesWithPlus =
+                    currentDoingSequence.drop(1).dropLast(1).split("*").filter { it.toLongOrNull() == null }
+
+                val firstSequencesWithPlus = sequencesWithPlus.first()
+                val smallResult = calculateHomeworkWithOnlyPlus(firstSequencesWithPlus)
+
+                currentDoingSequence =
+                    currentDoingSequence.replace(firstSequencesWithPlus.toString(), smallResult.toString())
+            }
+
+            result = calculateHomeworkWithOnlyMulti(currentDoingSequence)
+
+        } else {
+            result = calculateHomeworkWithOnlyMulti(smallSequence)
+        }
+
+        return result
+    }
+
+    private fun calculateHomeworkWithOnlyMulti(smallSequence: CharSequence): Long {
+        var calculatedResult: Long = 1
+        var currentNumber: String = ""
+        for (i in 0..smallSequence.length - 1) {
+            when (smallSequence.get(i).toString()) {
+                "*" -> {
+                    val intNumber = currentNumber.toLong()
+                    calculatedResult *= intNumber
+                    currentNumber = ""
+                }
+                "(" -> {
+                }
+                ")" -> {
+                    val intNumber = currentNumber.toLong()
+                    calculatedResult *= intNumber
+
+                }
+                else -> currentNumber += smallSequence.get(i).toString()
+            }
+        }
+        return calculatedResult
+    }
+
+    private fun calculateHomeworkWithOnlyPlus(smallSequence: CharSequence): Long {
+        val toDo = smallSequence.toString() + "+"
+        var calculatedResult: Long = 0
+        var currentNumber: String = ""
+        for (i in 0..toDo.length - 1) {
+            when (toDo.get(i).toString()) {
+                "+" -> {
+                    val intNumber = currentNumber.toLong()
+                    calculatedResult += intNumber
+                    currentNumber = ""
+                }
+                else -> currentNumber += toDo.get(i).toString()
+            }
+        }
+        return calculatedResult
     }
 }
 
 fun main() {
+    //6811433855019
     println(Day18().getSolution1())
+    //129770152447927
     println(Day18().getSolution2())
 }
