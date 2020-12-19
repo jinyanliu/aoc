@@ -84,25 +84,71 @@ class Day19Task2 {
         println(array8)
         println(array11)
 
-        val combinations = arrayListOf<String>()
+        val combinations = arrayListOf<String>("8 11")
+        var combinationsResult = arrayListOf<String>()
+        combinations.forEach {oneCheck->
+            var combi = mutableListOf<String>()
+            val elements = oneCheck.split(" ")
+            for(char in elements){
+                if(char.toString() == "8"){
+                    if(combi.isEmpty()){
+                        combi.addAll(array8)
+                    }else {
+                        combi = combi.flatMap {origin->
+                            val newL = mutableListOf<String>()
+                            for(item in array8){
+                                newL.add(origin+" "+item)
+                            }
+                            newL
+                        }.toMutableList()
+                    }
+                }else if(char.toString() == "11") {
+                    if(combi.isEmpty()){
+                        combi.addAll(array11)
+                    }else {
+                        combi = combi.flatMap {origin->
+                            val newL = mutableListOf<String>()
+                            for(item in array11){
+                                newL.add(origin+" "+item)
+                            }
+                            newL
+                        }.toMutableList()
+                    }
+                }else if(char.toString() == "A" ||char.toString() == "B"){
+                    if(combi.isEmpty()){
+                        combi.add(char.toString())
+                    }else {
+                        combi = combi.map { it+" "+char.toString() }.toMutableList()
+                    }
+                }
+            }
+            combinationsResult.addAll(combi)
+        }
+
+
+
+
+
+
+/*        val combinations = arrayListOf<String>()
         for (item8 in array8) {
             for (item11 in array11) {
                 combinations.add(item8 + item11)
             }
-        }
-        println(combinations)
+        }*/
+        println(combinationsResult)
 
-        val cleanedCom = combinations.map { it.replace(" ", "") }
-        println(cleanedCom)
-        cleanedCom.forEach {
-            if (it.all { it.toString().toLongOrNull() == null }) {
-/*                val mapOfContent = mutableMapOf<Long, List<String>>()
-                for (char in it.withIndex()) {
-                    mapOfContent[char.index.toLong()] = mapOfABList[char.toString()]!!
-                }*/
 
+
+
+
+
+        combinationsResult.forEach {
+            val uncheckedCom = arrayListOf<String>()
+            val toDoList = it.split(" ")
+            if (toDoList.all { it.toString().toLongOrNull() == null }) {
                 var combi = mutableListOf<String>()
-                for(char in it){
+                for(char in toDoList){
                     if(char.toString() == "A"){
                         if(combi.isEmpty()){
                             combi.addAll(rulesOf42)
@@ -130,15 +176,6 @@ class Day19Task2 {
                     }
                 }
 
-
-/*                for (k1 in rulesOf42) {
-                    for (k2 in rulesOf42) {
-                        for (k3 in rulesOf31) {
-                            combi.add(k1 + k2 + k3)
-                        }
-                    }
-                }*/
-
                 println(combi)
                 val checkedSize = combi[0].length
 
@@ -151,7 +188,9 @@ class Day19Task2 {
                 println("checked size = "+ checkedSize)
                 println("left messages = "+messagesToCheck)
                 println("left messages size = "+messagesToCheck.size)
-
+            }else {
+                uncheckedCom.add(it)
+                println(uncheckedCom)
             }
         }
 
