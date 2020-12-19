@@ -11,47 +11,22 @@ class Day19 {
         return inputsMap
     }
 
-
-    fun getSolution1() {
-/*        println(inputsMap())
-        val zeroRule = inputsMap()[0]!!
-        var possibleRules = arrayListOf<String>()
-        possibleRules.addAll(zeroRule.split(" "))
-        println(possibleRules)
-
-        while (true){
-            val newToCheck = arrayListOf<String>()
-
-            for (possibleRule in possibleRules) {
-                val innerRules = inputsMap().get(possibleRule.toLong())!!
-                if(innerRules.startsWith("\"")){
-                    newToCheck.add(innerRules)
-                }else if(innerRules.contains("|")){
-                    if(newToCheck.isNotEmpty()){
-
-                    }
-                }else {
-
-                }
-            }
-        }*/
-
-
+    fun getSolution1(): Long {
         var toCheck = mutableListOf<String>("0")
         while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
-            var outerList = mutableListOf<String>()
+            val outerList = mutableListOf<String>()
             toCheck.forEach { oneString ->
                 var newList = mutableListOf<String>()
                 val elements = oneString.split(" ")
                 elements.forEach { element ->
-                    if(element=="") return@forEach
+                    if (element == "") return@forEach
                     if (element.toLongOrNull() != null) {
                         val values = inputsMap().get(element.toLong())!!
                         if (!values.contains("|")) {
                             if (newList.isEmpty()) {
                                 newList.add(values)
                             } else {
-                                newList = newList.map { it + " " + values+" " }.toMutableList()
+                                newList = newList.map { "$it $values " }.toMutableList()
                             }
                         } else {
                             if (newList.isEmpty()) {
@@ -69,31 +44,20 @@ class Day19 {
                         if (newList.isEmpty()) {
                             newList.add(element)
                         } else {
-                            newList = newList.map { it + " " + element+ " " }.toMutableList()
+                            newList = newList.map { "$it $element " }.toMutableList()
                         }
                     }
                 }
                 outerList.addAll(newList)
             }
             toCheck = outerList
-            println("c")
-            for (check in toCheck) {
-                println(check)
-                println()
-            }
-
-            println()
-            println()
         }
 
         val finalRules = toCheck.map {
             it.replace("\"", "").replace(" ", "")
         }
         println(finalRules)
-
-        println(messages.count { finalRules.contains(it) })
-
-
+        return messages.count { finalRules.contains(it) }.toLong()
     }
 
     fun getSolution2() {
@@ -101,6 +65,7 @@ class Day19 {
 }
 
 fun main() {
+    //109
     println(Day19().getSolution1())
     println(Day19().getSolution2())
 }
