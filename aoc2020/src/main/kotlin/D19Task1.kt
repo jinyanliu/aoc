@@ -11,7 +11,7 @@ class Day19Task1 {
         return inputsMap
     }
 
-    fun getSolution1(): Long {
+    fun getSolution(): Long {
         var toCheck = mutableListOf<String>("0")
         while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
             val outerList = mutableListOf<String>()
@@ -49,6 +49,9 @@ class Day19Task1 {
                     }
                 }
                 outerList.addAll(newList)
+                for (item in newList) {
+                    println(item)
+                }
             }
             toCheck = outerList
         }
@@ -59,13 +62,9 @@ class Day19Task1 {
         println(finalRules)
         return messages.count { finalRules.contains(it) }.toLong()
     }
-
-    fun getSolution2() {
-    }
 }
 
 fun main() {
     //109
-    println(Day19Task1().getSolution1())
-    println(Day19Task1().getSolution2())
+    println(Day19Task1().getSolution())
 }
