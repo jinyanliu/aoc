@@ -37,16 +37,28 @@ class Day19 {
         }*/
 
 
-        var toCheck = arrayListOf<String>("0")
-        while (toCheck.any { it.any { it.toString().toLongOrNull()!= null } } ){
-            val newList = arrayListOf<String>()
-            toCheck.forEach {
-                if(it.toLongOrNull()!= null){
-                    val values = inputsMap().get(it.toLong())!!
-                    if(!values.contains("|")){
-                        newList.add(values)
+        var toCheck = mutableListOf<String>("0")
+        while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
+            var newList = mutableListOf<String>()
+            toCheck.forEach { oneString ->
+                val elements = oneString.split(" ")
+                elements.forEach { element ->
+                    if (element.toLongOrNull() != null) {
+                        val values = inputsMap().get(element.toLong())!!
+                        if (!values.contains("|")) {
+                            if(newList.isEmpty()){
+                                newList.add(values)
+                            }else {
+                                newList = newList.map { it+values }.toMutableList()
+                            }
+
+                        }else {
+
+                        }
                     }
                 }
+
+
             }
             toCheck = newList
             println(toCheck)
