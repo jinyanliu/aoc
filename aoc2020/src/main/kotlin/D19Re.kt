@@ -1,15 +1,9 @@
 import utils.IoHelper
-import kotlin.math.round
 
-class Day19Task2 {
+class Day19Task3 {
     private val inputs = IoHelper.getSections("d19Test2Task2.in")
     private val rules = inputs[0].lines()
     private val messages = inputs[1].lines()
-
-    // A
-    private val rulesOf42 = getRulesFor("42")
-    // B
-    private val rulesOf31 = getRulesFor("31")
 
     private fun inputsMap(): Map<Long, String> {
         val inputsMap = mutableMapOf<Long, String>()
@@ -66,6 +60,16 @@ class Day19Task2 {
     }
 
     fun getTask2Solution() {
+        var validCount:Long = 0
+        var messagesToCheck = messages.toMutableList()
+
+        // A
+        val rulesOf42 = getRulesFor("42")
+        // B
+        val rulesOf31 = getRulesFor("31")
+        println(rulesOf42)
+        println(rulesOf31)
+
         val mapOfABList = mutableMapOf<String, List<String>>()
         mapOfABList["A"] = rulesOf42
         mapOfABList["B"] = rulesOf31
@@ -80,15 +84,8 @@ class Day19Task2 {
         println(array8)
         println(array11)
 
-        var validCount:Long = 0
-        var messagesToCheck = messages.toMutableList()
-/*        messagesToCheck = arrayListOf(
-            "abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa", "babbbbaabbbbbabbbbbbaabaaabaaa", "aaabbbbbbaaaabaababaabababbabaaabbababababaaa", "bbbbbbbaaaabbbbaaabbabaaa", "bbbababbbbaaaaaaaabbababaaababaabab", "baabbaaaabbaaaababbaababb", "abbbbabbbbaaaababbbbbbaaaababb", "aaaaabbaabaaaaababaa", "aaaabbaabbaaaaaaabbbabbbaaabbaabaaa", "babaaabbbaaabaababbaabababaaab", "aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba")*/
-
         var combinations = arrayListOf<String>("8 11")
-
         while(messagesToCheck.isNotEmpty()){
-
             var combinationsResult = arrayListOf<String>()
             combinations.forEach {oneCheck->
                 var combi = mutableListOf<String>()
@@ -129,18 +126,12 @@ class Day19Task2 {
                 combinationsResult.addAll(combi)
             }
             println(combinationsResult)
-
             val uncheckedCom = arrayListOf<String>()
-            uncheckedCom.addAll(combinationsResult)
-            combinations = uncheckedCom
-
-            var toDo = combinationsResult.filter{it.split(" ").all { it.toString().toLongOrNull() == null }}.first()
-
-            combinations.remove(toDo)
-
-            toDo = toDo.replace(" ", "")
+            combinationsResult.forEach {
+                val toDoList = it.split(" ")
+                if (toDoList.all { it.toString().toLongOrNull() == null }) {
                     var combi = mutableListOf<String>()
-                    for(char in toDo){
+                    for(char in toDoList){
                         if(char.toString() == "A"){
                             if(combi.isEmpty()){
                                 combi.addAll(rulesOf42)
@@ -167,28 +158,25 @@ class Day19Task2 {
                             }
                         }
                     }
-
-
+                    println(combi)
                     val checkedSize = combi[0].length
-
                     validCount += messages.count { combi.contains(it) }.toLong()
-
                     messagesToCheck = messagesToCheck.filter { it.length != checkedSize }.toMutableList()
-
                     println("valid count = "+validCount)
                     println("valid messages = "+messages.filter { combi.contains(it) })
                     println("checked size = "+ checkedSize)
                     println("left messages = "+messagesToCheck)
                     println("left messages size = "+messagesToCheck.size)
-
-
-
+                }else {
+                    uncheckedCom.add(it)
+                    println(uncheckedCom)
+                }
+            }
+            combinations= uncheckedCom
         }
-
-
     }
 }
 
 fun main() {
-    println(Day19Task2().getTask2Solution())
+    println(Day19Task3().getTask2Solution())
 }
