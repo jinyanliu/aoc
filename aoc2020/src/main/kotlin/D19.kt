@@ -39,8 +39,9 @@ class Day19 {
 
         var toCheck = mutableListOf<String>("0")
         while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
-            var newList = mutableListOf<String>()
+            var outerList = mutableListOf<String>()
             toCheck.forEach { oneString ->
+                var newList = mutableListOf<String>()
                 val elements = oneString.split(" ")
                 elements.forEach { element ->
                     if (element.toLongOrNull() != null) {
@@ -68,10 +69,9 @@ class Day19 {
                         }
                     }
                 }
-
-
+                outerList.addAll(newList)
             }
-            toCheck = newList
+            toCheck = outerList
             for (check in toCheck){
                 println(check)
                 println()
@@ -79,9 +79,17 @@ class Day19 {
 
             println()
             println()
-
-
         }
+
+        val finalRules = toCheck.map {
+            it.replace("\"", "")
+        }
+        println(finalRules)
+
+        println(messages.count{finalRules.contains(it)})
+
+
+
 
     }
 
