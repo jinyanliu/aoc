@@ -1,7 +1,7 @@
 import utils.IoHelper
 
 class Day19Task2 {
-    private val inputs = IoHelper.getSections("d19.in")
+    private val inputs = IoHelper.getSections("d19Test2Task2.in")
     private val rules = inputs[0].lines()
     private val messages = inputs[1].lines()
 
@@ -11,8 +11,8 @@ class Day19Task2 {
         return inputsMap
     }
 
-    fun getSolution1(): Long {
-        var toCheck = mutableListOf<String>("0")
+    fun getRulesFor(start: String): List<String> {
+        var toCheck = mutableListOf<String>(start)
         while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
             val outerList = mutableListOf<String>()
             toCheck.forEach { oneString ->
@@ -56,15 +56,80 @@ class Day19Task2 {
         val finalRules = toCheck.map {
             it.replace("\"", "").replace(" ", "")
         }
-        println(finalRules)
-        return messages.count { finalRules.contains(it) }.toLong()
+        return finalRules
     }
 
-    fun getSolution2() {
+    fun getTask2Solution() {
+        var validCount:Long = 0
+        var messagesToCheck = messages.toMutableList()
+
+        // A
+        val rulesOf42 = getRulesFor("42")
+        // B
+        val rulesOf31 = getRulesFor("31")
+        println(rulesOf42)
+        println(rulesOf31)
+
+        val mapOfABList = mutableMapOf<String, List<String>>()
+        mapOfABList["A"] = rulesOf42
+        mapOfABList["B"] = rulesOf31
+
+        val array8 = arrayListOf("42", "42 8").map {
+            it.replace("42", "A").replace("31", "B")
+        }
+        val array11 = arrayListOf("42 31", "42 11 31").map {
+            it.replace("42", "A").replace("31", "B")
+        }
+
+        println(array8)
+        println(array11)
+
+        val combinations = arrayListOf<String>()
+        for (item8 in array8) {
+            for (item11 in array11) {
+                combinations.add(item8 + item11)
+            }
+        }
+        println(combinations)
+
+        val cleanedCom = combinations.map { it.replace(" ", "") }
+        println(cleanedCom)
+        cleanedCom.forEach {
+            if (it.all { it.toString().toLongOrNull() == null }) {
+/*                val mapOfContent = mutableMapOf<Long, List<String>>()
+                for (char in it.withIndex()) {
+                    mapOfContent[char.index.toLong()] = mapOfABList[char.toString()]!!
+                }*/
+
+                val combi = arrayListOf<String>()
+                for (k1 in rulesOf42) {
+                    for (k2 in rulesOf42) {
+                        for (k3 in rulesOf31) {
+                            combi.add(k1 + k2 + k3)
+                        }
+                    }
+                }
+
+                println(combi)
+                val checkedSize = combi[0].length
+
+                validCount += messages.count { combi.contains(it) }.toLong()
+
+                messagesToCheck = messagesToCheck.filter { it.length > checkedSize }.toMutableList()
+
+                println("valid count = "+validCount)
+                println("valid messages = "+messages.filter { combi.contains(it) })
+                println("checked size = "+ checkedSize)
+                println("left messages = "+messagesToCheck)
+                println("left messages size = "+messagesToCheck.size)
+
+            }
+        }
+
+
     }
 }
 
 fun main() {
-    println(Day19Task1().getSolution1())
-    println(Day19Task1().getSolution2())
+    println(Day19Task2().getTask2Solution())
 }
