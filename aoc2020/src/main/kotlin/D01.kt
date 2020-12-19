@@ -58,4 +58,14 @@ fun main() {
             println(it.javaClass)
         }
     }
+
+    println(
+        genCombo(
+            listOf(
+                listOf("4"),
+                listOf("2 3", "3,2"),
+                listOf("5")
+            )
+        )
+    )
 }
