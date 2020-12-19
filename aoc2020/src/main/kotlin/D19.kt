@@ -1,7 +1,8 @@
 class Day19 {
     fun getAllRulesFor(inputsMap: Map<Long, String>, start: String): List<String> {
+        var resolvedList = mutableListOf<String>()
         var toCheck = mutableListOf(start)
-        while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
+        while (toCheck.isNotEmpty()) {
             val outerList = mutableListOf<String>()
             toCheck.forEach { oneString ->
                 var newList = mutableListOf<String>()
@@ -35,14 +36,13 @@ class Day19 {
                     }
                 }
                 outerList.addAll(newList)
-                for (item in newList) {
-                    println(item)
-                }
+                for (item in newList) { println(item) }
             }
-            toCheck = outerList
+            resolvedList.addAll(outerList.filter { it.all { it.toString().toLongOrNull() == null } })
+            toCheck = outerList.filter { it.any { it.toString().toLongOrNull() != null } }.toMutableList()
         }
 
-        return toCheck.map {
+        return resolvedList.map {
             it.replace("\"", "").replace(" ", "")
         }
     }
