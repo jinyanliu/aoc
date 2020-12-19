@@ -13,51 +13,36 @@ class Day19Task2 {
 
     private val rulesOfA = Day19().getAllRulesFor(inputsMap(), "42")
     private val rulesOfB = Day19().getAllRulesFor(inputsMap(), "31")
+    private val mapOfABList = mutableMapOf("A" to rulesOfA, "B" to rulesOfB)
+    private val charSizeOfAB = rulesOfA[0].length
 
-    fun getSolution() {
-        val mapOfABList = mutableMapOf<String, List<String>>()
-        mapOfABList["A"] = rulesOfA
-        mapOfABList["B"] = rulesOfB
-        println(rulesOfA)
-        println(rulesOfB)
+    private val array8 = arrayListOf("42", "42 8").map {
+        it.replace("42", "A").replace("31", "B")
+    }
+    private val array11 = arrayListOf("42 31", "42 11 31").map {
+        it.replace("42", "A").replace("31", "B")
+    }
 
-        val array8 = arrayListOf("42", "42 8").map {
-            it.replace("42", "A").replace("31", "B")
-        }
-        val array11 = arrayListOf("42 31", "42 11 31").map {
-            it.replace("42", "A").replace("31", "B")
-        }
-
-        println(array8)
-        println(array11)
-
+    fun getSolution(): Long {
         var validCount: Long = 0
         var messagesToCheck = messages.toMutableList()
-
         var combinations = arrayListOf("8 11")
-
         while (messagesToCheck.isNotEmpty()) {
-
-            combinations = getCombinationResults(combinations, array8, array11)
-
-            var toDo =
-                combinations.filter { it.split(" ").all { it.toLongOrNull() == null } }.sortedBy { it.length }.first()
-
+            combinations = getCombinations(combinations, array8, array11)
+            var toDo = combinations.filter { it.split(" ").all { it.toLongOrNull() == null } }.minBy { it.length }!!
             combinations.remove(toDo)
-
             toDo = toDo.replace(" ", "")
-
             val toDoSize = toDo.length
-            val targetStringSize = toDoSize * 8
+            val targetStringSize = toDoSize * charSizeOfAB
             val targetMessages = messagesToCheck.filter { it.length == targetStringSize }
 
             var targetMessagesValidCount = 0
             targetMessages.forEach { singleMessage ->
                 var toDoIndex = 0
                 var valid = true
-                for (i in singleMessage.indices step 8) {
-                    val currentTodoKey = toDo.get(toDoIndex).toString()
-                    if (!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i..i + 7))) {
+                for (i in singleMessage.indices step charSizeOfAB) {
+                    val currentTodoKey = toDo[toDoIndex].toString()
+                    if (!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i until i + charSizeOfAB))) {
                         valid = false
                     }
                     toDoIndex += 1
@@ -67,19 +52,13 @@ class Day19Task2 {
                     messagesToCheck.remove(singleMessage)
                 }
             }
-
             validCount += targetMessagesValidCount
-
             messagesToCheck = messagesToCheck.filter { it.length >= targetStringSize }.toMutableList()
-
-            println("valid count = $validCount")
-            println("checked size = $targetStringSize")
-            println("left messages = $messagesToCheck")
-            println("left messages size = " + messagesToCheck.size)
         }
+        return validCount
     }
 
-    private fun getCombinationResults(
+    private fun getCombinations(
         combinations: ArrayList<String>,
         array8: List<String>,
         array11: List<String>
@@ -90,29 +69,9 @@ class Day19Task2 {
             val elements = oneCheck.split(" ")
             for (char in elements) {
                 if (char == "8") {
-                    if (combi.isEmpty()) {
-                        combi.addAll(array8)
-                    } else {
-                        combi = combi.flatMap { origin ->
-                            val newL = mutableListOf<String>()
-                            for (item in array8) {
-                                newL.add("$origin $item")
-                            }
-                            newL
-                        }.toMutableList()
-                    }
+                    combi = transform(combi, array8)
                 } else if (char == "11") {
-                    if (combi.isEmpty()) {
-                        combi.addAll(array11)
-                    } else {
-                        combi = combi.flatMap { origin ->
-                            val newL = mutableListOf<String>()
-                            for (item in array11) {
-                                newL.add("$origin $item")
-                            }
-                            newL
-                        }.toMutableList()
-                    }
+                    combi = transform(combi, array11)
                 } else if (char == "A" || char == "B") {
                     if (combi.isEmpty()) {
                         combi.add(char)
@@ -124,6 +83,25 @@ class Day19Task2 {
             combinationsResult.addAll(combi)
         }
         return combinationsResult
+    }
+
+    private fun transform(
+        combi: MutableList<String>,
+        array8: List<String>
+    ): MutableList<String> {
+        var transformedCombi = combi
+        if (transformedCombi.isEmpty()) {
+            transformedCombi.addAll(array8)
+        } else {
+            transformedCombi = transformedCombi.flatMap { origin ->
+                val newL = mutableListOf<String>()
+                for (item in array8) {
+                    newL.add("$origin $item")
+                }
+                newL
+            }.toMutableList()
+        }
+        return transformedCombi
     }
 }
 
