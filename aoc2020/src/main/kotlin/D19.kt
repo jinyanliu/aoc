@@ -1,7 +1,7 @@
 import utils.IoHelper
 
 class Day19 {
-    private val inputs = IoHelper.getSections("d19Test.in")
+    private val inputs = IoHelper.getSections("d19.in")
     private val rules = inputs[0].lines()
     private val messages = inputs[1].lines()
 
@@ -44,35 +44,40 @@ class Day19 {
                 var newList = mutableListOf<String>()
                 val elements = oneString.split(" ")
                 elements.forEach { element ->
+                    if(element=="") return@forEach
                     if (element.toLongOrNull() != null) {
                         val values = inputsMap().get(element.toLong())!!
                         if (!values.contains("|")) {
-                            if(newList.isEmpty()){
+                            if (newList.isEmpty()) {
                                 newList.add(values)
-                            }else {
-                                newList = newList.map { it+values }.toMutableList()
+                            } else {
+                                newList = newList.map { it + " " + values+" " }.toMutableList()
                             }
-                        }else {
-                            if(newList.isEmpty()){
-
-                            }else {
+                        } else {
+                            if (newList.isEmpty()) {
                                 val twoValues = values.split(" | ")
-                                newList = newList.flatMap { arrayListOf(it, it) }.mapIndexed { index, s -> s+" "+twoValues[index%2]+" " }.toMutableList()
+                                newList.add(twoValues[0])
+                                newList.add(twoValues[1])
+                            } else {
+                                val twoValues = values.split(" | ")
+                                newList = newList.flatMap { arrayListOf(it, it) }
+                                    .mapIndexed { index, s -> s + " " + twoValues[index % 2] + " " }.toMutableList()
 
                             }
                         }
-                    }else {
-                        if(newList.isEmpty()){
+                    } else {
+                        if (newList.isEmpty()) {
                             newList.add(element)
-                        }else {
-                            newList = newList.map { it+element }.toMutableList()
+                        } else {
+                            newList = newList.map { it + " " + element+ " " }.toMutableList()
                         }
                     }
                 }
                 outerList.addAll(newList)
             }
             toCheck = outerList
-            for (check in toCheck){
+            println("c")
+            for (check in toCheck) {
                 println(check)
                 println()
             }
@@ -82,13 +87,11 @@ class Day19 {
         }
 
         val finalRules = toCheck.map {
-            it.replace("\"", "")
+            it.replace("\"", "").replace(" ", "")
         }
         println(finalRules)
 
-        println(messages.count{finalRules.contains(it)})
-
-
+        println(messages.count { finalRules.contains(it) })
 
 
     }
