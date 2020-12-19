@@ -72,6 +72,23 @@ class Day18 {
         return calculatedResult
     }
 
+    private fun calculateCurrentHomeWorkAdvanced(currentHomework: CharSequence): Long {
+        val result: Long
+        if (currentHomework.toString().contains("+")) {
+            var calculatingHomework = currentHomework.toString()
+            while (calculatingHomework.contains("+")) {
+                val firstSequencesWithPlus =
+                    calculatingHomework.drop(1).dropLast(1).split("*").first { it.toLongOrNull() == null }
+                val smallResult = calculatePlus(firstSequencesWithPlus)
+                calculatingHomework = calculatingHomework.replace(firstSequencesWithPlus, smallResult.toString())
+            }
+            result = calculateMultiply(calculatingHomework)
+        } else {
+            result = calculateMultiply(currentHomework)
+        }
+        return result
+    }
+
     private fun calculateOneOperand(
         currentNumber: Long,
         currentOpe: String,
@@ -86,24 +103,7 @@ class Day18 {
         return currentResult
     }
 
-    private fun calculateCurrentHomeWorkAdvanced(currentHomework: CharSequence): Long {
-        val result: Long
-        if (currentHomework.toString().contains("+")) {
-            var calculatingHomework = currentHomework.toString()
-            while (calculatingHomework.contains("+")) {
-                val firstSequencesWithPlus =
-                    calculatingHomework.drop(1).dropLast(1).split("*").first { it.toLongOrNull() == null }
-                val smallResult = calculatePlus(firstSequencesWithPlus)
-                calculatingHomework = calculatingHomework.replace(firstSequencesWithPlus, smallResult.toString())
-            }
-            result = calculateHomeworkWithOnlyMulti(calculatingHomework)
-        } else {
-            result = calculateHomeworkWithOnlyMulti(currentHomework)
-        }
-        return result
-    }
-
-    private fun calculateHomeworkWithOnlyMulti(smallSequence: CharSequence) =
+    private fun calculateMultiply(smallSequence: CharSequence) =
         smallSequence.toString().drop(1).dropLast(1).split("*").map { it.toLong() }.reduce { acc, l -> acc * l }
 
     private fun calculatePlus(smallSequence: CharSequence) =
