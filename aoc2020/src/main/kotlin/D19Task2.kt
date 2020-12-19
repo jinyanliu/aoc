@@ -1,5 +1,4 @@
 import utils.IoHelper
-import kotlin.math.round
 
 class Day19Task2 {
     private val inputs = IoHelper.getSections("d19Test2Task2.in")
@@ -8,6 +7,7 @@ class Day19Task2 {
 
     // A
     private val rulesOf42 = getRulesFor("42")
+
     // B
     private val rulesOf31 = getRulesFor("31")
 
@@ -80,19 +80,20 @@ class Day19Task2 {
         println(array8)
         println(array11)
 
-        var validCount:Long = 0
+        var validCount: Long = 0
         var messagesToCheck = messages.toMutableList()
 /*        messagesToCheck = arrayListOf(
             "abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa", "babbbbaabbbbbabbbbbbaabaaabaaa", "aaabbbbbbaaaabaababaabababbabaaabbababababaaa", "bbbbbbbaaaabbbbaaabbabaaa", "bbbababbbbaaaaaaaabbababaaababaabab", "baabbaaaabbaaaababbaababb", "abbbbabbbbaaaababbbbbbaaaababb", "aaaaabbaabaaaaababaa", "aaaabbaabbaaaaaaabbbabbbaaabbaabaaa", "babaaabbbaaabaababbaabababaaab", "aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba")*/
 
         var combinations = arrayListOf<String>("8 11")
 
-        while(messagesToCheck.isNotEmpty()){
+        while (messagesToCheck.isNotEmpty()) {
 
             var combinationsResult: MutableList<String>
-            if(combinations.any {it.split(" ").all { it.toString().toLongOrNull() == null }  }){
-                combinationsResult = combinations.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.toMutableList()
-            }else {
+            if (combinations.any { it.split(" ").all { it.toString().toLongOrNull() == null } }) {
+                combinationsResult =
+                    combinations.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.toMutableList()
+            } else {
                 combinationsResult = getCombinationResults(combinations, array8, array11)
                 val uncheckedCom = arrayListOf<String>()
                 uncheckedCom.addAll(combinationsResult)
@@ -100,14 +101,15 @@ class Day19Task2 {
             }
 
 
-
-
-            var toDo = combinationsResult.filter{it.split(" ").all { it.toString().toLongOrNull() == null }}.first()
+            var toDo = combinationsResult.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.sortedBy { it.length }.first()
 
             combinations.remove(toDo)
 
             toDo = toDo.replace(" ", "")
-                    var combi = mutableListOf<String>()
+
+
+/*                    var combi = mutableListOf<String>()
+
                     for(char in toDo){
                         if(char.toString() == "A"){
                             if(combi.isEmpty()){
@@ -134,21 +136,38 @@ class Day19Task2 {
                                 }.toMutableList()
                             }
                         }
+
+                    }*/
+
+            val toDoSize = toDo.length
+            val targetStringSize = toDoSize*5
+            val targetMessages = messagesToCheck.filter { it.length == targetStringSize }
+
+            var targetMessagesValidCount = 0
+            targetMessages.forEach {singleMessage->
+                var toDoIndex = 0
+                var valid = true
+                for (i in 0.. singleMessage.length-1 step 5){
+                    val currentTodoKey = toDo.get(toDoIndex).toString()
+                    if(!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i..i+4))){
+                        valid = false
                     }
+                    toDoIndex+=1
+                }
+                if(valid){
+                    targetMessagesValidCount+=1
+                }
+            }
 
 
-                    val checkedSize = combi[0].length
+            validCount += targetMessagesValidCount
 
-                    validCount += messages.count { combi.contains(it) }.toLong()
+            messagesToCheck = messagesToCheck.filter { it.length != targetStringSize }.toMutableList()
 
-                    messagesToCheck = messagesToCheck.filter { it.length != checkedSize }.toMutableList()
-
-                    println("valid count = "+validCount)
-                    println("valid messages = "+messages.filter { combi.contains(it) })
-                    println("checked size = "+ checkedSize)
-                    println("left messages = "+messagesToCheck)
-                    println("left messages size = "+messagesToCheck.size)
-
+            println("valid count = " + validCount)
+            println("checked size = " + targetStringSize)
+            println("left messages = " + messagesToCheck)
+            println("left messages size = " + messagesToCheck.size)
 
 
         }
@@ -198,7 +217,7 @@ class Day19Task2 {
                     }
                 }
             }
-            combinationsResult.addAll(combi.filter { it.split(" ").size<=9 })
+            combinationsResult.addAll(combi.filter { it.split(" ").size <= 9 })
         }
         println(combinationsResult)
         return combinationsResult
