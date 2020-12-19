@@ -1,11 +1,11 @@
 import utils.IoHelper
+import utils.genCombo
 
 class Day01 {
     private fun getInputs() = IoHelper.getInts("d01.in")
 
     fun getSolution1(): Int {
         val inputs = getInputs()
-        (inputs)
 
         for (input1 in inputs) {
             for (input2 in inputs) {
@@ -40,4 +40,22 @@ fun main() {
 
     val solution2 = Day01().getSolution2()
     println(solution2)
+
+    val combos = genCombo(
+        listOf(
+            listOf(1, 2, 3, 4),
+            listOf(4, 5, 6, 7),
+            listOf(4, 3),
+            listOf(1000),
+            listOf("a"),
+            listOf(true),
+            listOf(SuperCube(1, 1, 1))
+        )
+    )
+
+    combos.forEach {
+        it.forEach {
+            println(it.javaClass)
+        }
+    }
 }
