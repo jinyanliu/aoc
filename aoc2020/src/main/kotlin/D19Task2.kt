@@ -1,7 +1,7 @@
 import utils.IoHelper
 
 class Day19Task2 {
-    private val inputs = IoHelper.getSections("d19Test2Task2.in")
+    private val inputs = IoHelper.getSections("d19Task2.in")
     private val rules = inputs[0].lines()
     private val messages = inputs[1].lines()
 
@@ -69,6 +69,8 @@ class Day19Task2 {
         val mapOfABList = mutableMapOf<String, List<String>>()
         mapOfABList["A"] = rulesOf42
         mapOfABList["B"] = rulesOf31
+        println(rulesOf42)
+        println(rulesOf31)
 
         val array8 = arrayListOf("42", "42 8").map {
             it.replace("42", "A").replace("31", "B")
@@ -90,15 +92,12 @@ class Day19Task2 {
         while (messagesToCheck.isNotEmpty()) {
 
             var combinationsResult: MutableList<String>
-            if (combinations.any { it.split(" ").all { it.toString().toLongOrNull() == null } }) {
-                combinationsResult =
-                    combinations.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.toMutableList()
-            } else {
+
                 combinationsResult = getCombinationResults(combinations, array8, array11)
                 val uncheckedCom = arrayListOf<String>()
                 uncheckedCom.addAll(combinationsResult)
                 combinations = uncheckedCom
-            }
+
 
 
             var toDo = combinationsResult.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.sortedBy { it.length }.first()
@@ -140,39 +139,36 @@ class Day19Task2 {
                     }*/
 
             val toDoSize = toDo.length
-            val targetStringSize = toDoSize*5
+            val targetStringSize = toDoSize*8
             val targetMessages = messagesToCheck.filter { it.length == targetStringSize }
 
             var targetMessagesValidCount = 0
             targetMessages.forEach {singleMessage->
                 var toDoIndex = 0
                 var valid = true
-                for (i in 0.. singleMessage.length-1 step 5){
+                for (i in 0.. singleMessage.length-1 step 8){
                     val currentTodoKey = toDo.get(toDoIndex).toString()
-                    if(!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i..i+4))){
+                    if(!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i..i+7))){
                         valid = false
                     }
                     toDoIndex+=1
                 }
                 if(valid){
                     targetMessagesValidCount+=1
+                    messagesToCheck.remove(singleMessage)
                 }
             }
 
 
             validCount += targetMessagesValidCount
 
-            messagesToCheck = messagesToCheck.filter { it.length != targetStringSize }.toMutableList()
+            messagesToCheck = messagesToCheck.filter { it.length >= targetStringSize }.toMutableList()
 
             println("valid count = " + validCount)
             println("checked size = " + targetStringSize)
             println("left messages = " + messagesToCheck)
             println("left messages size = " + messagesToCheck.size)
-
-
         }
-
-
     }
 
     private fun getCombinationResults(
@@ -217,9 +213,11 @@ class Day19Task2 {
                     }
                 }
             }
-            combinationsResult.addAll(combi.filter { it.split(" ").size <= 9 })
+            //combinationsResult.addAll(combi.filter { it.split(" ").size <= 9 })
+
+            combinationsResult.addAll(combi)
         }
-        println(combinationsResult)
+        //println(combinationsResult)
         return combinationsResult
     }
 }
