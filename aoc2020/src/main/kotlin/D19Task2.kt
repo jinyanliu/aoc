@@ -89,16 +89,10 @@ class Day19Task2 {
 
         while (messagesToCheck.isNotEmpty()) {
 
-            var combinationsResult: MutableList<String>
-
-            combinationsResult = getCombinationResults(combinations, array8, array11)
-            val uncheckedCom = arrayListOf<String>()
-            uncheckedCom.addAll(combinationsResult)
-            combinations = uncheckedCom
+            combinations = getCombinationResults(combinations, array8, array11)
 
             var toDo =
-                combinationsResult.filter { it.split(" ").all { it.toLongOrNull() == null } }.sortedBy { it.length }
-                    .first()
+                combinations.filter { it.split(" ").all { it.toLongOrNull() == null } }.sortedBy { it.length }.first()
 
             combinations.remove(toDo)
 
@@ -141,12 +135,12 @@ class Day19Task2 {
         array8: List<String>,
         array11: List<String>
     ): ArrayList<String> {
-        var combinationsResult = arrayListOf<String>()
+        val combinationsResult = arrayListOf<String>()
         combinations.forEach { oneCheck ->
             var combi = mutableListOf<String>()
             val elements = oneCheck.split(" ")
             for (char in elements) {
-                if (char.toString() == "8") {
+                if (char == "8") {
                     if (combi.isEmpty()) {
                         combi.addAll(array8)
                     } else {
@@ -158,7 +152,7 @@ class Day19Task2 {
                             newL
                         }.toMutableList()
                     }
-                } else if (char.toString() == "11") {
+                } else if (char == "11") {
                     if (combi.isEmpty()) {
                         combi.addAll(array11)
                     } else {
@@ -170,9 +164,9 @@ class Day19Task2 {
                             newL
                         }.toMutableList()
                     }
-                } else if (char.toString() == "A" || char.toString() == "B") {
+                } else if (char == "A" || char == "B") {
                     if (combi.isEmpty()) {
-                        combi.add(char.toString())
+                        combi.add(char)
                     } else {
                         combi = combi.map { "$it $char" }.toMutableList()
                     }
