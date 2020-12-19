@@ -1,6 +1,6 @@
 import utils.IoHelper
 
-class Day19 {
+class Day19Task1 {
     private val inputs = IoHelper.getSections("d19.in")
     private val rules = inputs[0].lines()
     private val messages = inputs[1].lines()
@@ -66,6 +66,6 @@ class Day19 {
 
 fun main() {
     //109
-    println(Day19().getSolution1())
-    println(Day19().getSolution2())
+    println(Day19Task1().getSolution1())
+    println(Day19Task1().getSolution2())
 }
