@@ -6,6 +6,14 @@ class Day18 {
     fun getSolution1() = getSolution(::calculateHomework)
     fun getSolution2() = getSolution(::calculateAdvancedHomework)
 
+    private fun getSolution(calculation: (homework: String) -> String) = inputs.map {
+        var currentHomework = it
+        while (currentHomework.toLongOrNull() == null) {
+            currentHomework = calculation(currentHomework)
+        }
+        currentHomework.toLong()
+    }.sum()
+
     private fun calculateHomework(currentHomework: String): String {
         val toCalculate = toCalculatePart(currentHomework)
         val calculatedResult: Long = calculateCurrentHomework(toCalculate)
@@ -17,14 +25,6 @@ class Day18 {
         val calculatedResult: Long = calculateCurrentHomeWorkAdvanced(toCalculate)
         return currentCalculatedHomework(currentHomework, toCalculate, calculatedResult)
     }
-
-    private fun getSolution(calculation: (homework: String) -> String) = inputs.map {
-        var currentHomework = it
-        while (currentHomework.toLongOrNull() == null) {
-            currentHomework = calculation(currentHomework)
-        }
-        currentHomework.toLong()
-    }.sum()
 
     private fun toCalculatePart(currentHomework: String) = if (currentHomework.contains("(")) {
         val firstPairEnd = currentHomework.withIndex().first { it.value.toString() == ")" }.index
@@ -92,7 +92,7 @@ class Day18 {
             var calculatingHomework = currentHomework.toString()
             while (calculatingHomework.contains("+")) {
                 val firstSequencesWithPlus =
-                    calculatingHomework.drop(1).dropLast(1).split("*").filter { it.toLongOrNull() == null }.first()
+                    calculatingHomework.drop(1).dropLast(1).split("*").first { it.toLongOrNull() == null }
                 val smallResult = calculatePlus(firstSequencesWithPlus)
                 calculatingHomework = calculatingHomework.replace(firstSequencesWithPlus, smallResult.toString())
             }
@@ -103,45 +103,11 @@ class Day18 {
         return result
     }
 
-    private fun calculateHomeworkWithOnlyMulti(smallSequence: CharSequence): Long {
-        var calculatedResult: Long = 1
-        var currentNumber = ""
-        for (char in smallSequence) {
-            when (char.toString()) {
-                "*" -> {
-                    val intNumber = currentNumber.toLong()
-                    calculatedResult *= intNumber
-                    currentNumber = ""
-                }
-                "(" -> {
-                }
-                ")" -> {
-                    val intNumber = currentNumber.toLong()
-                    calculatedResult *= intNumber
+    private fun calculateHomeworkWithOnlyMulti(smallSequence: CharSequence) =
+        smallSequence.toString().drop(1).dropLast(1).split("*").map { it.toLong() }.reduce { acc, l -> acc * l }
 
-                }
-                else -> currentNumber += char.toString()
-            }
-        }
-        return calculatedResult
-    }
-
-    private fun calculatePlus(smallSequence: CharSequence): Long {
-        val toDo = "$smallSequence+"
-        var calculatedResult: Long = 0
-        var currentNumber = ""
-        for (char in toDo) {
-            when (char.toString()) {
-                "+" -> {
-                    val intNumber = currentNumber.toLong()
-                    calculatedResult += intNumber
-                    currentNumber = ""
-                }
-                else -> currentNumber += char.toString()
-            }
-        }
-        return calculatedResult
-    }
+    private fun calculatePlus(smallSequence: CharSequence) =
+        smallSequence.toString().split("+").map { it.toLong() }.sum()
 }
 
 fun main() {
