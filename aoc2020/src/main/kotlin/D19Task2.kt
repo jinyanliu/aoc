@@ -5,72 +5,21 @@ class Day19Task2 {
     private val rules = inputs[0].lines()
     private val messages = inputs[1].lines()
 
-    // A
-    private val rulesOf42 = getRulesFor("42")
-
-    // B
-    private val rulesOf31 = getRulesFor("31")
-
     private fun inputsMap(): Map<Long, String> {
         val inputsMap = mutableMapOf<Long, String>()
         rules.map { inputsMap[it.split(": ")[0].toLong()] = it.split(": ")[1] }
         return inputsMap
     }
 
-    fun getRulesFor(start: String): List<String> {
-        var toCheck = mutableListOf<String>(start)
-        while (toCheck.any { it.any { it.toString().toLongOrNull() != null } }) {
-            val outerList = mutableListOf<String>()
-            toCheck.forEach { oneString ->
-                var newList = mutableListOf<String>()
-                val elements = oneString.split(" ")
-                elements.forEach { element ->
-                    if (element == "") return@forEach
-                    if (element.toLongOrNull() != null) {
-                        val values = inputsMap().get(element.toLong())!!
-                        if (!values.contains("|")) {
-                            if (newList.isEmpty()) {
-                                newList.add(values)
-                            } else {
-                                newList = newList.map { "$it $values " }.toMutableList()
-                            }
-                        } else {
-                            if (newList.isEmpty()) {
-                                val twoValues = values.split(" | ")
-                                newList.add(twoValues[0])
-                                newList.add(twoValues[1])
-                            } else {
-                                val twoValues = values.split(" | ")
-                                newList = newList.flatMap { arrayListOf(it, it) }
-                                    .mapIndexed { index, s -> s + " " + twoValues[index % 2] + " " }.toMutableList()
-
-                            }
-                        }
-                    } else {
-                        if (newList.isEmpty()) {
-                            newList.add(element)
-                        } else {
-                            newList = newList.map { "$it $element " }.toMutableList()
-                        }
-                    }
-                }
-                outerList.addAll(newList)
-            }
-            toCheck = outerList
-        }
-
-        val finalRules = toCheck.map {
-            it.replace("\"", "").replace(" ", "")
-        }
-        return finalRules
-    }
+    private val rulesOfA = Day19().getAllRulesFor(inputsMap(), "42")
+    private val rulesOfB = Day19().getAllRulesFor(inputsMap(), "31")
 
     fun getSolution() {
         val mapOfABList = mutableMapOf<String, List<String>>()
-        mapOfABList["A"] = rulesOf42
-        mapOfABList["B"] = rulesOf31
-        println(rulesOf42)
-        println(rulesOf31)
+        mapOfABList["A"] = rulesOfA
+        mapOfABList["B"] = rulesOfB
+        println(rulesOfA)
+        println(rulesOfB)
 
         val array8 = arrayListOf("42", "42 8").map {
             it.replace("42", "A").replace("31", "B")
