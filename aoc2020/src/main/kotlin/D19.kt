@@ -56,9 +56,15 @@ class Day19 {
 
                             }else {
                                 val twoValues = values.split(" | ")
-                                newList = newList.flatMap { arrayListOf(it, it) }.mapIndexed { index, s -> s+" "+twoValues[index]+" " }.toMutableList()
+                                newList = newList.flatMap { arrayListOf(it, it) }.mapIndexed { index, s -> s+" "+twoValues[index%2]+" " }.toMutableList()
 
                             }
+                        }
+                    }else {
+                        if(newList.isEmpty()){
+                            newList.add(element)
+                        }else {
+                            newList = newList.map { it+element }.toMutableList()
                         }
                     }
                 }
@@ -66,7 +72,15 @@ class Day19 {
 
             }
             toCheck = newList
-            println(toCheck)
+            for (check in toCheck){
+                println(check)
+                println()
+            }
+
+            println()
+            println()
+
+
         }
 
     }
