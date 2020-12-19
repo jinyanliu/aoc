@@ -65,7 +65,7 @@ class Day19Task2 {
         return finalRules
     }
 
-    fun getTask2Solution() {
+    fun getSolution() {
         val mapOfABList = mutableMapOf<String, List<String>>()
         mapOfABList["A"] = rulesOf42
         mapOfABList["B"] = rulesOf31
@@ -84,89 +84,54 @@ class Day19Task2 {
 
         var validCount: Long = 0
         var messagesToCheck = messages.toMutableList()
-/*        messagesToCheck = arrayListOf(
-            "abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa", "babbbbaabbbbbabbbbbbaabaaabaaa", "aaabbbbbbaaaabaababaabababbabaaabbababababaaa", "bbbbbbbaaaabbbbaaabbabaaa", "bbbababbbbaaaaaaaabbababaaababaabab", "baabbaaaabbaaaababbaababb", "abbbbabbbbaaaababbbbbbaaaababb", "aaaaabbaabaaaaababaa", "aaaabbaabbaaaaaaabbbabbbaaabbaabaaa", "babaaabbbaaabaababbaabababaaab", "aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba")*/
 
-        var combinations = arrayListOf<String>("8 11")
+        var combinations = arrayListOf("8 11")
 
         while (messagesToCheck.isNotEmpty()) {
 
             var combinationsResult: MutableList<String>
 
-                combinationsResult = getCombinationResults(combinations, array8, array11)
-                val uncheckedCom = arrayListOf<String>()
-                uncheckedCom.addAll(combinationsResult)
-                combinations = uncheckedCom
+            combinationsResult = getCombinationResults(combinations, array8, array11)
+            val uncheckedCom = arrayListOf<String>()
+            uncheckedCom.addAll(combinationsResult)
+            combinations = uncheckedCom
 
-
-
-            var toDo = combinationsResult.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.sortedBy { it.length }.first()
+            var toDo =
+                combinationsResult.filter { it.split(" ").all { it.toLongOrNull() == null } }.sortedBy { it.length }
+                    .first()
 
             combinations.remove(toDo)
 
             toDo = toDo.replace(" ", "")
 
-
-/*                    var combi = mutableListOf<String>()
-
-                    for(char in toDo){
-                        if(char.toString() == "A"){
-                            if(combi.isEmpty()){
-                                combi.addAll(rulesOf42)
-                            }else {
-                                combi = combi.flatMap {origin->
-                                    val newL = mutableListOf<String>()
-                                    for(item in rulesOf42){
-                                        newL.add(origin+item)
-                                    }
-                                    newL
-                                }.toMutableList()
-                            }
-                        }else {
-                            if(combi.isEmpty()){
-                                combi.addAll(rulesOf31)
-                            }else {
-                                combi = combi.flatMap {origin->
-                                    val newL = mutableListOf<String>()
-                                    for(item in rulesOf31){
-                                        newL.add(origin+item)
-                                    }
-                                    newL
-                                }.toMutableList()
-                            }
-                        }
-
-                    }*/
-
             val toDoSize = toDo.length
-            val targetStringSize = toDoSize*8
+            val targetStringSize = toDoSize * 8
             val targetMessages = messagesToCheck.filter { it.length == targetStringSize }
 
             var targetMessagesValidCount = 0
-            targetMessages.forEach {singleMessage->
+            targetMessages.forEach { singleMessage ->
                 var toDoIndex = 0
                 var valid = true
-                for (i in 0.. singleMessage.length-1 step 8){
+                for (i in singleMessage.indices step 8) {
                     val currentTodoKey = toDo.get(toDoIndex).toString()
-                    if(!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i..i+7))){
+                    if (!mapOfABList[currentTodoKey]!!.contains(singleMessage.substring(i..i + 7))) {
                         valid = false
                     }
-                    toDoIndex+=1
+                    toDoIndex += 1
                 }
-                if(valid){
-                    targetMessagesValidCount+=1
+                if (valid) {
+                    targetMessagesValidCount += 1
                     messagesToCheck.remove(singleMessage)
                 }
             }
-
 
             validCount += targetMessagesValidCount
 
             messagesToCheck = messagesToCheck.filter { it.length >= targetStringSize }.toMutableList()
 
-            println("valid count = " + validCount)
-            println("checked size = " + targetStringSize)
-            println("left messages = " + messagesToCheck)
+            println("valid count = $validCount")
+            println("checked size = $targetStringSize")
+            println("left messages = $messagesToCheck")
             println("left messages size = " + messagesToCheck.size)
         }
     }
@@ -188,7 +153,7 @@ class Day19Task2 {
                         combi = combi.flatMap { origin ->
                             val newL = mutableListOf<String>()
                             for (item in array8) {
-                                newL.add(origin + " " + item)
+                                newL.add("$origin $item")
                             }
                             newL
                         }.toMutableList()
@@ -200,7 +165,7 @@ class Day19Task2 {
                         combi = combi.flatMap { origin ->
                             val newL = mutableListOf<String>()
                             for (item in array11) {
-                                newL.add(origin + " " + item)
+                                newL.add("$origin $item")
                             }
                             newL
                         }.toMutableList()
@@ -209,19 +174,17 @@ class Day19Task2 {
                     if (combi.isEmpty()) {
                         combi.add(char.toString())
                     } else {
-                        combi = combi.map { it + " " + char.toString() }.toMutableList()
+                        combi = combi.map { "$it $char" }.toMutableList()
                     }
                 }
             }
-            //combinationsResult.addAll(combi.filter { it.split(" ").size <= 9 })
-
             combinationsResult.addAll(combi)
         }
-        //println(combinationsResult)
         return combinationsResult
     }
 }
 
 fun main() {
-    println(Day19Task2().getTask2Solution())
+    //301
+    println(Day19Task2().getSolution())
 }
