@@ -101,14 +101,43 @@ class Day19Task2 {
                     mapOfContent[char.index.toLong()] = mapOfABList[char.toString()]!!
                 }*/
 
-                val combi = arrayListOf<String>()
-                for (k1 in rulesOf42) {
+                var combi = mutableListOf<String>()
+                for(char in it){
+                    if(char.toString() == "A"){
+                        if(combi.isEmpty()){
+                            combi.addAll(rulesOf42)
+                        }else {
+                            combi = combi.flatMap {origin->
+                                val newL = mutableListOf<String>()
+                                for(item in rulesOf42){
+                                    newL.add(origin+item)
+                                }
+                                newL
+                            }.toMutableList()
+                        }
+                    }else {
+                        if(combi.isEmpty()){
+                            combi.addAll(rulesOf31)
+                        }else {
+                            combi = combi.flatMap {origin->
+                                val newL = mutableListOf<String>()
+                                for(item in rulesOf31){
+                                    newL.add(origin+item)
+                                }
+                                newL
+                            }.toMutableList()
+                        }
+                    }
+                }
+
+
+/*                for (k1 in rulesOf42) {
                     for (k2 in rulesOf42) {
                         for (k3 in rulesOf31) {
                             combi.add(k1 + k2 + k3)
                         }
                     }
-                }
+                }*/
 
                 println(combi)
                 val checkedSize = combi[0].length
