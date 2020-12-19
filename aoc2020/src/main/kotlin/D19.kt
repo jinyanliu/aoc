@@ -51,9 +51,14 @@ class Day19 {
                             }else {
                                 newList = newList.map { it+values }.toMutableList()
                             }
-
                         }else {
+                            if(newList.isEmpty()){
 
+                            }else {
+                                val twoValues = values.split(" | ")
+                                newList = newList.flatMap { arrayListOf(it, it) }.mapIndexed { index, s -> s+" "+twoValues[index]+" " }.toMutableList()
+
+                            }
                         }
                     }
                 }
