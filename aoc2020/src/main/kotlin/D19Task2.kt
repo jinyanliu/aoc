@@ -89,50 +89,18 @@ class Day19Task2 {
 
         while(messagesToCheck.isNotEmpty()){
 
-            var combinationsResult = arrayListOf<String>()
-            combinations.forEach {oneCheck->
-                var combi = mutableListOf<String>()
-                val elements = oneCheck.split(" ")
-                for(char in elements){
-                    if(char.toString() == "8"){
-                        if(combi.isEmpty()){
-                            combi.addAll(array8)
-                        }else {
-                            combi = combi.flatMap {origin->
-                                val newL = mutableListOf<String>()
-                                for(item in array8){
-                                    newL.add(origin+" "+item)
-                                }
-                                newL
-                            }.toMutableList()
-                        }
-                    }else if(char.toString() == "11") {
-                        if(combi.isEmpty()){
-                            combi.addAll(array11)
-                        }else {
-                            combi = combi.flatMap {origin->
-                                val newL = mutableListOf<String>()
-                                for(item in array11){
-                                    newL.add(origin+" "+item)
-                                }
-                                newL
-                            }.toMutableList()
-                        }
-                    }else if(char.toString() == "A" ||char.toString() == "B"){
-                        if(combi.isEmpty()){
-                            combi.add(char.toString())
-                        }else {
-                            combi = combi.map { it+" "+char.toString() }.toMutableList()
-                        }
-                    }
-                }
-                combinationsResult.addAll(combi)
+            var combinationsResult: MutableList<String>
+            if(combinations.any {it.split(" ").all { it.toString().toLongOrNull() == null }  }){
+                combinationsResult = combinations.filter { it.split(" ").all { it.toString().toLongOrNull() == null } }.toMutableList()
+            }else {
+                combinationsResult = getCombinationResults(combinations, array8, array11)
+                val uncheckedCom = arrayListOf<String>()
+                uncheckedCom.addAll(combinationsResult)
+                combinations = uncheckedCom
             }
-            println(combinationsResult)
 
-            val uncheckedCom = arrayListOf<String>()
-            uncheckedCom.addAll(combinationsResult)
-            combinations = uncheckedCom
+
+
 
             var toDo = combinationsResult.filter{it.split(" ").all { it.toString().toLongOrNull() == null }}.first()
 
@@ -186,6 +154,54 @@ class Day19Task2 {
         }
 
 
+    }
+
+    private fun getCombinationResults(
+        combinations: ArrayList<String>,
+        array8: List<String>,
+        array11: List<String>
+    ): ArrayList<String> {
+        var combinationsResult = arrayListOf<String>()
+        combinations.forEach { oneCheck ->
+            var combi = mutableListOf<String>()
+            val elements = oneCheck.split(" ")
+            for (char in elements) {
+                if (char.toString() == "8") {
+                    if (combi.isEmpty()) {
+                        combi.addAll(array8)
+                    } else {
+                        combi = combi.flatMap { origin ->
+                            val newL = mutableListOf<String>()
+                            for (item in array8) {
+                                newL.add(origin + " " + item)
+                            }
+                            newL
+                        }.toMutableList()
+                    }
+                } else if (char.toString() == "11") {
+                    if (combi.isEmpty()) {
+                        combi.addAll(array11)
+                    } else {
+                        combi = combi.flatMap { origin ->
+                            val newL = mutableListOf<String>()
+                            for (item in array11) {
+                                newL.add(origin + " " + item)
+                            }
+                            newL
+                        }.toMutableList()
+                    }
+                } else if (char.toString() == "A" || char.toString() == "B") {
+                    if (combi.isEmpty()) {
+                        combi.add(char.toString())
+                    } else {
+                        combi = combi.map { it + " " + char.toString() }.toMutableList()
+                    }
+                }
+            }
+            combinationsResult.addAll(combi.filter { it.split(" ").size<=9 })
+        }
+        println(combinationsResult)
+        return combinationsResult
     }
 }
 
