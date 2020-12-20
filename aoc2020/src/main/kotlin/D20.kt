@@ -3,8 +3,7 @@ import utils.IoHelper
 class Day20 {
     private val sections = IoHelper.getSections("d20.in")
 
-    fun getSolution1():Long {
-        // Up, Down, Left, Right
+    fun getSolution1(): Long {
         val mapOfTiles = mutableMapOf<Long, Tile>()
         for (section in sections) {
             val lines = section.lines()
@@ -13,9 +12,6 @@ class Day20 {
             val right = lines.drop(1).map { it.last().toString() }.joinToString("")
             mapOfTiles[tileKey] = Tile(up = lines[1], down = lines.last(), left = left, right = right)
         }
-        println(mapOfTiles)
-        println(mapOfTiles.size)
-
         val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
 
         for (tile in mapOfTiles) {
@@ -36,8 +32,6 @@ class Day20 {
                 }
                     .toMutableList()
 
-            println(allSides)
-
             val tileSides = mutableListOf(
                 tile.value.up,
                 tile.value.upRe,
@@ -49,31 +43,19 @@ class Day20 {
                 tile.value.rightRe
             )
 
-            println(tileSides)
-
-
-
-            println(allSides)
-
-
             var sideInOthersCount = 0
             for (side in tileSides) {
-                if (allSides.count { it == side }>1) {
+                if (allSides.count { it == side } > 1) {
                     sideInOthersCount += 1
                 }
             }
-            println(sideInOthersCount)
 
-            if(sideInOthersCount == 4){
+            if (sideInOthersCount == 4) {
                 whoHasNoFriendsOn2Sides.add(tile.key)
             }
-
-            println()
         }
-
         println(whoHasNoFriendsOn2Sides)
-        return whoHasNoFriendsOn2Sides.reduce { acc, l ->acc*l  }
-
+        return whoHasNoFriendsOn2Sides.reduce { acc, l -> acc * l }
     }
 
     fun getSolution2() {
