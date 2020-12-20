@@ -138,11 +138,11 @@ class Day20 {
 
                                             val fixedChild = FixedTile(
                                                 childTile.key,
-                                                childTile.value.up,
-                                                childTile.value.down,
-                                                childTile.value.left,
-                                                childTile.value.right,
-                                                mapOfTileStrings[childTile.key]!!
+                                                "",
+                                                "",
+                                                "",
+                                                "",
+                                                arrayListOf("")
                                             )
 
                                             if (parentSide.index == 0) {
@@ -158,7 +158,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList[9 - i])
+                                                            newList.add(i,oldList[9 - i])
                                                         }
                                                         fixedChild.fixedStrings = newList
 
@@ -173,7 +173,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList[9 - i].reversed())
+                                                            newList.add(i,oldList[9 - i].reversed())
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -196,7 +196,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList[i].reversed())
+                                                            newList.add(i, oldList[i].reversed())
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -210,7 +210,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList.map { it.get(9 - i) }.joinToString(""))
+                                                            newList.add(i, oldList.map { it.get(9 - i) }.joinToString(""))
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -224,7 +224,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(
+                                                            newList.add(i,
                                                                 oldList.map { it.get(9 - i) }.joinToString("")
                                                                     .reversed()
                                                             )
@@ -241,7 +241,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList.map { it.get(i) }.joinToString(""))
+                                                            newList.add(i,oldList.map { it.get(i) }.joinToString(""))
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -255,7 +255,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(
+                                                            newList.add(i,
                                                                 oldList.map { it.get(i) }.joinToString("").reversed()
                                                             )
                                                         }
@@ -279,7 +279,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList.map { it.get(i) }.joinToString(""))
+                                                            newList.add(i,oldList.map { it.get(i) }.joinToString(""))
                                                         }
                                                         fixedChild.fixedStrings = newList
 
@@ -295,7 +295,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList.map { it.get(9 - i) }.joinToString(""))
+                                                            newList.add(i,oldList.map { it.get(9 - i) }.joinToString(""))
                                                         }
                                                         fixedChild.fixedStrings = newList
 
@@ -312,7 +312,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(
+                                                            newList.add(i,
                                                                 oldList.map { it.get(i) }.joinToString("").reversed()
                                                             )
                                                         }
@@ -330,7 +330,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(
+                                                            newList.add(i,
                                                                 oldList.map { it.get(9 - i) }.joinToString("")
                                                                     .reversed()
                                                             )
@@ -356,7 +356,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList[9 - i])
+                                                            newList.add(i,oldList[9 - i])
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -370,7 +370,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList[i].reversed())
+                                                            newList.add(i,oldList[i].reversed())
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -384,7 +384,7 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList[9 - i].reversed())
+                                                            newList.add(i,oldList[9 - i].reversed())
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -498,9 +498,12 @@ class Day20 {
             for (i in k..k + 7) {
                 val oneBigLine =
                     newMapOfLocations.filter { it.key.second == 11 - (k / 8) }.map { it.value[i % 8] }.joinToString("")
-                bigStringContent.add(oneBigLine)
+                bigStringContent.add(i,oneBigLine)
             }
         }
+
+        println("bigStringContent.size"+bigStringContent.size)
+        println(bigStringContent.map { it.count{it.toString() == "#"} }.sum())
 
         for (line in bigStringContent.withIndex()) {
             println(line.value)
@@ -517,9 +520,9 @@ class Day20 {
                         && line.value[i + 19].toString() == "#"
                     ) {
                         println("line indice=" + i)
-                        val upperLine = bigStringContent[line.index-1]
+                        val upperLine = bigStringContent[line.index - 1]
 
-                        if (upperLine.get(i+18).toString()=="#"){
+                        if (upperLine.get(i + 18).toString() == "#") {
                             println("upper line also valid")
                         }
                     }
@@ -527,12 +530,93 @@ class Day20 {
             }
         }
 
-        val oldList = mapOfTileStrings[childTile.key]!!
+        /***************
+        Testing.....
+         ***************/
+
+/*        val oldList = bigStringContent
         val newList = arrayListOf<String>()
-        for (i in 0..9) {
-            newList.add(oldList[9 - i])
+        for (i in 0..95) {
+            newList.add(i, oldList[95 - i])
+        }*/
+
+/*        val oldList = bigStringContent
+        val newList = arrayListOf<String>()
+        for (i in 0..95) {
+            newList.add(i, oldList[95 - i].reversed())
+        }*/
+
+/*        val oldList = bigStringContent
+        val newList = arrayListOf<String>()
+        for (i in 0..95) {
+            newList.add(i, oldList[i].reversed())
+        }*/
+
+/*        val oldList = bigStringContent
+        val newList = arrayListOf<String>()
+        for (i in 0..95) {
+            newList.add(i, oldList.map { it.get(95 - i) }.joinToString(""))
+        }*/
+/*
+        val oldList = bigStringContent
+        val newList = arrayListOf<String>()
+        for (i in 0..95) {
+            newList.add(i,
+                oldList.map { it.get(95 - i) }.joinToString("")
+                    .reversed()
+            )
+        }*/
+
+
+/*        val oldList = bigStringContent
+        val newList = arrayListOf<String>()
+        for (i in 0..95) {
+            newList.add(i, oldList.map { it.get(i) }.joinToString(""))
+        }*/
+
+        val oldList = bigStringContent.toList()
+        val newList = arrayListOf<String>()
+        for (i in 0..95) {
+            newList.add(i,
+                oldList.map { it.get(i) }.joinToString("").reversed()
+            )
         }
-        fixedChild.fixedStrings = newList
+
+        for (line in newList.withIndex()) {
+            println(line.value)
+
+            for (i in 0..95) {
+                if (i + 19 <= 95) {
+                    if (line.value[i].toString() == "#"
+                        && line.value[i + 5].toString() == "#"
+                        && line.value[i + 6].toString() == "#"
+                        && line.value[i + 11].toString() == "#"
+                        && line.value[i + 12].toString() == "#"
+                        && line.value[i + 17].toString() == "#"
+                        && line.value[i + 18].toString() == "#"
+                        && line.value[i + 19].toString() == "#"
+                    ) {
+                        println("line indice=" + i)
+                        val upperLine = newList[line.index - 1]
+                        val lowerLine = newList[line.index + 1]
+
+                        if (upperLine.get(i + 18).toString() == "#") {
+                            println("upper line also valid")
+                        }
+
+                        if (lowerLine.get(i + 1).toString() == "#"
+                            && lowerLine.get(i + 4).toString() == "#"
+                            && lowerLine.get(i + 7).toString() == "#"
+                            && lowerLine.get(i + 10).toString() == "#"
+                            && lowerLine.get(i + 13).toString() == "#"
+                            && lowerLine.get(i + 16).toString() == "#"
+                        ) {
+                            println("Lower line also valid")
+                        }
+                    }
+                }
+            }
+        }
 
 
     }
