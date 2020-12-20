@@ -502,9 +502,37 @@ class Day20 {
             }
         }
 
-        for (line in bigStringContent) {
-            println(line)
+        for (line in bigStringContent.withIndex()) {
+            println(line.value)
+
+            for (i in 0..95) {
+                if (i + 19 <= 95) {
+                    if (line.value[i].toString() == "#"
+                        && line.value[i + 5].toString() == "#"
+                        && line.value[i + 6].toString() == "#"
+                        && line.value[i + 11].toString() == "#"
+                        && line.value[i + 12].toString() == "#"
+                        && line.value[i + 17].toString() == "#"
+                        && line.value[i + 18].toString() == "#"
+                        && line.value[i + 19].toString() == "#"
+                    ) {
+                        println("line indice=" + i)
+                        val upperLine = bigStringContent[line.index-1]
+
+                        if (upperLine.get(i+18).toString()=="#"){
+                            println("upper line also valid")
+                        }
+                    }
+                }
+            }
         }
+
+        val oldList = mapOfTileStrings[childTile.key]!!
+        val newList = arrayListOf<String>()
+        for (i in 0..9) {
+            newList.add(oldList[9 - i])
+        }
+        fixedChild.fixedStrings = newList
 
 
     }
