@@ -3,17 +3,12 @@ import utils.IoHelper
 class Day20 {
     private val sections = IoHelper.getSections("d20.in")
 
-    fun getSolution1(): Long {
-        val mapOfTiles = mutableMapOf<Long, Tile>()
-        for (section in sections) {
-            val lines = section.lines()
-            val tileKey = lines.get(0).split(" ")[1].dropLast(1).toLong()
-            val left = lines.drop(1).map { it[0].toString() }.joinToString("")
-            val right = lines.drop(1).map { it.last().toString() }.joinToString("")
-            mapOfTiles[tileKey] = Tile(up = lines[1], down = lines.last(), left = left, right = right)
-        }
-        val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
+    fun getSolution1() = getWhoHasFriendsOnTwoSides(getMapOfTiles()).reduce { acc, l -> acc * l }
 
+    private fun getWhoHasFriendsOnTwoSides(
+        mapOfTiles: MutableMap<Long, Tile>
+    ): List<Long> {
+        val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
         for (tile in mapOfTiles) {
             println(tile.key)
 
@@ -49,13 +44,27 @@ class Day20 {
                     sideInOthersCount += 1
                 }
             }
+            println(sideInOthersCount)
 
             if (sideInOthersCount == 4) {
                 whoHasNoFriendsOn2Sides.add(tile.key)
             }
         }
         println(whoHasNoFriendsOn2Sides)
-        return whoHasNoFriendsOn2Sides.reduce { acc, l -> acc * l }
+        return whoHasNoFriendsOn2Sides
+    }
+
+    private fun getMapOfTiles(): MutableMap<Long, Tile> {
+        val mapOfTiles = mutableMapOf<Long, Tile>()
+        for (section in sections) {
+            val lines = section.lines()
+            val tileKey = lines.get(0).split(" ")[1].dropLast(1).toLong()
+            val left = lines.drop(1).map { it[0].toString() }.joinToString("")
+            val right = lines.drop(1).map { it.last().toString() }.joinToString("")
+            mapOfTiles[tileKey] = Tile(up = lines[1], down = lines.last(), left = left, right = right)
+        }
+        println(mapOfTiles.size)
+        return mapOfTiles
     }
 
     fun getSolution2() {
@@ -74,6 +83,7 @@ data class Tile(
 )
 
 fun main() {
+    //83775126454273
     println(Day20().getSolution1())
     println(Day20().getSolution2())
 }
