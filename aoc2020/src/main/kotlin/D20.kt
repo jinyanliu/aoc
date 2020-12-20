@@ -224,8 +224,10 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList.map { it.get(9 - i) }.joinToString("")
-                                                                .reversed())
+                                                            newList.add(
+                                                                oldList.map { it.get(9 - i) }.joinToString("")
+                                                                    .reversed()
+                                                            )
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -254,7 +256,8 @@ class Day20 {
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
                                                             newList.add(
-                                                                oldList.map { it.get(i) }.joinToString("").reversed())
+                                                                oldList.map { it.get(i) }.joinToString("").reversed()
+                                                            )
                                                         }
                                                         fixedChild.fixedStrings = newList
                                                     }
@@ -279,7 +282,6 @@ class Day20 {
                                                             newList.add(oldList.map { it.get(i) }.joinToString(""))
                                                         }
                                                         fixedChild.fixedStrings = newList
-
 
 
                                                     }
@@ -311,7 +313,8 @@ class Day20 {
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
                                                             newList.add(
-                                                                oldList.map { it.get(i) }.joinToString("").reversed())
+                                                                oldList.map { it.get(i) }.joinToString("").reversed()
+                                                            )
                                                         }
                                                         fixedChild.fixedStrings = newList
 
@@ -327,8 +330,10 @@ class Day20 {
                                                         val oldList = mapOfTileStrings[childTile.key]!!
                                                         val newList = arrayListOf<String>()
                                                         for (i in 0..9) {
-                                                            newList.add(oldList.map { it.get(9 - i) }.joinToString("")
-                                                                .reversed())
+                                                            newList.add(
+                                                                oldList.map { it.get(9 - i) }.joinToString("")
+                                                                    .reversed()
+                                                            )
                                                         }
                                                         fixedChild.fixedStrings = newList
 
@@ -468,11 +473,40 @@ class Day20 {
             println()
             println()
         }
-
-
     }
 
     fun getSolution2() {
+        fixImage(getMapOfTileEdges())
+        println("mapOfLocations" + mapOfLocations)
+        println("mapOfLocations.size" + mapOfLocations.size)
+
+        val newMapOfLocations = mutableMapOf<Pair<Int, Int>, List<String>>()
+        for (everyLocation in mapOfLocations) {
+            val currentLocation = everyLocation.key
+            val currentFixedTile = everyLocation.value
+            val newStringContent = currentFixedTile.fixedStrings.drop(1).dropLast(1).map { it.substring(1..8) }
+            newMapOfLocations[everyLocation.key] = newStringContent
+            /*for(line in newStringContent){
+                println(line)
+            }
+            println()*/
+        }
+
+        val bigStringContent = arrayListOf<String>()
+
+        for (k in 0..95 step 8) {
+            for (i in k..k + 7) {
+                val oneBigLine =
+                    newMapOfLocations.filter { it.key.second == 11 - (k / 8) }.map { it.value[i % 8] }.joinToString("")
+                bigStringContent.add(oneBigLine)
+            }
+        }
+
+        for (line in bigStringContent) {
+            println(line)
+        }
+
+
     }
 }
 
@@ -517,6 +551,6 @@ fun FixedTile.toSidesList() = mutableListOf(
 fun main() {
     //Test Result: 20899048083289
     //83775126454273
-    println(Day20().getSolution1())
+    //println(Day20().getSolution1())
     println(Day20().getSolution2())
 }
