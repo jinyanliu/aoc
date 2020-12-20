@@ -4,7 +4,9 @@ class Day20 {
     private val sections = IoHelper.getSections("d20.in")
     private val whoAreTheCorners = mutableListOf<Long>()
     private val resolvedTiles = arrayListOf<Long>()
-    private var tilesToResolve = arrayListOf<Long>()
+    private var tilesToResolve = arrayListOf<FixedTile>()
+
+    private val mapOfLocations = mutableMapOf<Long, Pair<Int, Int>>()
 
     private fun getAllSides(mapOfTiles: MutableMap<Long, Tile>): MutableList<String> =
         mapOfTiles.flatMap { it.value.toSidesList() }.toMutableList()
@@ -77,55 +79,210 @@ class Day20 {
 
         println(mapOfSideInOthers)
 
-        tilesToResolve.addAll(whoAreTheCorners)
+        tilesToResolve.add(
+            FixedTile(
+                2287L,
+                mapOfTiles[2287L]!!.up,
+                mapOfTiles[2287L]!!.down,
+                mapOfTiles[2287L]!!.left,
+                mapOfTiles[2287L]!!.right
+            )
+        )
+        mapOfLocations[2287L] = 0 to 0
 
-        while(tilesToResolve.isNotEmpty()){
-        for (parentTile in tilesToResolve) {
-            println()
-            println(parentTile)
-            if (parentTile !in resolvedTiles) {
-                resolvedTiles.add(parentTile)
-            }
 
-            val currentTilesToResolve = arrayListOf<Long>()
+        while (tilesToResolve.isNotEmpty()) {
+            val currentTilesToResolve = arrayListOf<FixedTile>()
 
-            val childrenList = mutableListOf<Long>()
+            for (parentTile in tilesToResolve) {
+                println()
+                println(parentTile)
+                if (parentTile.name !in resolvedTiles) {
+                    resolvedTiles.add(parentTile.name)
+                }
 
-            for (parentSide in mapOfTiles[parentTile]!!.toSidesList().withIndex()) {
-                if (parentSide.value in mapOfSideInOthers.get(parentTile)!!) {
 
-                    for (childTile in mapOfTiles) {
-                        if (childTile.key !in resolvedTiles) {
-                            val tileSides = childTile.value.toSidesList()
-                            for (childSide in tileSides.withIndex()) {
-                                if (childSide.value == parentSide.value) {
-                                    println()
-                                    println("Find children...")
-                                    println("Child Tile Key=" + childTile.key)
-                                    println("Parent Side Index=" + parentSide.index)
-                                    println("Child Side Index=" + childSide.index)
 
-                                    if (childTile.key !in childrenList) {
-                                        childrenList.add(childTile.key)
-                                    }
+                val childrenList = mutableListOf<Long>()
 
-                                    if (childTile.key !in currentTilesToResolve) {
-                                        currentTilesToResolve.add(childTile.key)
-                                    }
+                for (parentSide in parentTile.toSidesList().withIndex()) {
+                    if (parentSide.value in mapOfSideInOthers.get(parentTile.name)!!) {
 
-                                    if (childTile.key !in resolvedTiles) {
-                                        resolvedTiles.add(childTile.key)
+                        for (childTile in mapOfTiles) {
+                            if (childTile.key !in resolvedTiles) {
+                                val tileSides = childTile.value.toSidesList()
+                                for (childSide in tileSides.withIndex()) {
+                                    if (childSide.value == parentSide.value) {
+                                        println()
+                                        println("Find children...")
+                                        println("Child Tile Key=" + childTile.key)
+                                        println("Parent Side Index=" + parentSide.index)
+                                        println("Child Side Index=" + childSide.index)
+
+                                        if (mapOfLocations[childTile.key] == null) {
+
+                                            val fixedChild = FixedTile(
+                                                childTile.key,
+                                                childTile.value.up,
+                                                childTile.value.down,
+                                                childTile.value.left,
+                                                childTile.value.right
+                                            )
+
+                                            if (parentSide.index == 0) {
+                                                mapOfLocations[childTile.key] =
+                                                    mapOfLocations[parentTile.name]!!.first + 1 to mapOfLocations[parentTile.name]!!.second
+
+                                                when (childSide.index) {
+                                                    0 ->//up
+                                                    {
+                                                        fixedChild.down = childTile.value.up
+                                                        fixedChild.up = childTile.value.down
+                                                        fixedChild.left = childTile.value.leftRe
+                                                        fixedChild.right = childTile.value.rightRe
+                                                    }
+                                                    1 ->//upre
+                                                    {
+                                                        fixedChild.down = childTile.value.upRe
+                                                        fixedChild.up = childTile.value.downRe
+                                                        fixedChild.left = childTile.value.rightRe
+                                                        fixedChild.right = childTile.value.leftRe
+                                                    }
+
+                                                    2 ->//down
+                                                    {
+                                                        fixedChild.down = childTile.value.down
+                                                        fixedChild.up = childTile.value.up
+                                                        fixedChild.left = childTile.value.left
+                                                        fixedChild.right = childTile.value.right
+                                                    }
+                                                    3 ->//downre
+                                                    {
+                                                        fixedChild.down = childTile.value.downRe
+                                                        fixedChild.up = childTile.value.upRe
+                                                        fixedChild.left = childTile.value.right
+                                                        fixedChild.right = childTile.value.left
+                                                    }
+                                                    4 ->//left
+                                                    {
+                                                        fixedChild.down = childTile.value.left
+                                                        fixedChild.up = childTile.value.right
+                                                        fixedChild.left = childTile.value.upRe
+                                                        fixedChild.right = childTile.value.downRe
+                                                    }
+                                                    5 ->//leftre
+                                                    {
+                                                        fixedChild.down = childTile.value.leftRe
+                                                        fixedChild.up = childTile.value.rightRe
+                                                        fixedChild.left = childTile.value.downRe
+                                                        fixedChild.right = childTile.value.upRe
+                                                    }
+                                                    6 ->//right
+                                                    {
+                                                        fixedChild.down = childTile.value.right
+                                                        fixedChild.up = childTile.value.left
+                                                        fixedChild.left = childTile.value.up
+                                                        fixedChild.right = childTile.value.down
+                                                    }
+                                                    7 ->//rightre
+                                                    {
+                                                        fixedChild.down = childTile.value.rightRe
+                                                        fixedChild.up = childTile.value.leftRe
+                                                        fixedChild.left = childTile.value.down
+                                                        fixedChild.right = childTile.value.up
+                                                    }
+                                                }
+
+                                            } else {
+                                                mapOfLocations[childTile.key] =
+                                                    mapOfLocations[parentTile.name]!!.first to mapOfLocations[parentTile.name]!!.second + 1
+
+                                                when (childSide.index) {
+                                                    0 ->//up
+                                                    {
+                                                        fixedChild.left = childTile.value.up
+                                                        fixedChild.right = childTile.value.down
+                                                        fixedChild.up = childTile.value.left
+                                                        fixedChild.down = childTile.value.right
+                                                    }
+                                                    1 ->//upre
+                                                    {
+                                                        fixedChild.left = childTile.value.upRe
+                                                        fixedChild.right = childTile.value.downRe
+                                                        fixedChild.up = childTile.value.right
+                                                        fixedChild.down = childTile.value.left
+                                                    }
+
+                                                    2 ->//down
+                                                    {
+                                                        fixedChild.left = childTile.value.down
+                                                        fixedChild.right = childTile.value.up
+                                                        fixedChild.up = childTile.value.leftRe
+                                                        fixedChild.down = childTile.value.rightRe
+                                                    }
+                                                    3 ->//downre
+                                                    {
+                                                        fixedChild.left = childTile.value.downRe
+                                                        fixedChild.right = childTile.value.upRe
+                                                        fixedChild.up = childTile.value.rightRe
+                                                        fixedChild.down = childTile.value.leftRe
+                                                    }
+                                                    4 ->//left
+                                                    {
+                                                        fixedChild.left = childTile.value.left
+                                                        fixedChild.right = childTile.value.right
+                                                        fixedChild.up = childTile.value.up
+                                                        fixedChild.down = childTile.value.down
+                                                    }
+                                                    5 ->//leftre
+                                                    {
+                                                        fixedChild.left = childTile.value.leftRe
+                                                        fixedChild.right = childTile.value.rightRe
+                                                        fixedChild.up = childTile.value.down
+                                                        fixedChild.down = childTile.value.up
+                                                    }
+                                                    6 ->//right
+                                                    {
+                                                        fixedChild.left = childTile.value.right
+                                                        fixedChild.right = childTile.value.left
+                                                        fixedChild.up = childTile.value.upRe
+                                                        fixedChild.down = childTile.value.downRe
+                                                    }
+                                                    7 ->//rightre
+                                                    {
+                                                        fixedChild.left = childTile.value.rightRe
+                                                        fixedChild.right = childTile.value.leftRe
+                                                        fixedChild.up = childTile.value.downRe
+                                                        fixedChild.down = childTile.value.upRe
+                                                    }
+                                                }
+                                            }
+
+                                            if (fixedChild !in currentTilesToResolve) {
+                                                currentTilesToResolve.add(fixedChild)
+                                                println("Fixed child=" + fixedChild)
+                                            }
+                                        }
+
+                                        if (childTile.key !in childrenList) {
+                                            childrenList.add(childTile.key)
+                                        }
+
+
+
+                                        if (childTile.key !in resolvedTiles) {
+                                            resolvedTiles.add(childTile.key)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            println("children list=" + childrenList)
+                println("children list=" + childrenList)
 
-            for (middleTile in mapOfTiles) {
+/*            for (middleTile in mapOfTiles) {
                 if (middleTile.key !in resolvedTiles) {
                     var middleTileShareSidesCount = 0
                     val middleTileSides = middleTile.value.toSidesList()
@@ -161,16 +318,23 @@ class Day20 {
                         }
                     }
                 }
+            }*/
+
+                tilesToResolve = currentTilesToResolve
+                println("currentTilesToResolve" + currentTilesToResolve.map { it.name })
+
+                println()
+                println()
+                println()
+                println()
             }
 
-            tilesToResolve = currentTilesToResolve
-
-
+            println(mapOfLocations)
+            println(mapOfLocations.size)
             println()
             println()
             println()
             println()
-        }
         }
 
 
@@ -186,7 +350,7 @@ data class Tile(
     val down: String,
     val downRe: String = down.reversed(),
     val left: String,
-    val LeftRe: String = left.reversed(),
+    val leftRe: String = left.reversed(),
     val right: String,
     val rightRe: String = right.reversed()
 )
@@ -197,9 +361,24 @@ fun Tile.toSidesList() = mutableListOf(
     this.down,
     this.downRe,
     this.left,
-    this.LeftRe,
+    this.leftRe,
     this.right,
     this.rightRe
+)
+
+data class FixedTile(
+    val name: Long,
+    var up: String,
+    var down: String,
+    var left: String,
+    var right: String
+)
+
+fun FixedTile.toSidesList() = mutableListOf(
+    this.up,
+    this.down,
+    this.left,
+    this.right
 )
 
 fun main() {
