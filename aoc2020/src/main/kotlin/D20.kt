@@ -263,7 +263,7 @@ class Day20 {
                                                     }
                                                 }
 
-                                                mapOfLocations[parentLocation.first + 1 to parentLocation.second] =
+                                                mapOfLocations[parentLocation.first to parentLocation.second+1] =
                                                     fixedChild
 
                                             } else {
@@ -390,7 +390,7 @@ class Day20 {
                                                     }
                                                 }
 
-                                                mapOfLocations[parentLocation.first to parentLocation.second + 1] =
+                                                mapOfLocations[parentLocation.first+1 to parentLocation.second] =
                                                     fixedChild
 
                                             }
@@ -505,7 +505,7 @@ class Day20 {
         println("bigStringContent.size"+bigStringContent.size)
         println(bigStringContent.map { it.count{it.toString() == "#"} }.sum())
 
-        for (line in bigStringContent.withIndex()) {
+/*        for (line in bigStringContent.withIndex()) {
             println(line.value)
 
             for (i in 0..95) {
@@ -528,7 +528,7 @@ class Day20 {
                     }
                 }
             }
-        }
+        }*/
 
         /***************
         Testing.....
@@ -568,20 +568,21 @@ class Day20 {
         }*/
 
 
-/*        val oldList = bigStringContent
+        val oldList = bigStringContent
         val newList = arrayListOf<String>()
         for (i in 0..95) {
             newList.add(i, oldList.map { it.get(i) }.joinToString(""))
-        }*/
+        }
 
-        val oldList = bigStringContent.toList()
+/*        val oldList = bigStringContent.toList()
         val newList = arrayListOf<String>()
         for (i in 0..95) {
             newList.add(i,
                 oldList.map { it.get(i) }.joinToString("").reversed()
             )
-        }
+        }*/
 
+        var monsterCounter = 0
         for (line in newList.withIndex()) {
             println(line.value)
 
@@ -596,27 +597,33 @@ class Day20 {
                         && line.value[i + 18].toString() == "#"
                         && line.value[i + 19].toString() == "#"
                     ) {
-                        println("line indice=" + i)
+                        println("line indice=" + line.index)
+                        println("strat index="+ i)
                         val upperLine = newList[line.index - 1]
                         val lowerLine = newList[line.index + 1]
 
                         if (upperLine.get(i + 18).toString() == "#") {
                             println("upper line also valid")
+
+                            if (lowerLine.get(i + 1).toString() == "#"
+                                && lowerLine.get(i + 4).toString() == "#"
+                                && lowerLine.get(i + 7).toString() == "#"
+                                && lowerLine.get(i + 10).toString() == "#"
+                                && lowerLine.get(i + 13).toString() == "#"
+                                && lowerLine.get(i + 16).toString() == "#"
+                            ) {
+                                println("Lower line also valid")
+                                monsterCounter+=1
+                            }
                         }
 
-                        if (lowerLine.get(i + 1).toString() == "#"
-                            && lowerLine.get(i + 4).toString() == "#"
-                            && lowerLine.get(i + 7).toString() == "#"
-                            && lowerLine.get(i + 10).toString() == "#"
-                            && lowerLine.get(i + 13).toString() == "#"
-                            && lowerLine.get(i + 16).toString() == "#"
-                        ) {
-                            println("Lower line also valid")
-                        }
+
                     }
                 }
             }
         }
+
+        println("monsters="+monsterCounter)
 
 
     }
