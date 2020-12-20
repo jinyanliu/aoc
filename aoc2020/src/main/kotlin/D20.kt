@@ -3,8 +3,10 @@ import utils.IoHelper
 class Day20 {
     private val sections = IoHelper.getSections("d20.in")
     private val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
+    private val resolvedTiles = arrayListOf<Tile>()
 
-    private fun getAllSides(mapOfTiles: MutableMap<Long, Tile>): MutableList<String> = mapOfTiles.flatMap { it.value.toSidesList() }.toMutableList()
+    private fun getAllSides(mapOfTiles: MutableMap<Long, Tile>): MutableList<String> =
+        mapOfTiles.flatMap { it.value.toSidesList() }.toMutableList()
 
     private fun getMapOfTiles(): MutableMap<Long, Tile> {
         val mapOfTiles = mutableMapOf<Long, Tile>()
@@ -41,10 +43,10 @@ class Day20 {
         val allSides = getAllSides(mapOfTiles)
 
         for (tile in mapOfTiles) {
-            println(tile.key)
+            //println(tile.key)
             mapOfSideInOthers[tile.key] = arrayListOf()
 
-            val tileSides =tile.value.toSidesList()
+            val tileSides = tile.value.toSidesList()
 
             var sideInOthersCount: Long = 0
 
@@ -74,21 +76,25 @@ class Day20 {
 
         println(mapOfSideInOthers)
 
-/*        for(side in mapOfTiles.get(3083L)!!){
+        for (parentSide in mapOfTiles.get(3083L)!!.toSidesList().withIndex()) {
+            println(parentSide.index)
+            if (parentSide.value in mapOfSideInOthers.get(3083L)!!) {
+                for (childTile in mapOfTiles) {
+                    if (childTile.key != 3083L) {
+                        val tileSides = childTile.value.toSidesList()
+                        for (childSide in tileSides.withIndex()) {
+                            if (childSide.value == parentSide.value) {
+                                println("Child Tile Key=" + childTile.key)
+                                println("Parent Side Value=" + parentSide.value)
+                                println("Parent Side Index=" + parentSide.index)
+                                println("Child Side Index=" + childSide.index)
+                            }
+                        }
 
-        }*/
-
-        for(side in mapOfSideInOthers.get(3083L)!!.withIndex()){
-            for(tile in mapOfTiles){
-                if(tile.key != 3083L){
-                    val tileSides = tile.value.toSidesList()
-                    if(tileSides.contains(side.value)){
-                        println("tilekey"+tile.key)
-                        println(side.value)
-                        println(side.index)
                     }
                 }
             }
+
         }
 
     }
