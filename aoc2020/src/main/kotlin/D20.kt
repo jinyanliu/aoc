@@ -22,7 +22,6 @@ class Day20 {
             val right = lines.drop(1).map { it.last().toString() }.joinToString("")
             mapOfTiles[tileKey] = Tile(up = lines[1], down = lines.last(), left = left, right = right)
         }
-        println(mapOfTiles.size)
         return mapOfTiles
     }
 
@@ -33,13 +32,11 @@ class Day20 {
             val tileKey = lines.get(0).split(" ")[1].dropLast(1).toLong()
             mapOfTiles[tileKey] = lines.drop(1)
         }
-        println(mapOfTiles.size)
         return mapOfTiles
     }
 
     fun getSolution1(): Long {
         fixImage(getMapOfTileEdges())
-        println(whoAreTheCorners)
         return whoAreTheCorners.reduce { acc, l -> acc * l }
     }
 
@@ -72,7 +69,6 @@ class Day20 {
                     mapOfSideInOthers[tile.key]!!.add(side)
                 }
             }
-            //println(sideInOthersCount)
 
             if (sideInOthersCount == 4L) {
                 whoAreTheCorners.add(tile.key)
@@ -85,12 +81,6 @@ class Day20 {
                 sideCountsMap[8L]!!.add(tile.key)
             }
         }
-        println(sideCountsMap)
-        println(sideCountsMap[4L]!!.size)
-        println(sideCountsMap[6L]!!.size)
-        println(sideCountsMap[8L]!!.size)
-
-        println(mapOfSideInOthers)
 
         val fixed2287 = FixedTile(
             2287L,
@@ -109,8 +99,6 @@ class Day20 {
             val currentTilesToResolve = arrayListOf<FixedTile>()
 
             for (parentTile in tilesToResolve) {
-                println()
-                println(parentTile)
                 if (parentTile.name !in resolvedTiles) {
                     resolvedTiles.add(parentTile.name)
                 }
@@ -128,11 +116,6 @@ class Day20 {
                                 val tileSides = childTile.value.toSidesList()
                                 for (childSide in tileSides.withIndex()) {
                                     if (childSide.value == parentSide.value) {
-                                        println()
-                                        println("Find children...")
-                                        println("Child Tile Key=" + childTile.key)
-                                        println("Parent Side Index=" + parentSide.index)
-                                        println("Child Side Index=" + childSide.index)
 
                                         if (childTile.key !in mapOfLocations.values.map { it.name }) {
 
@@ -407,7 +390,6 @@ class Day20 {
 
                                             if (fixedChild !in currentTilesToResolve) {
                                                 currentTilesToResolve.add(fixedChild)
-                                                println("Fixed child=" + fixedChild)
                                             }
                                         }
 
@@ -426,80 +408,19 @@ class Day20 {
                         }
                     }
                 }
-
-                println("children list=" + childrenList)
-
-/*            for (middleTile in mapOfTiles) {
-                if (middleTile.key !in resolvedTiles) {
-                    var middleTileShareSidesCount = 0
-                    val middleTileSides = middleTile.value.toSidesList()
-                    for (child in childrenList) {
-
-                        val childSides = mapOfTiles.get(child)!!.toSidesList()
-
-                        for (side in middleTileSides.withIndex()) {
-
-                            for(childside in childSides.withIndex()){
-                                if(side.value == childside.value){
-                                    println()
-                                    println("Find middle tile...")
-                                    middleTileShareSidesCount += 1
-                                    println("Current testing tile="+middleTile.key)
-                                    println("child"+child)
-                                    println("Middle tile side index=" + side.index)
-                                    println("Child tile side index="+childside.index)
-                                }
-
-                            }
-                        }
-                    }
-                    if (middleTileShareSidesCount == 4) {
-                        println("Middle tile=" + middleTile.key)
-
-                        if (middleTile.key !in currentTilesToResolve) {
-                            currentTilesToResolve.add(middleTile.key)
-                        }
-
-                        if (middleTile.key !in resolvedTiles) {
-                            resolvedTiles.add(middleTile.key)
-                        }
-                    }
-                }
-            }*/
-
                 tilesToResolve = currentTilesToResolve
-                println("currentTilesToResolve" + currentTilesToResolve.map { it.name })
-
-                println()
-                println()
-                println()
-                println()
             }
-
-            println(mapOfLocations)
-            println(mapOfLocations.size)
-            println()
-            println()
-            println()
-            println()
         }
     }
 
-    fun getSolution2() {
+    fun getSolution2(): Long {
         fixImage(getMapOfTileEdges())
-        println("mapOfLocations" + mapOfLocations)
-        println("mapOfLocations.size" + mapOfLocations.size)
 
         val newMapOfLocations = mutableMapOf<Pair<Int, Int>, List<String>>()
         for (everyLocation in mapOfLocations) {
-            val currentLocation = everyLocation.key
             val currentFixedTile = everyLocation.value
             val newStringContent = currentFixedTile.fixedStrings.drop(1).dropLast(1).map { it.substring(1..8) }
             newMapOfLocations[everyLocation.key] = newStringContent
-            /*for(line in newStringContent){
-                println(line)
-            }
-            println()*/
         }
 
         val bigStringContent = arrayListOf<String>()
@@ -512,80 +433,11 @@ class Day20 {
             }
         }
 
-        println("bigStringContent.size" + bigStringContent.size)
-        println(bigStringContent.map { it.count { it.toString() == "#" } }.sum())
-
-
-
-/*        for (line in bigStringContent.withIndex()) {
-            println(line.value)
-
-            for (i in 0..95) {
-                if (i + 19 <= 95) {
-                    if (line.value[i].toString() == "#"
-                        && line.value[i + 5].toString() == "#"
-                        && line.value[i + 6].toString() == "#"
-                        && line.value[i + 11].toString() == "#"
-                        && line.value[i + 12].toString() == "#"
-                        && line.value[i + 17].toString() == "#"
-                        && line.value[i + 18].toString() == "#"
-                        && line.value[i + 19].toString() == "#"
-                    ) {
-                        println("line indice=" + i)
-                        val upperLine = bigStringContent[line.index - 1]
-
-                        if (upperLine.get(i + 18).toString() == "#") {
-                            println("upper line also valid")
-                        }
-                    }
-                }
-            }
-        }*/
-
-        /***************
-        Testing.....
-         ***************/
-
-/*        val oldList = bigStringContent
-        val newList = arrayListOf<String>()
-        for (i in 0..95) {
-            newList.add(i, oldList[95 - i])
-        }*/
-
-/*        val oldList = bigStringContent
-        val newList = arrayListOf<String>()
-        for (i in 0..95) {
-            newList.add(i, oldList[95 - i].reversed())
-        }*/
-
-/*        val oldList = bigStringContent
-        val newList = arrayListOf<String>()
-        for (i in 0..95) {
-            newList.add(i, oldList[i].reversed())
-        }*/
-
-/*        val oldList = bigStringContent
-        val newList = arrayListOf<String>()
-        for (i in 0..95) {
-            newList.add(i, oldList.map { it.get(95 - i) }.joinToString(""))
-        }*/
-/*
-        val oldList = bigStringContent
-        val newList = arrayListOf<String>()
-        for (i in 0..95) {
-            newList.add(i,
-                oldList.map { it.get(95 - i) }.joinToString("")
-                    .reversed()
-            )
-        }*/
-
-
         val oldList = bigStringContent
         val newList = arrayListOf<String>()
         for (i in 0..95) {
             newList.add(i, oldList.map { it.get(i) }.joinToString(""))
         }
-
 
         val charLocation = mutableMapOf<Pair<Int, Int>, String>()
         for (y in 0..95) {
@@ -594,20 +446,8 @@ class Day20 {
             }
         }
 
-        println("charlocations="+charLocation.values.count { it== "#" })
-
-/*        val oldList = bigStringContent.toList()
-        val newList = arrayListOf<String>()
-        for (i in 0..95) {
-            newList.add(i,
-                oldList.map { it.get(i) }.joinToString("").reversed()
-            )
-        }*/
-
         var monsterCounter = 0
         for (line in newList.withIndex()) {
-            println(line.value)
-
             for (i in 0..95) {
                 if (i + 19 <= 95) {
                     if (line.value[i].toString() == "#"
@@ -619,14 +459,10 @@ class Day20 {
                         && line.value[i + 18].toString() == "#"
                         && line.value[i + 19].toString() == "#"
                     ) {
-                        println("line indice=" + line.index)
-                        println("strat index=" + i)
                         val upperLine = newList[line.index - 1]
                         val lowerLine = newList[line.index + 1]
 
                         if (upperLine.get(i + 18).toString() == "#") {
-                            println("upper line also valid")
-
                             if (lowerLine.get(i + 1).toString() == "#"
                                 && lowerLine.get(i + 4).toString() == "#"
                                 && lowerLine.get(i + 7).toString() == "#"
@@ -634,42 +470,32 @@ class Day20 {
                                 && lowerLine.get(i + 13).toString() == "#"
                                 && lowerLine.get(i + 16).toString() == "#"
                             ) {
-                                println("Lower line also valid")
                                 monsterCounter += 1
 
                                 charLocation[i to line.index] = "O"
-                                charLocation[i+5 to line.index] = "O"
-                                charLocation[i+6 to line.index] = "O"
-                                charLocation[i+11 to line.index] = "O"
-                                charLocation[i+12 to line.index] = "O"
-                                charLocation[i+17 to line.index] = "O"
-                                charLocation[i+18 to line.index] = "O"
-                                charLocation[i+19 to line.index] = "O"
+                                charLocation[i + 5 to line.index] = "O"
+                                charLocation[i + 6 to line.index] = "O"
+                                charLocation[i + 11 to line.index] = "O"
+                                charLocation[i + 12 to line.index] = "O"
+                                charLocation[i + 17 to line.index] = "O"
+                                charLocation[i + 18 to line.index] = "O"
+                                charLocation[i + 19 to line.index] = "O"
 
-                                charLocation[i+18 to line.index-1] ="O"
+                                charLocation[i + 18 to line.index - 1] = "O"
 
-                                charLocation[i+1 to line.index+1]= "O"
-                                charLocation[i+4 to line.index+1]= "O"
-                                charLocation[i+7 to line.index+1]= "O"
-                                charLocation[i+10 to line.index+1]= "O"
-                                charLocation[i+13 to line.index+1]= "O"
-                                charLocation[i+16 to line.index+1]= "O"
-
-
+                                charLocation[i + 1 to line.index + 1] = "O"
+                                charLocation[i + 4 to line.index + 1] = "O"
+                                charLocation[i + 7 to line.index + 1] = "O"
+                                charLocation[i + 10 to line.index + 1] = "O"
+                                charLocation[i + 13 to line.index + 1] = "O"
+                                charLocation[i + 16 to line.index + 1] = "O"
                             }
                         }
-
-
                     }
                 }
             }
         }
-
-        println("charlocations="+charLocation.values.count { it== "#" })
-
-        println("monsters=" + monsterCounter)
-
-
+        return charLocation.values.count { it == "#" }.toLong()
     }
 }
 
