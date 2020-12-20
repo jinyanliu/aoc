@@ -6,7 +6,7 @@ class Day20 {
     private val resolvedTiles = arrayListOf<Long>()
     private var tilesToResolve = arrayListOf<FixedTile>()
 
-    private val mapOfLocations = mutableMapOf<Long, Pair<Int, Int>>()
+    private val mapOfLocations = mutableMapOf<Pair<Int, Int>, FixedTile>()
 
     private fun getAllSides(mapOfTiles: MutableMap<Long, Tile>): MutableList<String> =
         mapOfTiles.flatMap { it.value.toSidesList() }.toMutableList()
@@ -79,16 +79,16 @@ class Day20 {
 
         println(mapOfSideInOthers)
 
-        tilesToResolve.add(
-            FixedTile(
-                2287L,
-                mapOfTiles[2287L]!!.up,
-                mapOfTiles[2287L]!!.down,
-                mapOfTiles[2287L]!!.left,
-                mapOfTiles[2287L]!!.right
-            )
+        val fixed2287 = FixedTile(
+            2287L,
+            mapOfTiles[2287L]!!.up,
+            mapOfTiles[2287L]!!.down,
+            mapOfTiles[2287L]!!.left,
+            mapOfTiles[2287L]!!.right
         )
-        mapOfLocations[2287L] = 0 to 0
+
+        tilesToResolve.add(fixed2287)
+        mapOfLocations[0 to 0] = fixed2287
 
 
         while (tilesToResolve.isNotEmpty()) {
@@ -101,6 +101,7 @@ class Day20 {
                     resolvedTiles.add(parentTile.name)
                 }
 
+                val parentLocation = mapOfLocations.filter { it.value.name == parentTile.name }.map { it.key }[0]
 
 
                 val childrenList = mutableListOf<Long>()
@@ -119,7 +120,7 @@ class Day20 {
                                         println("Parent Side Index=" + parentSide.index)
                                         println("Child Side Index=" + childSide.index)
 
-                                        if (mapOfLocations[childTile.key] == null) {
+                                        if (childTile.key !in mapOfLocations.values.map { it.name }) {
 
                                             val fixedChild = FixedTile(
                                                 childTile.key,
@@ -130,8 +131,6 @@ class Day20 {
                                             )
 
                                             if (parentSide.index == 0) {
-                                                mapOfLocations[childTile.key] =
-                                                    mapOfLocations[parentTile.name]!!.first + 1 to mapOfLocations[parentTile.name]!!.second
 
                                                 when (childSide.index) {
                                                     0 ->//up
@@ -192,10 +191,11 @@ class Day20 {
                                                         fixedChild.right = childTile.value.up
                                                     }
                                                 }
+
+                                                mapOfLocations[parentLocation.first + 1 to parentLocation.second] =
+                                                    fixedChild
 
                                             } else {
-                                                mapOfLocations[childTile.key] =
-                                                    mapOfLocations[parentTile.name]!!.first to mapOfLocations[parentTile.name]!!.second + 1
 
                                                 when (childSide.index) {
                                                     0 ->//up
@@ -256,6 +256,10 @@ class Day20 {
                                                         fixedChild.down = childTile.value.upRe
                                                     }
                                                 }
+
+                                                mapOfLocations[parentLocation.first to parentLocation.second + 1] =
+                                                    fixedChild
+
                                             }
 
                                             if (fixedChild !in currentTilesToResolve) {
