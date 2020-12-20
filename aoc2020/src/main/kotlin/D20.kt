@@ -4,6 +4,7 @@ class Day20 {
     private val sections = IoHelper.getSections("d20.in")
     private val whoAreTheCorners = mutableListOf<Long>()
     private val resolvedTiles = arrayListOf<Long>()
+    private var tilesToResolve = arrayListOf<Long>()
 
     private fun getAllSides(mapOfTiles: MutableMap<Long, Tile>): MutableList<String> =
         mapOfTiles.flatMap { it.value.toSidesList() }.toMutableList()
@@ -76,21 +77,45 @@ class Day20 {
 
         println(mapOfSideInOthers)
 
-        for (corner in whoAreTheCorners) {
-            println(corner)
-            resolvedTiles.add(corner)
+        tilesToResolve.addAll(whoAreTheCorners)
 
-            for (parentSide in mapOfTiles[corner]!!.toSidesList().withIndex()) {
-                if (parentSide.value in mapOfSideInOthers.get(corner)!!) {
+        while(tilesToResolve.isNotEmpty()){
+        for (parentTile in tilesToResolve) {
+            println()
+            println(parentTile)
+            if (parentTile !in resolvedTiles) {
+                resolvedTiles.add(parentTile)
+            }
+
+            val currentTilesToResolve = arrayListOf<Long>()
+
+            val childrenList = mutableListOf<Long>()
+
+            for (parentSide in mapOfTiles[parentTile]!!.toSidesList().withIndex()) {
+                if (parentSide.value in mapOfSideInOthers.get(parentTile)!!) {
+
                     for (childTile in mapOfTiles) {
                         if (childTile.key !in resolvedTiles) {
                             val tileSides = childTile.value.toSidesList()
                             for (childSide in tileSides.withIndex()) {
                                 if (childSide.value == parentSide.value) {
+                                    println()
+                                    println("Find children...")
                                     println("Child Tile Key=" + childTile.key)
-                                    println("Parent Side Value=" + parentSide.value)
                                     println("Parent Side Index=" + parentSide.index)
                                     println("Child Side Index=" + childSide.index)
+
+                                    if (childTile.key !in childrenList) {
+                                        childrenList.add(childTile.key)
+                                    }
+
+                                    if (childTile.key !in currentTilesToResolve) {
+                                        currentTilesToResolve.add(childTile.key)
+                                    }
+
+                                    if (childTile.key !in resolvedTiles) {
+                                        resolvedTiles.add(childTile.key)
+                                    }
                                 }
                             }
                         }
@@ -98,11 +123,57 @@ class Day20 {
                 }
             }
 
+            println("children list=" + childrenList)
+
+            for (middleTile in mapOfTiles) {
+                if (middleTile.key !in resolvedTiles) {
+                    var middleTileShareSidesCount = 0
+                    val middleTileSides = middleTile.value.toSidesList()
+                    for (child in childrenList) {
+
+                        val childSides = mapOfTiles.get(child)!!.toSidesList()
+
+                        for (side in middleTileSides.withIndex()) {
+
+                            for(childside in childSides.withIndex()){
+                                if(side.value == childside.value){
+                                    println()
+                                    println("Find middle tile...")
+                                    middleTileShareSidesCount += 1
+                                    println("Current testing tile="+middleTile.key)
+                                    println("child"+child)
+                                    println("Middle tile side index=" + side.index)
+                                    println("Child tile side index="+childside.index)
+                                }
+
+                            }
+                        }
+                    }
+                    if (middleTileShareSidesCount == 4) {
+                        println("Middle tile=" + middleTile.key)
+
+                        if (middleTile.key !in currentTilesToResolve) {
+                            currentTilesToResolve.add(middleTile.key)
+                        }
+
+                        if (middleTile.key !in resolvedTiles) {
+                            resolvedTiles.add(middleTile.key)
+                        }
+                    }
+                }
+            }
+
+            tilesToResolve = currentTilesToResolve
+
+
             println()
             println()
             println()
             println()
         }
+        }
+
+
     }
 
     fun getSolution2() {
