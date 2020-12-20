@@ -2,15 +2,42 @@ import utils.IoHelper
 
 class Day20 {
     private val sections = IoHelper.getSections("d20.in")
+    private val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
 
-    fun getSolution1() = getWhoHasFriendsOnTwoSides(getMapOfTiles()).reduce { acc, l -> acc * l }
+    private fun getMapOfTiles(): MutableMap<Long, Tile> {
+        val mapOfTiles = mutableMapOf<Long, Tile>()
+        for (section in sections) {
+            val lines = section.lines()
+            val tileKey = lines.get(0).split(" ")[1].dropLast(1).toLong()
+            val left = lines.drop(1).map { it[0].toString() }.joinToString("")
+            val right = lines.drop(1).map { it.last().toString() }.joinToString("")
+            mapOfTiles[tileKey] = Tile(up = lines[1], down = lines.last(), left = left, right = right)
+        }
+        println(mapOfTiles.size)
+        return mapOfTiles
+    }
 
-    private fun getWhoHasFriendsOnTwoSides(
+    fun getSolution1(): Long {
+        fixImage(getMapOfTiles())
+        println(whoHasNoFriendsOn2Sides)
+        return whoHasNoFriendsOn2Sides.reduce { acc, l -> acc * l }
+    }
+
+    private fun fixImage(
         mapOfTiles: MutableMap<Long, Tile>
-    ): List<Long> {
-        val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
+    ) {
+        //Key: Side Count, Value: Tile Numbers
+        val sideCountsMap = mutableMapOf<Long, ArrayList<Long>>(
+            4L to arrayListOf(),
+            6L to arrayListOf(),
+            8L to arrayListOf()
+        )
+
+        //Key: Tile number, Value: sides shared with others
+        val mapOfSideInOthers = mutableMapOf<Long, ArrayList<String>>()
         for (tile in mapOfTiles) {
             println(tile.key)
+            mapOfSideInOthers[tile.key] = arrayListOf()
 
             val allSides =
                 mapOfTiles.flatMap {
@@ -38,33 +65,32 @@ class Day20 {
                 tile.value.rightRe
             )
 
-            var sideInOthersCount = 0
+            var sideInOthersCount: Long = 0
+
             for (side in tileSides) {
                 if (allSides.count { it == side } > 1) {
                     sideInOthersCount += 1
+                    mapOfSideInOthers[tile.key]!!.add(side)
                 }
             }
-            println(sideInOthersCount)
+            //println(sideInOthersCount)
 
-            if (sideInOthersCount == 4) {
+            if (sideInOthersCount == 4L) {
                 whoHasNoFriendsOn2Sides.add(tile.key)
+                sideCountsMap[4L]!!.add(tile.key)
+            }
+            if (sideInOthersCount == 6L) {
+                sideCountsMap[6L]!!.add(tile.key)
+            }
+            if (sideInOthersCount == 8L) {
+                sideCountsMap[8L]!!.add(tile.key)
             }
         }
-        println(whoHasNoFriendsOn2Sides)
-        return whoHasNoFriendsOn2Sides
-    }
-
-    private fun getMapOfTiles(): MutableMap<Long, Tile> {
-        val mapOfTiles = mutableMapOf<Long, Tile>()
-        for (section in sections) {
-            val lines = section.lines()
-            val tileKey = lines.get(0).split(" ")[1].dropLast(1).toLong()
-            val left = lines.drop(1).map { it[0].toString() }.joinToString("")
-            val right = lines.drop(1).map { it.last().toString() }.joinToString("")
-            mapOfTiles[tileKey] = Tile(up = lines[1], down = lines.last(), left = left, right = right)
-        }
-        println(mapOfTiles.size)
-        return mapOfTiles
+        println(sideCountsMap)
+        println(sideCountsMap[4L]!!.size)
+        println(sideCountsMap[6L]!!.size)
+        println(sideCountsMap[8L]!!.size)
+        println(mapOfSideInOthers)
     }
 
     fun getSolution2() {
@@ -83,6 +109,7 @@ data class Tile(
 )
 
 fun main() {
+    //Test Result: 20899048083289
     //83775126454273
     println(Day20().getSolution1())
     println(Day20().getSolution2())
