@@ -4,6 +4,8 @@ class Day20 {
     private val sections = IoHelper.getSections("d20.in")
     private val whoHasNoFriendsOn2Sides = mutableListOf<Long>()
 
+    private fun getAllSides(mapOfTiles: MutableMap<Long, Tile>): MutableList<String> = mapOfTiles.flatMap { it.value.toSidesList() }.toMutableList()
+
     private fun getMapOfTiles(): MutableMap<Long, Tile> {
         val mapOfTiles = mutableMapOf<Long, Tile>()
         for (section in sections) {
@@ -35,35 +37,14 @@ class Day20 {
 
         //Key: Tile number, Value: sides shared with others
         val mapOfSideInOthers = mutableMapOf<Long, ArrayList<String>>()
+
+        val allSides = getAllSides(mapOfTiles)
+
         for (tile in mapOfTiles) {
             println(tile.key)
             mapOfSideInOthers[tile.key] = arrayListOf()
 
-            val allSides =
-                mapOfTiles.flatMap {
-                    mutableListOf(
-                        it.value.up,
-                        it.value.upRe,
-                        it.value.down,
-                        it.value.downRe,
-                        it.value.left,
-                        it.value.LeftRe,
-                        it.value.right,
-                        it.value.rightRe
-                    )
-                }
-                    .toMutableList()
-
-            val tileSides = mutableListOf(
-                tile.value.up,
-                tile.value.upRe,
-                tile.value.down,
-                tile.value.downRe,
-                tile.value.left,
-                tile.value.LeftRe,
-                tile.value.right,
-                tile.value.rightRe
-            )
+            val tileSides =tile.value.toSidesList()
 
             var sideInOthersCount: Long = 0
 
@@ -90,7 +71,26 @@ class Day20 {
         println(sideCountsMap[4L]!!.size)
         println(sideCountsMap[6L]!!.size)
         println(sideCountsMap[8L]!!.size)
+
         println(mapOfSideInOthers)
+
+/*        for(side in mapOfTiles.get(3083L)!!){
+
+        }*/
+
+        for(side in mapOfSideInOthers.get(3083L)!!.withIndex()){
+            for(tile in mapOfTiles){
+                if(tile.key != 3083L){
+                    val tileSides = tile.value.toSidesList()
+                    if(tileSides.contains(side.value)){
+                        println("tilekey"+tile.key)
+                        println(side.value)
+                        println(side.index)
+                    }
+                }
+            }
+        }
+
     }
 
     fun getSolution2() {
@@ -106,6 +106,17 @@ data class Tile(
     val LeftRe: String = left.reversed(),
     val right: String,
     val rightRe: String = right.reversed()
+)
+
+fun Tile.toSidesList() = mutableListOf(
+    this.up,
+    this.upRe,
+    this.down,
+    this.downRe,
+    this.left,
+    this.LeftRe,
+    this.right,
+    this.rightRe
 )
 
 fun main() {
