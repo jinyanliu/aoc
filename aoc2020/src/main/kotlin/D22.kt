@@ -21,9 +21,7 @@ class Day22 {
     fun getSolution2(): Long {
         val playerOne = inputs[0].lines().drop(1).map { it.toLong() }.toMutableList()
         val playerTwo = inputs[1].lines().drop(1).map { it.toLong() }.toMutableList()
-
         val winner = playRecursiveGame(playerOne, playerTwo, arrayListOf(playerOne.toList() to playerTwo.toList()))
-
         return if (winner == PLAYER.PLAYER_ONE) {
             playerOne.mapIndexed { index, l -> l * (playerOne.size - index) }.sum()
         } else {
