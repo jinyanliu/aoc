@@ -206,37 +206,25 @@ class Day23 {
         var currentCup = currentList[0]
         var currentPickup = mutableListOf<Long>()
         var destinationCup: Long
+        val size = inputList.size-3
 
         repeat(100) {
-            //println("cups: " + currentList)
+            println("cups: " + currentList)
             // Finds pick up
 
-            val currentCup = currentList[0]
-            currentList.drop(1)
-            for (item in currentList.withIndex()) {
-                if (item.value == currentCup) {
-                    when {
-                        item.index <= 5 -> {
-                            currentPickup = mutableListOf(
-                                currentList[item.index + 1],
-                                currentList[item.index + 2],
-                                currentList[item.index + 3]
-                            )
-                        }
-                        item.index == 6 -> {
-                            currentPickup =
-                                mutableListOf(currentList[item.index + 1], currentList[item.index + 2], currentList[0])
-                        }
-                        item.index == 7 -> {
-                            currentPickup = mutableListOf(currentList[item.index + 1], currentList[0], currentList[1])
-                        }
-                        item.index == 8 -> {
-                            currentPickup = mutableListOf(currentList[0], currentList[1], currentList[2])
-                        }
-                    }
-                }
-            }
-            currentList.removeAll(currentPickup)
+            var currentCup = currentList[0]
+            currentList = currentList.drop(1).toMutableList()
+            println("CurrentList"+currentList)
+            currentPickup = mutableListOf(
+                currentList[0],
+                currentList[1],
+                currentList[2]
+            )
+            currentList = currentList.drop(3).toMutableList()
+            currentList.add(currentCup)
+
+            println("CurrentList"+currentList)
+
             println("pick up: " + currentPickup)
 
             // Finds destination
@@ -249,31 +237,19 @@ class Day23 {
             }
             println("destination: " + destinationCup)
 
-            val newList = mutableListOf<Long>()
+            val desIndex = currentList.asSequence().indexOf(destinationCup)
+            val listAfterDes = currentList.subList(desIndex+1, size)
+            currentList = currentList.dropLast(listAfterDes.size).toMutableList()
+            currentList = (listAfterDes + currentList).toMutableList()
+            currentList.addAll(currentPickup)
+            println("CurrentList"+currentList)
 
-            // Place picked up cup
-            for (item in currentList.withIndex()) {
-                newList.add(item.value)
-                if (item.value == destinationCup) {
-                    newList.add(currentPickup[0])
-                    newList.add(currentPickup[1])
-                    newList.add(currentPickup[2])
-                }
-            }
+            currentCup = currentList[listAfterDes.size]
 
-            currentList = newList
-
-            for (item in currentList.withIndex()) {
-                if (item.value == currentCup) {
-                    if (item.index <= 7) {
-                        currentCup = currentList[item.index + 1]
-                    } else {
-                        currentCup = currentList[0]
-                    }
-
-                    break
-                }
-            }
+            val listBeforeCurrentCup = currentList.subList(0, listAfterDes.size)
+            currentList = currentList.drop(listAfterDes.size).toMutableList()
+            currentList.addAll(listBeforeCurrentCup)
+            println("CurrentList"+currentList)
         }
 
         println(currentList)
