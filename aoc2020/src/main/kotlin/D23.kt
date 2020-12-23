@@ -3,9 +3,9 @@ import utils.IoHelper
 class Day23 {
     private val inputs = IoHelper.getLines("d23.in")
 
-    private fun getIndexOf1(currentList:MutableList<Int>):Int{
+    private fun getIndexOf1(currentList:MutableList<Long>):Int{
         for(item in currentList.withIndex()){
-            if(item.value == 1){
+            if(item.value == 1L){
                 return item.index
             }
         }
@@ -13,10 +13,10 @@ class Day23 {
     }
 
     fun getSolution1() :String{
-        var currentList = inputs[0].split(" ").map { it.toInt() }.toMutableList()
+        var currentList = inputs[0].split(" ").map { it.toLong() }.toMutableList()
         var currentCup = currentList[0]
-        var currentPickup = mutableListOf<Int>()
-        var destinationCup = 0
+        var currentPickup = mutableListOf<Long>()
+        var destinationCup:Long
 
         repeat(100) {
             println("cups: " + currentList)
@@ -57,7 +57,7 @@ class Day23 {
             }
             println("destination: " + destinationCup)
 
-            val newList = mutableListOf<Int>()
+            val newList = mutableListOf<Long>()
 
             // Place picked up cup
             for (item in currentList.withIndex()) {
@@ -88,11 +88,11 @@ class Day23 {
         return (currentList.subList(getIndexOf1(currentList)+1, currentList.size) + currentList.subList(0, getIndexOf1(currentList))).joinToString ("")
     }
 
-    fun getSolution2() {
-        var currentList = inputs[0].split(" ").map { it.toInt() }.toMutableList()
+    fun getSolution2():String {
+        var currentList = inputs[0].split(" ").map { it.toLong() }.toMutableList()
         var currentCup = currentList[0]
-        var currentPickup = mutableListOf<Int>()
-        var destinationCup = 0
+        var currentPickup = mutableListOf<Long>()
+        var destinationCup:Long
 
         repeat(100) {
             println("cups: " + currentList)
@@ -133,7 +133,7 @@ class Day23 {
             }
             println("destination: " + destinationCup)
 
-            val newList = mutableListOf<Int>()
+            val newList = mutableListOf<Long>()
 
             // Place picked up cup
             for (item in currentList.withIndex()) {
@@ -161,6 +161,7 @@ class Day23 {
         }
 
         println(currentList)
+        return (currentList.subList(getIndexOf1(currentList)+1, currentList.size) + currentList.subList(0, getIndexOf1(currentList))).joinToString ("")
     }
 }
 
