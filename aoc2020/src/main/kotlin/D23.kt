@@ -201,6 +201,7 @@ class Day23 {
     }*/
 
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun play2(inputList: List<Long>): String {
         var currentList = inputList.toMutableList()
         var currentPickup = mutableListOf<Long>()
@@ -218,7 +219,7 @@ class Day23 {
             // Finds pick up
 
             val currentCup = currentList.removeAt(0)
-            println("CurrentList"+currentList)
+            //println("CurrentList"+currentList)
 
             currentPickup = mutableListOf(
                 currentList.removeAt(0),
@@ -227,9 +228,9 @@ class Day23 {
             )
             currentList.add(currentCup)
 
-            println("CurrentList"+currentList)
+            //println("CurrentList"+currentList)
 
-            println("pick up: " + currentPickup)
+            //println("pick up: " + currentPickup)
 
             // Finds destination
             destinationCup = currentCup - 1
@@ -239,32 +240,21 @@ class Day23 {
             if (destinationCup < 1) {
                 destinationCup = currentList.max()!!
             }
-            println("destination: " + destinationCup)
+            //println("destination: " + destinationCup)
 
             val desIndex = currentList.asSequence().indexOf(destinationCup)
             val listAfterDes = currentList.subList(desIndex+1, size)
-            val listAfterDesSize = listAfterDes.size
-            repeat(listAfterDesSize){
-                currentList.add(0,currentList.removeAt(currentList.size-1))
-            }
-
-            //currentList = (listAfterDes + currentList).toMutableList()
+            currentList =currentList.dropLast(listAfterDes.size).toMutableList()
+            currentList = (listAfterDes + currentList).toMutableList()
             currentList.addAll(currentPickup)
-            println("CurrentList"+currentList)
+            //println("CurrentList"+currentList)
 
 
 
-            //val listBeforeCurrentCupSize = currentList.subList(0, listAfterDes.size).size
-            //currentList = currentList.drop(listAfterDes.size).toMutableList()
-            //currentList.addAll(listBeforeCurrentCup)
-
-            repeat(listAfterDesSize){
-                currentList.add(currentList.removeAt(0))
-            }
-            println("CurrentList"+currentList)
-            println()
-            println()
-
+            val listBeforeCurrentCup = currentList.subList(0, listAfterDes.size)
+            currentList = currentList.drop(listAfterDes.size).toMutableList()
+            currentList.addAll(listBeforeCurrentCup)
+            //println("CurrentList"+currentList)
         }
 
         println(currentList)
