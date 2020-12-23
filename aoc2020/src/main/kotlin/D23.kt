@@ -203,29 +203,33 @@ class Day23 {
 
     fun play2(inputList: List<Long>): String {
         var currentList = inputList.toMutableList()
-        var currentCup = currentList[0]
         var currentPickup = mutableListOf<Long>()
         var destinationCup: Long
         val size = inputList.size-3
 
+        var i = 0
         repeat(100) {
-            println("cups: " + currentList)
+
+            i += 1
+            if(i % 100 ==0){
+                println(i)
+            }
+            //println("cups: " + currentList)
             // Finds pick up
 
-            var currentCup = currentList[0]
-            currentList = currentList.drop(1).toMutableList()
-            println("CurrentList"+currentList)
+            val currentCup = currentList.removeAt(0)
+            //println("CurrentList"+currentList)
+
             currentPickup = mutableListOf(
-                currentList[0],
-                currentList[1],
-                currentList[2]
+                currentList.removeAt(0),
+                currentList.removeAt(0),
+                currentList.removeAt(0)
             )
-            currentList = currentList.drop(3).toMutableList()
             currentList.add(currentCup)
 
-            println("CurrentList"+currentList)
+            //println("CurrentList"+currentList)
 
-            println("pick up: " + currentPickup)
+            //println("pick up: " + currentPickup)
 
             // Finds destination
             destinationCup = currentCup - 1
@@ -235,21 +239,21 @@ class Day23 {
             if (destinationCup < 1) {
                 destinationCup = currentList.max()!!
             }
-            println("destination: " + destinationCup)
+            //println("destination: " + destinationCup)
 
             val desIndex = currentList.asSequence().indexOf(destinationCup)
             val listAfterDes = currentList.subList(desIndex+1, size)
             currentList = currentList.dropLast(listAfterDes.size).toMutableList()
             currentList = (listAfterDes + currentList).toMutableList()
             currentList.addAll(currentPickup)
-            println("CurrentList"+currentList)
+            //println("CurrentList"+currentList)
 
-            currentCup = currentList[listAfterDes.size]
+
 
             val listBeforeCurrentCup = currentList.subList(0, listAfterDes.size)
             currentList = currentList.drop(listAfterDes.size).toMutableList()
             currentList.addAll(listBeforeCurrentCup)
-            println("CurrentList"+currentList)
+            //println("CurrentList"+currentList)
         }
 
         println(currentList)
