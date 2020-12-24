@@ -1,9 +1,9 @@
 import utils.IoHelper
 
 class Day23 {
-    private val inputs = IoHelper.getLines("d23Test.in")
+    private val inputs = IoHelper.getLines("d23.in")[0]
 
-/*    private fun getIndexOf1(currentList: Sequence<Long>): Int {
+    private fun getIndexOf1(currentList: MutableList<Long>): Int {
         for (item in currentList.withIndex()) {
             if (item.value == 1L) {
                 return item.index
@@ -13,7 +13,7 @@ class Day23 {
     }
 
     fun getSolution1(): String {
-        var currentList = inputs[0].split(" ").map { it.toLong() }.toMutableList()
+        var currentList = inputs.map { it.toString().toLong() }.toMutableList()
         var currentCup = currentList[0]
         var currentPickup = mutableListOf<Long>()
         var destinationCup: Long
@@ -85,185 +85,18 @@ class Day23 {
         }
 
         println(currentList)
-*//*        return (currentList.subList(getIndexOf1(currentList) + 1, currentList.size) + currentList.subList(
+        return (currentList.subList(getIndexOf1(currentList) + 1, currentList.size) + currentList.subList(
             0,
             getIndexOf1(currentList)
-        )).joinToString("")*//*
-        return ""
-    }*/
-
-    fun getSolution2(): String {
-        val inputList = inputs[0].split(" ").map { it.toLong() }.toMutableList()
-        //val inputList = (inputs[0].split(" ").map { it.toLong() } + (10L..1000000L).toList())
-        //println(inputList)
-        return play2(inputList)
+        )).joinToString("")
     }
 
-/*    private fun play(inputList: List<Long>): String {
-        val size = inputList.size
-        println("Size: "+size)
-        var currentList = inputList.asSequence()
-
-        var currentCup = currentList.first()
-        var currentPickup = mutableListOf<Long>()
-        var destinationCup: Long
-
-
-        var i = 0
-        repeat(10000000) {
-            i += 1
-            if(i % 1000 ==0){
-                println(i)
-            }
-
-            //println("cups: " + currentList.toList())
-            // Finds pick up
-            val currentCupIndex = currentList.indexOf(currentCup)
-            when {
-                currentCupIndex <= size - 4 -> {
-                    currentPickup = mutableListOf(
-                        currentList.elementAt(currentCupIndex + 1),
-                        currentList.elementAt(currentCupIndex + 2),
-                        currentList.elementAt(currentCupIndex + 3)
-                    )
-                }
-                currentCupIndex == size - 3 -> {
-                    currentPickup =
-                        mutableListOf(
-                            currentList.elementAt(currentCupIndex + 1),
-                            currentList.elementAt(currentCupIndex + 2),
-                            currentList.elementAt(0)
-                        )
-                }
-                currentCupIndex == size - 2 -> {
-                    currentPickup = mutableListOf(
-                        currentList.elementAt(currentCupIndex + 1),
-                        currentList.elementAt(0),
-                        currentList.elementAt(1)
-                    )
-                }
-                currentCupIndex == size - 1 -> {
-                    currentPickup =
-                        mutableListOf(currentList.elementAt(0), currentList.elementAt(1), currentList.elementAt(2))
-                }
-            }
-
-            currentList = currentList.filter { it !in currentPickup }
-
-            //println("pick up: " + currentPickup)
-
-            // Finds destination
-            destinationCup = currentCup - 1
-            while (destinationCup in currentPickup) {
-                destinationCup = destinationCup - 1
-            }
-            if (destinationCup < 1) {
-                destinationCup = currentList.max()!!
-            }
-
-            //println("destination: " + destinationCup)
-
-            // Place picked up cup
-            val destinationIndex = currentList.indexOf(destinationCup)
-            val list = currentList.toList()
-            val beforeDes = list.subList(0, destinationIndex + 1)
-            val afterDes = list.subList(destinationIndex + 1, list.size)
-            val newList = (afterDes + beforeDes).toMutableList()
-            newList.addAll(currentPickup)
-
-            currentList = newList.asSequence()
-
-            val currentCupIndexNow = currentList.indexOf(currentCup)
-            if (currentCupIndexNow <= size - 2) {
-                currentCup = currentList.elementAt(currentCupIndexNow + 1)
-            } else {
-                currentCup = currentList.elementAt(0)
-            }
-        }
-
-        //println(currentList.toList())
-        val indexOf1 = currentList.indexOf(1L)
-        if (indexOf1 <= size - 3) {
-            println(currentList.elementAt(indexOf1))
-            println(currentList.elementAt(indexOf1 + 1))
-            println(currentList.elementAt(indexOf1 + 2))
-        } else if (indexOf1 == size - 2) {
-            println(currentList.elementAt(indexOf1))
-            println(currentList.elementAt(indexOf1 + 1))
-            println(currentList.elementAt(0))
-        } else if (indexOf1 == size - 1) {
-            println(currentList.elementAt(indexOf1))
-            println(currentList.elementAt(0))
-            println(currentList.elementAt(1))
-        }
-
-        return ""
-    }*/
-
-
-    @OptIn(ExperimentalStdlibApi::class)
-    fun play2(inputList: List<Long>): String {
-        var currentList = inputList.toMutableList()
-        var currentPickup = mutableListOf<Long>()
-        var destinationCup: Long
-        val size = inputList.size - 3
-
-        var i = 0
-        repeat(100) {
-
-            i += 1
-            if (i % 1000 == 0) {
-                println(i)
-            }
-            //println("cups: " + currentList)
-            // Finds pick up
-
-            val currentCup = currentList.removeAt(0)
-            //println("CurrentList"+currentList)
-
-            currentPickup = mutableListOf(
-                currentList.removeAt(0),
-                currentList.removeAt(0),
-                currentList.removeAt(0)
-            )
-            currentList.add(currentCup)
-
-            //println("CurrentList"+currentList)
-
-            //println("pick up: " + currentPickup)
-
-            // Finds destination
-            destinationCup = currentCup - 1
-            while (destinationCup in currentPickup) {
-                destinationCup = destinationCup - 1
-            }
-            if (destinationCup < 1) {
-                destinationCup = currentList.max()!!
-            }
-            //println("destination: " + destinationCup)
-
-            val desIndex = currentList.asSequence().indexOf(destinationCup)
-            val listAfterDes = currentList.subList(desIndex+1, size)
-            currentList =currentList.dropLast(listAfterDes.size).toMutableList()
-            currentList = (listAfterDes + currentList).toMutableList()
-            currentList.addAll(currentPickup)
-            //println("CurrentList"+currentList)
-
-
-
-            val listBeforeCurrentCup = currentList.subList(0, listAfterDes.size)
-            currentList = currentList.drop(listAfterDes.size).toMutableList()
-            currentList.addAll(listBeforeCurrentCup)
-            //println("CurrentList"+currentList)
-        }
-
-        println(currentList)
-        return ""
+    fun getSolution2() {
     }
 }
 
 fun main() {
     // 26354798
-    //println(Day23().getSolution1())
-    Day23().getSolution2()
+    println(Day23().getSolution1())
+    println(Day23().getSolution2())
 }
