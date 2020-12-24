@@ -1,7 +1,6 @@
 import utils.IoHelper
 import kotlin.math.absoluteValue
 
-
 class Day24 {
     private val inputs = IoHelper.getLines("d24.in")
     private val validDi = arrayListOf("e", "se", "sw", "w", "nw", "ne")
