@@ -1,42 +1,31 @@
 import utils.IoHelper
 
 class Day25 {
-    private val inputs = IoHelper.getLines("d25Test.in").map { it.toLong() }
+    private val inputs = IoHelper.getLines("d25.in")
+    private val publicKeys = inputs[0].toLong() to inputs[1].toLong()
 
-    fun getSolution1() {
-        //card
+    private fun whatIsYourLoopSize(publicKey: Long): Int {
         val subjectNumber = 7L
         var value = 1L
-        var loopSizeCard = 0
-        while(value!= 9033205L){
-            loopSizeCard+=1
-            value = value * subjectNumber
-            value = value % 20201227
+        var loopSize = 0
+        while (value != publicKey) {
+            loopSize += 1
+            value *= subjectNumber
+            value %= 20201227
         }
-        println(loopSizeCard)
+        return loopSize
+    }
 
+    fun getSolution1(): Long {
+        val cardLoopSize = whatIsYourLoopSize(publicKeys.first)
+        val doorLoopSize = whatIsYourLoopSize(publicKeys.second)
 
-        //door
-        val subjectNumber2 = 7L
-        var value2 = 1L
-        var loopSizeDoor = 0
-        while(value2!= 9281649L){
-            loopSizeDoor+=1
-            value2 = value2 * subjectNumber2
-            value2 = value2 % 20201227
+        var value = 1L
+        repeat(doorLoopSize) {
+            value *= publicKeys.first
+            value %= 20201227
         }
-        println(loopSizeDoor)
-
-
-        val subjectNumberCard2 = 9033205L
-        var valueCard2 = 1L
-        repeat(loopSizeDoor){
-            valueCard2 = valueCard2 * subjectNumberCard2
-            valueCard2 = valueCard2 % 20201227
-        }
-        println(valueCard2)
-
-
+        return value
     }
 
     fun getSolution2() {
@@ -44,6 +33,7 @@ class Day25 {
 }
 
 fun main() {
+    //9714832
     println(Day25().getSolution1())
     println(Day25().getSolution2())
 }
