@@ -1,6 +1,7 @@
 # Project exclude paths
 /.gradle/
 /aoc2020/build/
+/aoc2021/build/
 /.idea/.gitignore
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/compiler.xml
@@ -14,3 +15,5 @@
 /.idea/codeStyles/Project.xml
 /.idea/vcs.xml
 /.idea/uiDesigner.xml
+build/
+/.idea/
