@@ -9,9 +9,7 @@ object D9 {
     fun solveOne() = lowestPoints.map { it.value + 1 }.sum()
 
     fun solveTwo() =
-        lowestPoints.map { it.key.countBasin() }.sortedDescending().subList(0, 3).reduce { accumulator, element ->
-            accumulator * element
-        }
+        lowestPoints.map { it.key.countBasin() }.sortedDescending().subList(0, 3).reduce(Int::times)
 
     private fun initMap(): Map<Pair<Int, Int>, Int> {
         val map = mutableMapOf<Pair<Int, Int>, Int>()

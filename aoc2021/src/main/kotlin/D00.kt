@@ -1,17 +1,20 @@
 import utils.IoHelper
 
-class Day00 {
-    private val inputs = IoHelper.getLines("d00.in")
+object D00 {
+    private val inputs = IoHelper.getInts("d00.in")
 
-    fun getSolution1(): String {
-        return inputs.joinToString()
+    fun solveOne(): Int {
+        return 0
     }
 
-    fun getSolution2() {
+    fun solveTwo(): Int {
+        return 0
     }
 }
 
 fun main() {
-    println(Day00().getSolution1())
-    println(Day00().getSolution2())
+    val solutionOne = D00.solveOne()
+    val solutionTwo = D00.solveTwo()
+    println("One=$solutionOne")
+    println("Tw0=$solutionTwo")
 }
