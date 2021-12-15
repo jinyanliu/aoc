@@ -45,4 +45,14 @@ object LocationHelper {
             it.first in 0..maxX && it.second in 0..maxY
         }
     }
+
+    fun Pair<Int, Int>.getRightAndDownNeighbours(maxX: Int, maxY: Int): List<Pair<Int, Int>> {
+        val x = this.first
+        val y = this.second
+        val down = (x) to (y + 1)
+        val right = (x + 1) to y
+        return listOf(down, right).filter {
+            it.first in 0..maxX && it.second in 0..maxY
+        }
+    }
 }
