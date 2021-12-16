@@ -1,5 +1,5 @@
 import utils.IoHelper
-import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 class D15Alt2(val inputs: String)  {
     fun s1() = Graph(500).init(IoHelper.getLines(inputs)).getShortestDistance(0 to 0, 499 to 499)
@@ -29,16 +29,16 @@ class Graph(private val width: Int) {
     }
 
     fun getShortestDistance(src: Pair<Int, Int>, dst: Pair<Int, Int>): Int{
+        val startTimestamp = System.currentTimeMillis()
+
         //点到原点的距离
         val distToSrc = mutableMapOf<Pair<Int, Int>, Int>()
         //已知到原点的最短距离
         val solvedDistToSrc = mutableMapOf(src to 0)
-        //已知到原点的最短距离的那些点
-        val path = mutableListOf(src)
 
         var currentNode = src
         while (currentNode != dst) {
-            val newNeighbours = getNeighbours(currentNode).filterNot { it in path }
+            val newNeighbours = getNeighbours(currentNode).filterNot { it in solvedDistToSrc }
             newNeighbours.forEach { neighbour ->
                 val srcToCurrentNode = solvedDistToSrc[currentNode]!!
                 val edge = nodes[neighbour]!!
@@ -55,15 +55,19 @@ class Graph(private val width: Int) {
             currentNode = distToSrc.minBy{ it.value }!!.key
             solvedDistToSrc[currentNode] = distToSrc[currentNode]!!
             distToSrc.remove(currentNode)
-            path.add(currentNode)
         }
+
+        val endTimestamp = System.currentTimeMillis()
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(endTimestamp - startTimestamp)
+        println("Minutes = $minutes")
         return solvedDistToSrc[dst]!!
     }
 }
 
 fun main() {
     //println(D15("d15sample.txt").s1())
-    val now = Instant.now()
+    //val now = Instant.now()
+    //2907
     println(D15Alt2("d15Alt2.in").s1())
-    println((Instant.now().toEpochMilli()  - now.toEpochMilli())/(1000))
+    //println((Instant.now().toEpochMilli()  - now.toEpochMilli())/(1000))
 }
