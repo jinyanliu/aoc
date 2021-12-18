@@ -2,7 +2,6 @@ import utils.IoHelper
 import utils.LocationHelper.get4AdjacentPositions
 import utils.LocationHelper.getMaxX
 import utils.LocationHelper.getMaxY
-import utils.LocationHelper.getRightAndDownNeighbours
 import utils.PrintHelper.print
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -29,7 +28,7 @@ object D15 {
 
             if (lowestCount != 0 && currentCount >= lowestCount) continue
 
-            val neighbours = currentPoints.last().getRightAndDownNeighbours(maxX, maxY)
+            val neighbours = currentPoints.last().get4AdjacentPositions(maxX, maxY)
 
             for (newPoint in neighbours) {
                 if (currentPoints.contains(newPoint)) continue
@@ -56,14 +55,9 @@ object D15 {
                     }
 
                 } else {
-
                     queue.add(currentPath + (newPoint to newCount))
-
-
                 }
-
             }
-
         }
 
         val endTimestamp = System.currentTimeMillis()
@@ -105,7 +99,6 @@ object D15 {
             }
         }
 
-
         newMap.print()
         return solve(newMap)
     }
@@ -113,8 +106,9 @@ object D15 {
 
 fun main() {
     //604
-    //val solutionOne = D15.solve(D15.inputs)
-    //println("One=$solutionOne")
-    val solutionTwo = D15.solveTwo()
-    println("Tw0=$solutionTwo")
+    //3 minutes
+    val solutionOne = D15.solve(D15.inputs)
+    println("One=$solutionOne")
+/*    val solutionTwo = D15.solveTwo()
+    println("Tw0=$solutionTwo")*/
 }

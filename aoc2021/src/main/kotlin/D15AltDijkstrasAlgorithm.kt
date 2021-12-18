@@ -1,12 +1,9 @@
 import utils.IoHelper
 import java.util.concurrent.TimeUnit
 
-class D15Alt2(val inputs: String)  {
-    fun s1() = Graph(500).init(IoHelper.getLines(inputs)).getShortestDistance(0 to 0, 499 to 499)
-
-    fun s2(): Int {
-        TODO("Not yet implemented")
-    }
+class D15Alt(val inputs: String) {
+    fun s1() = Graph(100).init(IoHelper.getLines(inputs)).getShortestDistance(0 to 0, 99 to 99)
+    fun s2() = Graph(500).init(IoHelper.getLines(inputs)).getShortestDistance(0 to 0, 499 to 499)
 }
 
 class Graph(private val width: Int) {
@@ -28,7 +25,7 @@ class Graph(private val width: Int) {
         return this
     }
 
-    fun getShortestDistance(src: Pair<Int, Int>, dst: Pair<Int, Int>): Int{
+    fun getShortestDistance(src: Pair<Int, Int>, dst: Pair<Int, Int>): Int {
         val startTimestamp = System.currentTimeMillis()
 
         //点到原点的距离
@@ -52,7 +49,7 @@ class Graph(private val width: Int) {
                     }
                 }
             }
-            currentNode = distToSrc.minBy{ it.value }!!.key
+            currentNode = distToSrc.minBy { it.value }!!.key
             solvedDistToSrc[currentNode] = distToSrc[currentNode]!!
             distToSrc.remove(currentNode)
         }
@@ -65,9 +62,8 @@ class Graph(private val width: Int) {
 }
 
 fun main() {
-    //println(D15("d15sample.txt").s1())
-    //val now = Instant.now()
+    //604
+    println(D15Alt("d15.in").s1())
     //2907
-    println(D15Alt2("d15Alt2.in").s1())
-    //println((Instant.now().toEpochMilli()  - now.toEpochMilli())/(1000))
+    println(D15Alt("d15Alt.in").s2())
 }
