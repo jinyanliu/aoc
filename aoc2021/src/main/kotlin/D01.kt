@@ -27,6 +27,8 @@ class Day01 {
 }
 
 fun main() {
+    //1390
     println(Day01().getSolution1())
+    //1457
     println(Day01().getSolution2())
 }

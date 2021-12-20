@@ -26,7 +26,7 @@ object IoHelper {
         return getIntMap(lines)
     }
 
-    fun getIntMap(lines: List<String>): Map<Pair<Int, Int>, Int> {
+    private fun getIntMap(lines: List<String>): Map<Pair<Int, Int>, Int> {
         val map = mutableMapOf<Pair<Int, Int>, Int>()
         for (y in lines.indices) {
             val oneLine = lines[y]

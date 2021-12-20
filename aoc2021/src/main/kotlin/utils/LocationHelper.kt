@@ -51,8 +51,8 @@ object LocationHelper {
         maxX: Int = -1,
         maxY: Int = -1,
         isInfinite: Boolean,
-        defaultValue:String
-    ) = getSurroundingNinePositions(isInfinite =isInfinite).map { map[it]?:defaultValue }
+        defaultValue: String
+    ) = getSurroundingNinePositions(isInfinite = isInfinite).map { map[it] ?: defaultValue }
 
     fun Pair<Int, Int>.getSurroundingNinePositions(
         maxX: Int = -1,
@@ -78,5 +78,42 @@ object LocationHelper {
                 it.first in 0..maxX && it.second in 0..maxY
             }
         }
+    }
+
+    fun findRotation24(xyz: List<Int>): List<List<Int>> {
+        val x = xyz[0]
+        val y = xyz[1]
+        val z = xyz[2]
+        return listOf(
+            listOf(x, y, z),
+            listOf(x, -z, y),
+            listOf(x, -y, -z),
+            listOf(x, z, -y),
+
+            listOf(-x, -y, z),
+            listOf(-x, -z, -y),
+            listOf(-x, y, -z),
+            listOf(-x, z, y),
+
+            listOf(z, x, y),
+            listOf(-y, x, z),
+            listOf(-z, x, -y),
+            listOf(y, x, -z),
+
+            listOf(y, -x, z),
+            listOf(z, -x, -y),
+            listOf(-y, -x, -z),
+            listOf(-z, -x, y),
+
+            listOf(y, z, x),
+            listOf(z, -y, x),
+            listOf(-y, -z, x),
+            listOf(-z, y, x),
+
+            listOf(z, y, -x),
+            listOf(-y, z, -x),
+            listOf(-z, -y, -x),
+            listOf(y, -z, -x)
+        )
     }
 }

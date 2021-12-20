@@ -1,4 +1,5 @@
 import utils.IoHelper
+import utils.LocationHelper.findRotation24
 import java.util.*
 import kotlin.math.abs
 
@@ -139,44 +140,6 @@ object D19 {
             }
         }
         return rotationIndex to scanner1
-    }
-
-    private fun findRotation24(xyz: List<Int>): List<List<Int>> {
-        val x = xyz[0]
-        val y = xyz[1]
-        val z = xyz[2]
-        return listOf(
-            listOf(x, y, z),
-            listOf(x, -z, y),
-            listOf(x, -y, -z),
-            listOf(x, z, -y),
-
-            listOf(-x, -y, z),
-            listOf(-x, -z, -y),
-            listOf(-x, y, -z),
-            listOf(-x, z, y),
-
-            listOf(z, x, y),
-            listOf(-y, x, z),
-            listOf(-z, x, -y),
-            listOf(y, x, -z),
-
-            listOf(y, -x, z),
-            listOf(z, -x, -y),
-            listOf(-y, -x, -z),
-            listOf(-z, -x, y),
-
-
-            listOf(y, z, x),
-            listOf(z, -y, x),
-            listOf(-y, -z, x),
-            listOf(-z, y, x),
-
-            listOf(z, y, -x),
-            listOf(-y, z, -x),
-            listOf(-z, -y, -x),
-            listOf(y, -z, -x)
-        )
     }
 
     private fun getDistanceLogIn(scanner: List<List<Int>>): List<DistanceLog> {

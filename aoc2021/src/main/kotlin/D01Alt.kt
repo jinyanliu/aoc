@@ -7,7 +7,9 @@ object D1 {
 }
 
 fun main() {
+    //1390
     val solutionOne = D1.solveOne()
+    //1457
     val solutionTwo = D1.solveTwo()
     println("One=$solutionOne")
     println("Tw0=$solutionTwo")

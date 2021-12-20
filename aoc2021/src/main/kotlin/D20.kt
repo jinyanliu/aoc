@@ -61,9 +61,6 @@ object D20 {
             }
             inputMap = outputMap
             outputMap.printStringMap()
-            println(outputMap.keys.map { it.first }.min()!!)
-            println(outputMap.keys.map { it.first }.max()!!)
-            println(outputMap.count { it.value == "#" })
             result = outputMap
         }
 

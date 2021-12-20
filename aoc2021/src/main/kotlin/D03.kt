@@ -52,7 +52,9 @@ object D03 {
 }
 
 fun main() {
+    //3687446
     val solutionOne = D03.solveOne()
+    //4406844
     val solutionTwo = D03.solveTwo()
     println("One=$solutionOne")
     println("Tw0=$solutionTwo")
