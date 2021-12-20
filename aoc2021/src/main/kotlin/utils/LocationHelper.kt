@@ -80,6 +80,12 @@ object LocationHelper {
         }
     }
 
+    /**
+    A specific rotation.
+    Required by https://adventofcode.com/2021/day/19
+    In total, each scanner could be in any of 24 different orientations: facing positive or negative x, y, or z,
+    and considering any of four directions "up" from that facing.
+     **/
     fun findRotation24(xyz: List<Int>): List<List<Int>> {
         val x = xyz[0]
         val y = xyz[1]
