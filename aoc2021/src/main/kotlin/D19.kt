@@ -4,14 +4,13 @@ import kotlin.math.abs
 
 object D19 {
     private val bigMap = mutableMapOf<Int, List<List<Int>>>()
-
-    val listOfBeacons = mutableSetOf<List<Int>>()
-    private val listOfScanners = mutableListOf<List<Int>>()
-
     fun initBigMap() {
         IoHelper.getSections("d19.in").map { it.lines().drop(1).map { it.split(",").map { it.toInt() } } }
             .forEachIndexed { index, lists -> bigMap[index] = lists }
     }
+
+    val listOfBeacons = mutableSetOf<List<Int>>()
+    private val listOfScanners = mutableListOf<List<Int>>(listOf(0, 0, 0))
 
     fun solveOne() {
         val solvedIndex = ArrayDeque<Int>()
@@ -36,36 +35,23 @@ object D19 {
         }
     }
 
-
     fun solve(indexI: Int, indexJ: Int): Int {
-
-
         val scanner0: List<List<Int>> = bigMap[indexI]!!
-
         val scanner1 = bigMap[indexJ]!!
-
 
         val listOfScanner1Variations = mutableListOf<List<List<Int>>>()
         for (i in 0..23) {
             listOfScanner1Variations.add(scanner1.map { findRotation24(it)[i] })
         }
 
-
         val bigList = listOfScanner1Variations.map { getDistanceLogIn(it) }
-
-
         val scanner0DistanceLog: List<DistanceLog> = getDistanceLogIn(scanner0)
 
-
-
         for (item in bigList) {
-
             val mapCount = mutableMapOf<Int, Int>()
             for (log0 in scanner0DistanceLog) {
                 for (log1 in item) {
                     if (log0.xyzD == log1.xyzD) {
-
-
                         val startPoint0 = log0.meAndYou.first
                         if (mapCount[startPoint0] != null) {
                             mapCount[startPoint0] = mapCount[startPoint0]!! + 1
@@ -77,11 +63,10 @@ object D19 {
                             val log0MeAndYou = log0.meAndYou
                             val log1MeAndYou = log1.meAndYou
 
-
-                            val target1 = scanner0.get(log0MeAndYou.first)
-                            val target2 = scanner0.get(log0MeAndYou.second)
-                            val rotate1 = scanner1.get(log1MeAndYou.first)
-                            val rotate2 = scanner1.get(log1MeAndYou.second)
+                            val target1 = scanner0[log0MeAndYou.first]
+                            val target2 = scanner0[log0MeAndYou.second]
+                            val rotate1 = scanner1[log1MeAndYou.first]
+                            val rotate2 = scanner1[log1MeAndYou.second]
 
                             val rotate = rotate(target1, target2, rotate1, rotate2)
                             val rotationIndex = rotate.first
@@ -102,9 +87,7 @@ object D19 {
 
                                 return indexJ
                             }
-
                         }
-
                     }
                 }
             }
@@ -112,8 +95,12 @@ object D19 {
         return -1
     }
 
-    fun rotate(target1: List<Int>, target2: List<Int>, rotate1: List<Int>, rotate2: List<Int>): Pair<Int, List<Int>> {
-
+    private fun rotate(
+        target1: List<Int>,
+        target2: List<Int>,
+        rotate1: List<Int>,
+        rotate2: List<Int>
+    ): Pair<Int, List<Int>> {
         val resul1 = findRotation24(rotate1)
         val result2 = findRotation24(rotate2)
 
@@ -140,41 +127,24 @@ object D19 {
             val i2Z = item2[2]
 
             if (t1X - i1X == t2X - i2X && t1Y - i1Y == t2Y - i2Y && t1Z - i1Z == t2Z - i2Z) {
-
                 rotationIndex = i
-
-
                 scanner1 = listOf(t1X - i1X, t1Y - i1Y, t1Z - i1Z)
-
                 break
             }
-
-
-
 
             if (t1X - i2X == t2X - i1X && t1Y - i2Y == t2Y - i1Y && t1Z - i2Z == t2Z - i1Z) {
-
                 rotationIndex = i
-
                 scanner1 = listOf(t1X - i2X, t1Y - i2Y, t1Z - i2Z)
-
                 break
-
-
             }
         }
-
         return rotationIndex to scanner1
     }
 
-
     private fun findRotation24(xyz: List<Int>): List<List<Int>> {
-
         val x = xyz[0]
         val y = xyz[1]
         val z = xyz[2]
-
-
         return listOf(
             listOf(x, y, z),
             listOf(x, -z, y),
@@ -210,9 +180,7 @@ object D19 {
     }
 
     private fun getDistanceLogIn(scanner: List<List<Int>>): List<DistanceLog> {
-
         val list = mutableListOf<DistanceLog>()
-
         val scannerSize = scanner.size
 
         for (a in 0 until scannerSize - 1) {

@@ -4,9 +4,9 @@ import utils.LocationHelper.getMaxX
 import utils.LocationHelper.getMaxY
 
 object D11 {
-    private val inputs = IoHelper.getMap("d11.in")
-    private val maxX = getMaxX(inputs)
-    private val maxY = getMaxY(inputs)
+    private val inputs = IoHelper.getIntMap("d11.in")
+    private val maxX = getMaxX(inputs.keys)
+    private val maxY = getMaxY(inputs.keys)
 
     fun solve(): Pair<Int, Int> {
         val map = inputs.toMutableMap()

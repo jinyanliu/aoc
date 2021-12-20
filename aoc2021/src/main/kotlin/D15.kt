@@ -2,16 +2,16 @@ import utils.IoHelper
 import utils.LocationHelper.get4AdjacentPositions
 import utils.LocationHelper.getMaxX
 import utils.LocationHelper.getMaxY
-import utils.PrintHelper.print
+import utils.PrintHelper.printIntMap
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 object D15 {
-    val inputs = IoHelper.getMap("d15.in")
+    val inputs = IoHelper.getIntMap("d15.in")
 
     fun solve(inputs: Map<Pair<Int, Int>, Int>): Int {
-        val maxX = getMaxX(inputs)
-        val maxY = getMaxY(inputs)
+        val maxX = getMaxX(inputs.keys)
+        val maxY = getMaxY(inputs.keys)
 
         val startTimestamp = System.currentTimeMillis()
 
@@ -67,13 +67,13 @@ object D15 {
     }
 
     fun solveTwo(): Int {
-        inputs.print()
+        inputs.printIntMap()
         val newMap = mutableMapOf<Pair<Int, Int>, Int>()
         inputs.forEach {
             newMap[it.key] = it.value
         }
 
-        val maxX = getMaxX(inputs)
+        val maxX = getMaxX(inputs.keys)
 
         for (x in (maxX + 1) until (maxX + 1) * 5) {
             for (y in 0..maxX) {
@@ -99,7 +99,7 @@ object D15 {
             }
         }
 
-        newMap.print()
+        newMap.printIntMap()
         return solve(newMap)
     }
 }

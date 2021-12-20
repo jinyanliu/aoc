@@ -1,5 +1,5 @@
 import utils.IoHelper
-import utils.PrintHelper.print
+import utils.PrintHelper.printIntMap
 
 object D13 {
     private val inputs = IoHelper.getSections("d13.in")
@@ -16,7 +16,7 @@ object D13 {
                 foldX(data = set, at = it.second)
             }
         }
-        if (printDot) set.print()
+        if (printDot) set.printIntMap()
         return set.size
     }
 

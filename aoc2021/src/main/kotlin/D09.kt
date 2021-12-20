@@ -5,9 +5,9 @@ import utils.LocationHelper.getMaxX
 import utils.LocationHelper.getMaxY
 
 object D9 {
-    private val inputs = IoHelper.getMap("d09.in")
-    private val maxX = getMaxX(inputs)
-    private val maxY = getMaxY(inputs)
+    private val inputs = IoHelper.getIntMap("d09.in")
+    private val maxX = getMaxX(inputs.keys)
+    private val maxY = getMaxY(inputs.keys)
 
     private val lowestPoints =
         inputs.filter {
