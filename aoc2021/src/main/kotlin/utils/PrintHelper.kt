@@ -34,6 +34,7 @@ object PrintHelper {
     }
 
     fun Map<Pair<Int, Int>, String>.printStringMap(){
+        println()
         val maxX = this.map { it.key.first }.max()!!
         val maxY = this.map { it.key.second }.max()!!
         val minX = this.map { it.key.first }.min()!!
