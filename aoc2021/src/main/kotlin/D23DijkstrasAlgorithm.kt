@@ -61,7 +61,6 @@ object D23 {
         return neighbours
     }
 
-
     private fun settled(location: Pair<Int, Int>, map: Map<Pair<Int, Int>, String>): Boolean {
         val value = map[location]
 
@@ -96,7 +95,6 @@ object D23 {
         if (location == 9 to 2 && value == "D" && map[9 to 3] == "D") {
             return true
         }
-
         return false
     }
 
@@ -107,7 +105,6 @@ object D23 {
         val bigQueue = ArrayDeque<Pair<Map<Pair<Int, Int>, String>, Long>>()
 
         bigQueue.add(inputs to 0L)
-
 
         var times = 0
         while (bigQueue.isNotEmpty()) {
@@ -176,7 +173,6 @@ object D23 {
         }
     }
 
-    //走廊stay
     private fun currentCanGoToIt(
         current: Pair<Int, Int>,
         destination: Pair<Int, Int>,
@@ -201,7 +197,6 @@ object D23 {
                 return (destination.first..current.first - 1).all { map[it to 1] == "." }
             }
         }
-
     }
 
     private fun getNumberForABCD(string: String): Long {
@@ -239,7 +234,6 @@ object D23 {
 
         if (currentMap[location] == "A" && currentMap[3 to 2] == "." && (currentMap[3 to 3] == "A")) {
             if (currentCanGoToIt(location, 3 to 2, currentMap)) possibleStay.add(3 to 2)
-
         }
 
         if (currentMap[location] == "B" && currentMap[5 to 2] == "." && currentMap[5 to 3] == ".") {
@@ -265,7 +259,6 @@ object D23 {
         if (currentMap[location] == "D" && currentMap[9 to 2] == "." && (currentMap[9 to 3] == "D")) {
             if (currentCanGoToIt(location, 9 to 2, currentMap)) possibleStay.add(9 to 2)
         }
-
         return possibleStay
     }
 
@@ -275,32 +268,7 @@ object D23 {
 }
 
 fun main() {
-/*    val solutionOne = D23.solveOne()
-    val solutionTwo = D23.solveTwo()
-    println("One=$solutionOne")
-    println("Tw0=$solutionTwo")*/
-
-/*    println(IoHelper.getRawContent("d23Test.in"))
-    println(D23.inputs.toMapString())
-    if(IoHelper.getRawContent("d23Test.in") != D23.inputs.toMapString()) println("Nice!")*/
-
     //15322
     //65 seconds
     println(D23.getShortestDistance(D23.src, D23.dest))
-}
-
-fun Map<Pair<Int, Int>, String>.toMapString(): String {
-
-    var string = ""
-
-    string += this.filter { it.key.second == 0 }.map { it.value }.joinToString("") + "\n"
-
-    string += this.filter { it.key.second == 1 }.map { it.value }.joinToString("") + "\n"
-
-    string += this.filter { it.key.second == 2 }.map { it.value }.joinToString("") + "\n"
-    string += this.filter { it.key.second == 3 }.map { it.value }.joinToString("") + "\n"
-    string += this.filter { it.key.second == 4 }.map { it.value }.joinToString("") + "\n"
-
-    return string
-
 }

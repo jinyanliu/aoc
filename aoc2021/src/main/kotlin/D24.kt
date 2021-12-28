@@ -1,516 +1,214 @@
-import utils.IoHelper
+/*
+z==0
+x = 1
+z = 0
+y = 26
+z = 0
+y = (w+15)
+z = (w1+15)
 
-object D24 {
-    private val inputs = IoHelper.getLines("d24.in")
+w z
+1 16
+2 17
+3 18
+4 19
+5 20
+6 21
+7 22
+8 23
+9 24
 
-    fun solveOne(x: Long, y: Long, z: Long, w: Long, instructions: List<String>): List<Long> {
-        var x = x
-        var y = y
-        var z = z
-        var w = w
 
-        for (line in instructions) {
-            val sec = line.split(" ")
-            val ins = sec[0]
-            val variable = sec[1]
-            val numberOrNull = if (sec.size > 2) sec[2].toLongOrNull() else null
-            when (ins) {
-/*                    "inp" -> {
-                        when (variable) {
-                            "x" -> {
-                                x = queue.removeFirst()
-                            }
-                            "y" -> {
-                                y = queue.removeFirst()
-                            }
-                            "z" -> {
-                                z = queue.removeFirst()
-                            }
-                            "w" -> {
-                                w = queue.removeFirst()
-                            }
-                        }
-                    }*/
-                "add" -> {
-                    when (variable) {
-                        "x" -> {
-                            if (numberOrNull != null) {
-                                x = x + numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        x = x + x
-                                    }
-                                    "y" -> {
-                                        x = x + y
-                                    }
-                                    "z" -> {
-                                        x = x + z
-                                    }
-                                    "w" -> {
-                                        x = x + w
-                                    }
-                                }
-                            }
+x = 1
+z = 16..24
+y = 26
+z = (16..24)*26
+y = (w+16)
+z = ((w1+15)*26)+(w2+16)
 
-                        }
-                        "y" -> {
-                            if (numberOrNull != null) {
-                                y = y + numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        y = y + x
-                                    }
-                                    "y" -> {
-                                        y = y + y
-                                    }
-                                    "z" -> {
-                                        y = y + z
-                                    }
-                                    "w" -> {
-                                        y = y + w
-                                    }
-                                }
-                            }
-                        }
-                        "z" -> {
-                            if (numberOrNull != null) {
-                                z = z + numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        z = z + x
-                                    }
-                                    "y" -> {
-                                        z = z + y
-                                    }
-                                    "z" -> {
-                                        z = z + z
-                                    }
-                                    "w" -> {
-                                        z = z + w
-                                    }
-                                }
-                            }
-                        }
-                        "w" -> {
-                            if (numberOrNull != null) {
-                                w = w * numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        w = w + x
-                                    }
-                                    "y" -> {
-                                        w = w + y
-                                    }
-                                    "z" -> {
-                                        w = w + z
-                                    }
-                                    "w" -> {
-                                        w = w + w
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                "mul" -> {
-                    when (variable) {
-                        "x" -> {
-                            if (numberOrNull != null) {
-                                x = x * numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        x = x * x
-                                    }
-                                    "y" -> {
-                                        x = x * y
-                                    }
-                                    "z" -> {
-                                        x = x * z
-                                    }
-                                    "w" -> {
-                                        x = x * w
-                                    }
-                                }
-                            }
 
-                        }
-                        "y" -> {
-                            if (numberOrNull != null) {
-                                y = y * numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        y = y * x
-                                    }
-                                    "y" -> {
-                                        y = y * y
-                                    }
-                                    "z" -> {
-                                        y = y * z
-                                    }
-                                    "w" -> {
-                                        y = y * w
-                                    }
-                                }
-                            }
-                        }
-                        "z" -> {
-                            if (numberOrNull != null) {
-                                z = z * numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        z = z * x
-                                    }
-                                    "y" -> {
-                                        z = z * y
-                                    }
-                                    "z" -> {
-                                        z = z * z
-                                    }
-                                    "w" -> {
-                                        z = z * w
-                                    }
-                                }
-                            }
-                        }
-                        "w" -> {
-                            if (numberOrNull != null) {
-                                w = w * numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        w = w * x
-                                    }
-                                    "y" -> {
-                                        w = w * y
-                                    }
-                                    "z" -> {
-                                        w = w * z
-                                    }
-                                    "w" -> {
-                                        w = w * w
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                "div" -> {
-                    when (variable) {
-                        "x" -> {
-                            if (numberOrNull != null) {
-                                x = x / numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        x = x / x
-                                    }
-                                    "y" -> {
-                                        x = x / y
-                                    }
-                                    "z" -> {
-                                        x = x / z
-                                    }
-                                    "w" -> {
-                                        x = x / w
-                                    }
-                                }
-                            }
 
-                        }
-                        "y" -> {
-                            if (numberOrNull != null) {
-                                y = y / numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        y = y / x
-                                    }
-                                    "y" -> {
-                                        y = y / y
-                                    }
-                                    "z" -> {
-                                        y = y / z
-                                    }
-                                    "w" -> {
-                                        y = y / w
-                                    }
-                                }
-                            }
-                        }
-                        "z" -> {
-                            if (numberOrNull != null) {
-                                z = z / numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        z = z / x
-                                    }
-                                    "y" -> {
-                                        z = z / y
-                                    }
-                                    "z" -> {
-                                        z = z / z
-                                    }
-                                    "w" -> {
-                                        z = z / w
-                                    }
-                                }
-                            }
-                        }
-                        "w" -> {
-                            if (numberOrNull != null) {
-                                w = w / numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        w = w / x
-                                    }
-                                    "y" -> {
-                                        w = w / y
-                                    }
-                                    "z" -> {
-                                        w = w / z
-                                    }
-                                    "w" -> {
-                                        w = w / w
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                "mod" -> {
-                    when (variable) {
-                        "x" -> {
-                            if (numberOrNull != null) {
-                                x = x % numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        x = x % x
-                                    }
-                                    "y" -> {
-                                        x = x % y
-                                    }
-                                    "z" -> {
-                                        x = x % z
-                                    }
-                                    "w" -> {
-                                        x = x % w
-                                    }
-                                }
-                            }
+z = ((w1+15)*26)+(w2+16)
 
-                        }
-                        "y" -> {
-                            if (numberOrNull != null) {
-                                y = y % numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        y = y % x
-                                    }
-                                    "y" -> {
-                                        y = y % y
-                                    }
-                                    "z" -> {
-                                        y = y % z
-                                    }
-                                    "w" -> {
-                                        y = y % w
-                                    }
-                                }
-                            }
-                        }
-                        "z" -> {
-                            if (numberOrNull != null) {
-                                z = z % numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        z = z % x
-                                    }
-                                    "y" -> {
-                                        z = z % y
-                                    }
-                                    "z" -> {
-                                        z = z % z
-                                    }
-                                    "w" -> {
-                                        z = z % w
-                                    }
-                                }
-                            }
-                        }
-                        "w" -> {
-                            if (numberOrNull != null) {
-                                w = w % numberOrNull
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        w = w % x
-                                    }
-                                    "y" -> {
-                                        w = w % y
-                                    }
-                                    "z" -> {
-                                        w = w % z
-                                    }
-                                    "w" -> {
-                                        w = w % w
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                "eql" -> {
-                    when (variable) {
-                        "x" -> {
-                            if (numberOrNull != null) {
-                                x = if (x == numberOrNull) 1 else 0
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        x = if (x == x) 1 else 0
-                                    }
-                                    "y" -> {
-                                        x = if (x == y) 1 else 0
-                                    }
-                                    "z" -> {
-                                        x = if (x == z) 1 else 0
-                                    }
-                                    "w" -> {
-                                        x = if (x == w) 1 else 0
-                                    }
-                                }
-                            }
+x = 1
+z = ((w1+15)*26)+(w2+16)
+y = 26
+z = (((w1+15)*26)+(w2+16))*26
+y = (w+4)
+z = (((w1+15)*26)+(w2+16))*26+(w3+4)
 
-                        }
-                        "y" -> {
-                            if (numberOrNull != null) {
-                                y = if (y == numberOrNull) 1 else 0
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        y = if (y == x) 1 else 0
-                                    }
-                                    "y" -> {
-                                        y = if (y == y) 1 else 0
-                                    }
-                                    "z" -> {
-                                        y = if (y == z) 1 else 0
-                                    }
-                                    "w" -> {
-                                        y = if (y == w) 1 else 0
-                                    }
-                                }
-                            }
-                        }
-                        "z" -> {
-                            if (numberOrNull != null) {
-                                z = if (z == numberOrNull) 1 else 0
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        z = if (z == x) 1 else 0
-                                    }
-                                    "y" -> {
-                                        z = if (z == y) 1 else 0
-                                    }
-                                    "z" -> {
-                                        z = if (z == z) 1 else 0
-                                    }
-                                    "w" -> {
-                                        z = if (z == w) 1 else 0
-                                    }
-                                }
-                            }
-                        }
-                        "w" -> {
-                            if (numberOrNull != null) {
-                                w = if (w == numberOrNull) 1 else 0
-                            } else {
-                                when (sec[2]) {
-                                    "x" -> {
-                                        w = if (w == x) 1 else 0
-                                    }
-                                    "y" -> {
-                                        w = if (w == y) 1 else 0
-                                    }
-                                    "z" -> {
-                                        w = if (w == z) 1 else 0
-                                    }
-                                    "w" -> {
-                                        w = if (w == w) 1 else 0
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+
+z = (((w1+15)*26)+(w2+16))*26+(w3+4)
+x = 1
+z = (((w1+15)*26)+(w2+16))*26+(w3+4)
+y = 26
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))*26
+y = (w+14)
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))*26+(w4+14)
+
+
+
+
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))*26+(w4+14)
+
+w4=1..3
+w5 = 7..9
+w4+6=w5
+x = 0
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))
+y = 1
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))
+y = 0
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))
+
+x = 1
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))
+y = 26
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))*26
+y = (w+1)
+z = (((((w1+15)*26)+(w2+16))*26+(w3+4))*26)+(w5+1)
+
+
+
+w6
+w3 = 7..9
+w6=1..3
+w3-6 == w6
+z = ((((w1+15)*26)+(w2+16))*26+(w3+4))
+x = 0
+z = ((((w1+15)*26)+(w2+16))
+y = 1
+z = ((((w1+15)*26)+(w2+16))
+y = 0
+z = ((((w1+15)*26)+(w2+16))
+
+w7
+z = ((((w1+15)*26)+(w2+16))
+x = 1
+z = ((((w1+15)*26)+(w2+16))
+y = 26
+z = (((((w1+15)*26)+(w2+16)))*26
+y = (w7+1)
+z = ((((((w1+15)*26)+(w2+16)))*26)+(w7+1)
+
+w8
+(w7-2) == w8
+w7 = 3..9
+w8 = 1..7
+z = ((((((w1+15)*26)+(w2+16)))*26)+(w7+1)
+x = 0
+z = ((((((w1+15)*26)+(w2+16)))
+y = 1
+z = ((((((w1+15)*26)+(w2+16)))
+y = 0
+z = ((((((w1+15)*26)+(w2+16)))
+
+w9
+z = ((((((w1+15)*26)+(w2+16)))
+x = 1
+z = ((((((w1+15)*26)+(w2+16)))
+y = 26
+z = ((((((w1+15)*26)+(w2+16)))*26
+y = (w+3)
+z = (((((((w1+15)*26)+(w2+16)))*26)+(w9+3)
+
+
+w10
+z = (((((((w1+15)*26)+(w2+16)))*26)+(w9+3)
+w9-1==w10
+w10 = 1..8
+w9 = 2..9
+x = 0
+z = (((((((w1+15)*26)+(w2+16)))
+y = 1
+z = (((((((w1+15)*26)+(w2+16)))
+y = 0
+z = (((((((w1+15)*26)+(w2+16)))
+
+w11
+z = (((((((w1+15)*26)+(w2+16)))
+x = 1
+z = (((((((w1+15)*26)+(w2+16)))
+y = 26
+z =((((((((w1+15)*26)+(w2+16))))*26
+y = (w+5)
+z = (((((((((w1+15)*26)+(w2+16))))*26)+(w+5)
+
+
+w12
+z = (((((((((w1+15)*26)+(w2+16))))*26)+(w+5)
+w11 =w12
+x = 0
+z = (((((((((w1+15)*26)+(w2+16))))
+y = 1
+z = (((((((((w1+15)*26)+(w2+16))))
+y = 0
+z = (((((((((w1+15)*26)+(w2+16))))
+
+w13
+w2+8=w13
+w2=1
+w13 =9
+z = (((((((((w1+15)*26)+(w2+16))))
+x = 0
+z =  (((((((((w1+15)
+y = 1
+z = (((((((((w1+15)
+y = 0
+z = (((((((((w1+15)
+
+w14
+z=w1+15
+w1+4 = w14
+w1 = 1..5
+w14 = 5..9
+x = 0
+z = 0
+y = 1
+z = 0
+y = 0
+z = 0
 
 
 
 
 
 
-        return listOf<Long>(x, y, z, w)
-    }
-
-    fun solveTwo(): Int {
-        return 0
-    }
-
-    fun solve(): Long {
-        val inputs = IoHelper.getRawContent("d24.in").split("inp w").drop(1)
 
 
+w4=1..3
+w5 = 7..9
+w4+6=w5
 
-        val mapOfSection0 = mutableMapOf<Long, List<Long>>()
-        val instructionsSection0 = inputs[0].lines().drop(1).dropLast(1)
-        for (i in 9L downTo 1L) {
-            val result = solveOne(0L, 0L, 0L, i, instructionsSection0)
-            mapOfSection0[i] = result
-        }
-        println(mapOfSection0)
+w3 = 7..9
+w6=1..3
+w3-6 == w6
 
-        for(section0 in mapOfSection0){
-            val current0 = section0.key
-            val lastResult = section0.value
-            val mapOfSection1 = mutableMapOf<Long, List<Long>>()
-            val instructionsSection1 = inputs[1].lines().drop(1).dropLast(1)
-            for (i in 9L downTo 1L) {
-                val result = solveOne(lastResult[0], lastResult[1], lastResult[2], i, instructionsSection1)
-                mapOfSection1[i] = result
-            }
-            println("current0=$current0")
-            println(mapOfSection1)
+(w7-2) == w8
+w7 = 3..9
+w8 = 1..7
 
+w9-1==w10
+w10 = 1..8
+w9 = 2..9
 
-        }
+w11 =w12
 
+w2+8=w13
+w2=1
+w13 =9
+
+w1+4 = w14
+w1 = 1..5
+w14 = 5..9
 
 
+1,  2,  3,  4,  5,  6,  7,  8,  9,  10,  11,  12,  13,  14
+5   1    9   3    9   3    9    7   9    8     9    9     9   9
+1    1    7    1 7      1     3 1       2   1     1    1    9    5
+
+51939397989999
+11717131211195
 
 
-        return 0L
-    }
-}
-
-fun main() {
-/*    val solutionOne = D24.solveOne()
-    val solutionTwo = D24.solveTwo()
-    println("One=$solutionOne")
-    println("Tw0=$solutionTwo")*/
-    D24.solve()
-}
+*/

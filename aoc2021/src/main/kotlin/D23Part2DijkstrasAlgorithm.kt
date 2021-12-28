@@ -125,7 +125,6 @@ object D23Part2 {
         if (location == 9 to 2 && value == "D" && map[9 to 3] == "D" && map[9 to 4] == "D" && map[9 to 5] == "D") {
             return true
         }
-
         return false
     }
 
@@ -140,7 +139,6 @@ object D23Part2 {
             startY == 2 && desY == 4 -> abs(startX - desX) + 4
             startY == 2 && desY == 5 -> abs(startX - desX) + 5
 
-
             startY == 3 && desY == 2 -> abs(startX - desX) + 3
             startY == 3 && desY == 3 -> abs(startX - desX) + 4
             startY == 3 && desY == 4 -> abs(startX - desX) + 5
@@ -151,12 +149,10 @@ object D23Part2 {
             startY == 4 && desY == 4 -> abs(startX - desX) + 6
             startY == 4 && desY == 5 -> abs(startX - desX) + 7
 
-
             startY == 5 && desY == 2 -> abs(startX - desX) + 5
             startY == 5 && desY == 3 -> abs(startX - desX) + 6
             startY == 5 && desY == 4 -> abs(startX - desX) + 7
             startY == 5 && desY == 5 -> abs(startX - desX) + 8
-
 
             else -> abs(startX - desX) + abs(startY - desY)
         }
@@ -198,7 +194,6 @@ object D23Part2 {
                 return (destination.first..current.first - 1).all { map[it to 1] == "." }
             }
         }
-
     }
 
     private fun getNumberForABCD(string: String): Long {
@@ -246,10 +241,6 @@ object D23Part2 {
             if (currentCanGoToIt(location, 3 to 2, currentMap)) possibleStay.add(3 to 2)
         }
 
-
-
-
-
         if (currentMap[location] == "B" && currentMap[5 to 5] == "." && currentMap[5 to 4] == "." && currentMap[5 to 3] == "." && currentMap[5 to 2] == ".") {
             if (currentCanGoToIt(location, 5 to 5, currentMap)) possibleStay.add(5 to 5)
         }
@@ -265,10 +256,6 @@ object D23Part2 {
         if (currentMap[location] == "B" && currentMap[5 to 5] == "B" && currentMap[5 to 4] == "B" && currentMap[5 to 3] == "B" && currentMap[5 to 2] == ".") {
             if (currentCanGoToIt(location, 5 to 2, currentMap)) possibleStay.add(5 to 2)
         }
-
-
-
-
 
         if (currentMap[location] == "C" && currentMap[7 to 5] == "." && currentMap[7 to 4] == "." && currentMap[7 to 3] == "." && currentMap[7 to 2] == ".") {
             if (currentCanGoToIt(location, 7 to 5, currentMap)) possibleStay.add(7 to 5)
@@ -286,12 +273,6 @@ object D23Part2 {
             if (currentCanGoToIt(location, 7 to 2, currentMap)) possibleStay.add(7 to 2)
         }
 
-
-
-
-
-
-
         if (currentMap[location] == "D" && currentMap[9 to 5] == "." && currentMap[9 to 4] == "." && currentMap[9 to 3] == "." && currentMap[9 to 2] == ".") {
             if (currentCanGoToIt(location, 9 to 5, currentMap)) possibleStay.add(9 to 5)
         }
@@ -307,11 +288,6 @@ object D23Part2 {
         if (currentMap[location] == "D" && currentMap[9 to 5] == "D" && currentMap[9 to 4] == "D" && currentMap[9 to 3] == "D" && currentMap[9 to 2] == ".") {
             if (currentCanGoToIt(location, 9 to 2, currentMap)) possibleStay.add(9 to 2)
         }
-
-
-
-
-
         return possibleStay
     }
 }

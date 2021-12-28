@@ -26,6 +26,11 @@ object IoHelper {
         return getIntMap(lines)
     }
 
+    fun getStringMap(filename: String): Map<Pair<Int, Int>, String> {
+        val lines = getLines(filename)
+        return getStringMap(lines)
+    }
+
     private fun getIntMap(lines: List<String>): Map<Pair<Int, Int>, Int> {
         val map = mutableMapOf<Pair<Int, Int>, Int>()
         for (y in lines.indices) {
