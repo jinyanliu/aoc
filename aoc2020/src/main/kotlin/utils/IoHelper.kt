@@ -1,5 +1,11 @@
 package utils
 
+/*
+How to create a new module:
+1. Create module, Choose Gradle->Java!
+2. Copy build.gradle file
+3. Create Kotlin folder
+*/
 class IoHelper {
     companion object {
         fun getInts(filename: String): List<Int> {
