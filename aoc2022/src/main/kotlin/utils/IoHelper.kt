@@ -27,6 +27,10 @@ object IoHelper {
         return IoHelper.javaClass.classLoader.getResource(filename)?.readText()?.trim().orEmpty()
     }
 
+    fun getRawContentWithEmptySpace(filename: String): String {
+        return IoHelper.javaClass.classLoader.getResource(filename)?.readText().orEmpty()
+    }
+
     fun getIntMap(filename: String): Map<Pair<Int, Int>, Int> {
         val lines = getLines(filename)
         return getIntMap(lines)
