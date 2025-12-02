@@ -4,4 +4,5 @@ include 'aoc2021'
 include 'aoc2019'
 include 'aoc2022'
 include 'aoc2024'
+include 'aoc2025'
 
